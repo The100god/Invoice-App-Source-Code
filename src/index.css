@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+body #titlebar {
+    -webkit-app-region: drag;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  body #titlebar button, svg {
+    -webkit-app-region: no-drag;
+  }
+  body #titlebar #search, .icon {
+    -webkit-app-region: no-drag;
+    user-select: all;
+  }
+
+
+/* Light mode styling for the calendar icon
+input[type="date"].date-input::-webkit-calendar-picker-indicator {
+  color: black; 
+  opacity: 1; 
+  background: transparent;
+  cursor: pointer;
+}
+
+
+input[type="date"].date-input::-webkit-calendar-picker-indicator {
+  color: white; 
+}
+
+
+input[type="date"].date-input::-webkit-calendar-picker-indicator {
+  appearance: none;
+  border: none;
+} */
+
