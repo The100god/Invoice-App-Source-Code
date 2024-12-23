@@ -66,6 +66,7 @@ export interface ClientFormData {
     zipCode: "",
   });
   
+  
   // Client errors atom
   export const clientErrorsAtom = atom<ClientErrors>({
     clientName: "",
@@ -97,10 +98,12 @@ export interface ClientFormData {
   export const commissionTypeAtom = atom<string>("");
   export const commissionValueAtom = atom<string>("");
   export const linkProductTypeAtom = atom<string>("");
+  export const isCommissionAtom = atom<boolean>(false);
+
   export const productDetailsAtom = atom<{
     price: string;
-    color: string;
-    type: string;
+    // color: string;
+    // type: string;
   } | null>(null);
   
   // Errors atom

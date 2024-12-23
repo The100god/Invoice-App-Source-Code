@@ -1,3 +1,5 @@
+
+
 interface ItemErrorsType {
     selectedItem: string;
     brand: string;
@@ -15,6 +17,7 @@ interface ItemSelectionScreenProps {
     style: string; 
     quantity: number; 
     color: string; 
+    isCommission:boolean;
     commissionType: string; 
     commissionValue: string; 
     setItemErrors: React.Dispatch<React.SetStateAction<ItemErrorsType>>
@@ -26,6 +29,7 @@ export const itemValidate = ({selectedItem,
     quantity,
     color,
     commissionType,
+    isCommission,
     commissionValue,setItemErrors}:ItemSelectionScreenProps) => {
     let isValid = true;
     const newErrors = {
@@ -37,6 +41,8 @@ export const itemValidate = ({selectedItem,
       commissionType: "",
       commissionValue: "",
     };
+    
+
   
     if (!selectedItem) {
       newErrors.selectedItem = "Item selection is required.";
@@ -58,13 +64,15 @@ export const itemValidate = ({selectedItem,
       newErrors.color = "Color is required.";
       isValid = false;
     }
-    if (!commissionType) {
-      newErrors.commissionType = "Commission type is required.";
-      isValid = false;
-    }
-    if (!commissionValue || parseFloat(commissionValue) <= 0) {
-      newErrors.commissionValue = "Valid commission value is required.";
-      isValid = false;
+    if (isCommission){
+      if (!commissionType) {
+        newErrors.commissionType = "Commission type is required.";
+        isValid = false;
+      }
+      if (!commissionValue || parseFloat(commissionValue) <= 0) {
+        newErrors.commissionValue = "Valid commission value is required.";
+        isValid = false;
+      }
     }
   
     setItemErrors(newErrors);

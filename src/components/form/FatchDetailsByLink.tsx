@@ -1,15 +1,15 @@
-import { colorAtom, linkProductTypeAtom, productDetailsAtom, productLinkAmountAtom } from "../../variables/electricalInvoiceVariable";
+import { productDetailsAtom, productLinkAmountAtom } from "../../variables/electricalInvoiceVariable";
 import { useAtom } from "jotai";
 import React, { useState } from "react";
 
 const ProductDetailsFetcher: React.FC = () => {
   const [url, setUrl] = useState("");
   const [, setProductDetails] = useAtom(productDetailsAtom);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [, setProductLinkAmount] = useAtom(productLinkAmountAtom)
-  const [, setLinkProductType] = useAtom(linkProductTypeAtom)
-  const [,setColor] = useAtom(colorAtom);
+  // const [, setLinkProductType] = useAtom(linkProductTypeAtom)
+  // const [,setColor] = useAtom(colorAtom);
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
@@ -55,8 +55,8 @@ const ProductDetailsFetcher: React.FC = () => {
       // Initialize product details
       const details = {
         price: "Price not found",
-        color: "Color not found",
-        type: "Type not found",
+        // color: "Color not found",
+        // type: "Type not found",
       };
 
       // Extract product details based on the domain
@@ -65,27 +65,27 @@ const ProductDetailsFetcher: React.FC = () => {
           details.price =
             doc.querySelector(".a-price-whole")?.textContent?.trim() ||
             "Price not found on Amazon.";
-          details.color =
-            doc.querySelector("#variation_color_name .selection")?.textContent?.trim() ||
-            "Color not found on Amazon.";
-          details.type =
-            doc.querySelector("#productTitle")?.textContent?.trim() ||
-            "Type not found on Amazon.";
+          // details.color =
+          //   doc.querySelector("#variation_color_name .selection")?.textContent?.trim() ||
+          //   "Color not found on Amazon.";
+          // details.type =
+          //   doc.querySelector("#productTitle")?.textContent?.trim() ||
+          //   "Type not found on Amazon.";
           break;
 
         case domain.includes("flipkart"):
           details.price =
             doc.querySelector(".Nx9bqj")?.textContent?.trim().replace(/[^\d]/g, "") ||
             "Price not found on Flipkart.";
-          details.color =
-            doc.querySelector(".V3Zflw")?.textContent?.trim() ||
-            "Color not found on Flipkart.";
-          details.type =
-            doc
-              .querySelector("._7dPnhA")
-              ?.querySelectorAll(".r2CdBx")[1]
-              ?.querySelector("a")?.textContent?.trim() ||
-            "Type not found on Flipkart.";
+          // details.color =
+          //   doc.querySelector(".V3Zflw")?.textContent?.trim() ||
+          //   "Color not found on Flipkart.";
+          // details.type =
+          //   doc
+          //     .querySelector("._7dPnhA")
+          //     ?.querySelectorAll(".r2CdBx")[1]
+          //     ?.querySelector("a")?.textContent?.trim() ||
+          //   "Type not found on Flipkart.";
           break;
 
         case domain.includes("walmart"):
@@ -93,47 +93,47 @@ const ProductDetailsFetcher: React.FC = () => {
             doc
               .querySelector('span[itemprop="price"][data-seo-id="hero-price"][data-fs-element="price"]')
               ?.innerHTML || "Price not found on Walmart.";
-          details.color =
-            doc.querySelector('div[data-testid="variant-group-0"] .mid-gray span.ml1')?.textContent?.trim() ||
-            "Color not found on Walmart.";
-          details.type =
-            doc.querySelector("#main-title")?.textContent?.split(",")[0].trim() ||
-            "Type not found on Walmart.";
+          // details.color =
+          //   doc.querySelector('div[data-testid="variant-group-0"] .mid-gray span.ml1')?.textContent?.trim() ||
+          //   "Color not found on Walmart.";
+          // details.type =
+          //   doc.querySelector("#main-title")?.textContent?.split(",")[0].trim() ||
+          //   "Type not found on Walmart.";
           break;
 
         case domain.includes("ebay"):
           details.price =
             doc.querySelector(".x-price-primary .ux-textspans")?.textContent?.split(" ")[1].trim() ||
             "Price not found on eBay.";
-          details.color =
-            doc.querySelector(".btn__text")?.textContent?.trim() ||
-            "Color not found on eBay.";
-          details.type =
-            doc.querySelector("dl.ux-labels-values--model dd .ux-textspans")?.textContent?.trim() ||
-            "Type not found on eBay.";
+          // details.color =
+          //   doc.querySelector(".btn__text")?.textContent?.trim() ||
+          //   "Color not found on eBay.";
+          // details.type =
+          //   doc.querySelector("dl.ux-labels-values--model dd .ux-textspans")?.textContent?.trim() ||
+          //   "Type not found on eBay.";
           break;
 
         case domain.includes("target"):
           details.price =
             doc.querySelector(".sc-d5906eb3-1")?.textContent?.trim() ||
             "Price not found on Target.";
-          details.color =
-            doc.querySelector("div.sc-40df79dd-1.kda-dqB")?.textContent?.trim() ||
-            "Color not found on Target.";
-          details.type =
-            doc.querySelector("h1[data-test='product-title']")?.textContent?.trim() ||
-            "Type not found on Target.";
+          // details.color =
+          //   doc.querySelector("div.sc-40df79dd-1.kda-dqB")?.textContent?.trim() ||
+          //   "Color not found on Target.";
+          // details.type =
+          //   doc.querySelector("h1[data-test='product-title']")?.textContent?.trim() ||
+          //   "Type not found on Target.";
           break;
 
         default:
           details.price = "Domain not supported or price not found.";
-          details.color = "Domain not supported or color not found.";
-          details.type = "Domain not supported or type not found.";
+          // details.color = "Domain not supported or color not found.";
+          // details.type = "Domain not supported or type not found.";
           break;
       }
       setProductLinkAmount(details.price)
-      setLinkProductType(details.type)
-      setColor(details.color)
+      // setLinkProductType(details.type)
+      // setColor(details.color)
       setProductDetails(details);
     } catch (error) {
       console.error("Error fetching product details:", error);

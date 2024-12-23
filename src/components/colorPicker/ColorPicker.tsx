@@ -1,14 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { CgColorPicker } from "react-icons/cg";
 
-const ColorPicker: React.FC = () => {
-  const [color, setColor] = useState<string>("#BF4B26");
+interface ColorPickerProps {
+  onColorChange: (color: string) => void;
+  initialColor?: string;
+}
+
+const ColorPicker: React.FC<ColorPickerProps> = ({ onColorChange, initialColor = "#FF0000" }) => {
+  const [color, setColor] = useState<string>("#FF0000");
   const [opacity, setOpacity] = useState<number>(100);
   const [brightness, setBrightness] = useState<number>(100);
   const [selectedButton, setSelectedButton] = useState<number>(0); // 0: None, 1: First, 2: Second
   const colorWheelRef = useRef<HTMLDivElement>(null);
   const [cursorPosition, setCursorPosition] = useState({ x: 150, y: 150 });
   const [isPicking, setIsPicking] = useState(false);
+
+  const [hue, setHue] = useState<number>(0);
+  const [saturation, setSaturation] = useState<number>(1);
 
   const handleMouseDown = (event: React.MouseEvent) => {
     setIsPicking(true);
@@ -27,27 +35,35 @@ const ColorPicker: React.FC = () => {
     if (!colorWheelRef.current) return;
 
     const rect = colorWheelRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left - rect.width / 2; // X offset
-    const y = event.clientY - rect.top - rect.height / 2; // Y offset
-    const radius = Math.sqrt(x ** 2 + y ** 2);
-    const maxRadius = rect.width / 2;
+    const centerX = rect.width / 2; // Center X
+  const centerY = rect.height / 2; // Center Y
+
+    const x = event.clientX - rect.left - centerX; // X offset
+    const y = event.clientY - rect.top - centerY; // Y offset
+    const radius = Math.sqrt((x * x) + (y * y));
+    const maxRadius = centerX;
 
     // Restrict the cursor within the circle
     if (radius > maxRadius) return;
 
-    setCursorPosition({ x: x + rect.width / 2, y: y + rect.height / 2 });
-
     // Calculate hue and saturation based on position
-    let hue = Math.atan2(y, x) * (180 / Math.PI);
-    if (hue < 0) hue += 360;
-    const saturation = radius / maxRadius;
+    let newHue = ((Math.atan2(y, x) * 180) / Math.PI+95)%360;
+    if (newHue < 0) newHue += 360;
+    const newSaturation = radius / maxRadius;
 
     // Convert HSV to HEX and apply brightness adjustment
-    const selectedColor = hsvToHex(hue, saturation, brightness / 100);
+    setHue(newHue);
+    setSaturation(newSaturation);
+    const selectedColor = hsvToHex(newHue, newSaturation, brightness /100, opacity);
     setColor(selectedColor);
+    onColorChange(selectedColor);
+    setCursorPosition({
+      x: x + centerX,
+      y: y + centerY,
+    });
   };
 
-  const hsvToHex = (h: number, s: number, v: number): string => {
+  const hsvToHex = (h: number, s: number, v: number, opacity: number): string => {
     const c = v * s;
     const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
     const m = v - c;
@@ -61,32 +77,53 @@ const ColorPicker: React.FC = () => {
     else if (h >= 300 && h < 360) [r, g, b] = [c, 0, x];
 
     const [R, G, B] = [r + m, g + m, b + m].map((val) =>
-      Math.round(val * 255)
+      Math.round(val * 255 * v)
     );
-    return `#${R.toString(16).padStart(2, "0")}${G.toString(16).padStart(2, "0")}${B.toString(16).padStart(2, "0")}`;
+
+    const alpha = Math.round((opacity / 100) * 255);
+  const alphaHex = alpha.toString(16).padStart(2, "0");
+
+  return `#${R.toString(16).padStart(2, "0")}${G.toString(16).padStart(2, "0")}${B.toString(16).padStart(2, "0")}${alphaHex}`;
+
   };
 
+  useEffect(() => {
+    // Update color when brightness or opacity changes
+    const selectedColor = hsvToHex(hue, saturation, brightness / 100, opacity);
+    setColor(selectedColor);
+    onColorChange(selectedColor)
+  }, [brightness, opacity, hue, saturation]);
+
+  
+  
+
   return (
-    <div className="flex flex-col items-center p-4 bg-primary text-white rounded-lg shadow-lg w-80">
+    <div className="flex flex-col items-center p-4 bg-primary dark:bg-transparent dark:backdrop-blur-3xl text-white rounded-lg w-80">
       {/* Top Buttons */}
       <div className="flex justify-center mb-4 space-x-4">
         <button
-          onClick={() => setSelectedButton(1)}
-          className={`w-10 h-10 flex items-center justify-center rounded-md ${
+          onClick={() => {setSelectedButton(1)
+            setColor("#A9A5A5")
+            onColorChange("#A9A5A5")
+          }}
+          className={`w-10 h-10 flex items-center justify-center border-[1px] border-[solid] border-[#FFFFFF] rounded-md ${
             selectedButton === 1
-              ? "bg-gray-300 shadow-lg"
-              : "bg-gray-700 hover:bg-gray-600"
+              ? " bg-gray-300 shadow-lg"
+              : "bg-transparent hover:bg-gray-600"
           }`}
         >
-          <div className="w-6 h-6 border border-black bg-gray-500"></div>
+          <div className="w-7 h-7 border border-white bg-[#A9A5A5]"></div>
         </button>
 
         <button
-          onClick={() => setSelectedButton(2)}
-          className={`w-10 h-10 flex items-center justify-center rounded-md ${
+          onClick={() => {setSelectedButton(2)
+            setColor("#00FFFFFF")
+            setOpacity(0)
+          }}
+          className={`w-10 h-10 flex items-center justify-center border-[1px] border-[solid] border-[#FFFFFF] rounded-md ${
             selectedButton === 2
               ? "bg-gray-300 shadow-lg"
-              : "bg-gray-700 hover:bg-gray-600"
+              : "bg-transparent hover:bg-gray-600"
           }`}
         >
           <div
@@ -98,7 +135,7 @@ const ColorPicker: React.FC = () => {
           ></div>
         </button>
 
-        <button className="w-10 h-10 flex items-center justify-center rounded-md bg-transparent hover:bg-gray-600">
+        <button className="w-10 h-10 text-[30px] flex items-center justify-center rounded-md bg-transparent hover:bg-gray-600">
           <CgColorPicker />
         </button>
       </div>
@@ -137,7 +174,10 @@ const ColorPicker: React.FC = () => {
             onChange={(e) => setBrightness(Number(e.target.value))}
             min="0"
             max="100"
-            className="w-full appearance-none h-2 rounded-lg bg-gradient-to-r from-gray-300 to-purple-700"
+            className="w-full appearance-none h-2 rounded-lg bg-gradient-to-r from-gray-300"
+            style={{
+              background: `linear-gradient(to right, #d1d5db, ${color})`
+            }}
           />
         </div>
 
@@ -156,31 +196,35 @@ const ColorPicker: React.FC = () => {
 
       {/* Hex and Opacity */}
       <div className="flex items-center justify-between w-full mt-4">
-        <label className="text-sm">Hex</label>
+        <label className="text-sm p-2 text-white border-[0.25px] border-solid border-[#D9D9D9] bg-transparent rounded-md">Hex</label>
+        <div className="flex justify-center items-center gap-1">
         <input
           type="text"
           value={color}
           onChange={(e) => setColor(e.target.value)}
-          className="w-32 p-2 text-black rounded-md"
+          className="w-32 p-2 text-white border-[0.25px] border-solid border-[#D9D9D9] bg-transparent rounded-l-[5px] rounded-r-none"
         />
-        <span>{opacity}%</span>
+        <span className="text-white text-sm p-2 border-[0.25px] border-solid border-[#D9D9D9] bg-transparent rounded-r-[5px] rounded-l-none">{opacity}%</span>
+        </div>
       </div>
 
       {/* Predefined Color Swatches */}
-      <div className="grid grid-cols-6 gap-2 mt-6">
+      <div className="grid grid-cols-7 gap-2 mt-6">
         {[
           "#FFFFFF",
           "#000000",
-          "#FF0000",
-          "#00FF00",
-          "#0000FF",
-          "#FFFF00",
-          "#FF00FF",
-          "#00FFFF",
+          "#7FFF6F",
           "#BF4B26",
-          "#FF5733",
-          "#33FF57",
-          "#3357FF",
+          "#F43135",
+          "#C73760",
+          "#9629D4",
+          "#57BA0C",
+          "#FF69D2",
+          "#FFD96F",
+          "#FF0000",
+          "#00FF11",
+          "#0793CF",
+          "#FFEA00",
         ].map((swatch) => (
           <div
             key={swatch}

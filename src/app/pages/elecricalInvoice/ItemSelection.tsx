@@ -1,4 +1,4 @@
-import RadioGroup from "../../../components/form/RadioGroup"; // Adjust the path as needed
+// import RadioGroup from "../../../components/form/RadioGroup"; // Adjust the path as needed
 import Dropdown from "../../../components/form/Dropdown"; // New Dropdown Component
 import { useAtom } from "jotai";
 import {
@@ -6,13 +6,13 @@ import {
   colorAtom,
   commissionTypeAtom,
   commissionValueAtom,
+  isCommissionAtom,
   itemErrorsAtom,
   productLinkAmountAtom,
   quantityAtom,
   selectedItemAtom,
   styleAtom,
 } from "../../../variables/electricalInvoiceVariable";
-import { useState } from "react";
 import ProductDetailsFetcher from "../../../components/form/FatchDetailsByLink";
 
 const ItemSelectionScreen = () => {
@@ -25,15 +25,39 @@ const ItemSelectionScreen = () => {
   const [commissionValue, setCommissionValue] = useAtom(commissionValueAtom);
   const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
   const [productLinkAmount] = useAtom(productLinkAmountAtom);
-  const [isCommission, setIsCommission] = useState(false);
+  const [isCommission, setIsCommission] = useAtom(isCommissionAtom);
   // console.log("isCommission:", isCommission)
   // Function to compute the total amount
-  const computeTotal = () => {
-    const unitPrice =
-      productLinkAmount === "0" ? 10 : parseInt(productLinkAmount); // Example unit price per item
-    const total = quantity * unitPrice;
-    return total.toFixed(2); // Bar 6: automated total with 2 decimal places
-  };
+  let grandTot: number;
+
+const computeTotal = (): string => {
+  const unitPrice = productLinkAmount === "0" ? 10 : parseInt(productLinkAmount, 10); // Example unit price per item
+  const total = quantity * unitPrice;
+  grandTot = total; // Store total as a number
+  return total.toFixed(2); // Return total as a string with 2 decimal places
+};
+
+const computeGrandTotal = (): number => {
+  if (!isCommission) {
+    return 0; // If commission is not applicable, return 0
+  }
+
+  // Ensure grandTot and commissionValue are numbers
+  const grandTotal = Number(grandTot) || 0;
+  const commission = Number(commissionValue) || 0;
+
+  let grandPrice: number;
+
+  if (commissionType === "$") {
+    // Flat commission
+    grandPrice = grandTotal + commission;
+  } else {
+    // Percentage commission
+    grandPrice = grandTotal + (grandTotal * commission) / 100;
+  }
+
+  return parseFloat(grandPrice.toFixed(2)); // Return grand total rounded to 2 decimal places
+};
 
   return (
     <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
@@ -45,6 +69,16 @@ const ItemSelectionScreen = () => {
             label="Select Item Type*"
             options={[
               { value: "outlet", label: "Outlet" },
+              { value: "Breakers", label: "Breakers" },
+              { value: "Cover Plates", label: "Cover Plates" },
+              { value: "Exterior Boxes", label: "Exterior Boxes" },
+              { value: "Boxes", label: "Boxes" },
+              { value: "Panels", label: "Panels" },
+              { value: "Conduit", label: "Conduit" },
+              { value: "Wire", label: "Wire" },
+              { value: "Romex", label: "romex" },
+              { value: "Miscellaneous Material", label: "Miscellaneous Material" },
+              { value: "Wirenuts", label: "Wirenuts" },
               { value: "switches", label: "Switches" },
               { value: "three-way-switches", label: "Three-Way Switches" },
               { value: "four-way-switches", label: "Four-Way Switches" },
@@ -65,8 +99,8 @@ const ItemSelectionScreen = () => {
             {selectedItem === "outlet" && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection using RadioGroup */}
-                <RadioGroup
-                  name="brand"
+                <Dropdown
+                  
                   label="Select Brand*"
                   options={[
                     { value: "Leviton", label: "Leviton" },
@@ -77,11 +111,12 @@ const ItemSelectionScreen = () => {
                   onChange={setBrand}
                   error={itemErrors.brand}
                   width={259}
+                  height={55}
                 />
 
                 {/* Bar 3: Style selection using RadioGroup */}
-                <RadioGroup
-                  name="style"
+                <Dropdown
+                 
                   label="Select Style*"
                   options={[
                     { value: "Decora", label: "Decora" },
@@ -91,6 +126,7 @@ const ItemSelectionScreen = () => {
                   onChange={setStyle}
                   error={itemErrors.style}
                   width={158}
+                  height={55}
                 />
               </div>
             )}
@@ -104,8 +140,8 @@ const ItemSelectionScreen = () => {
             ].includes(selectedItem) && (
               <div className=" flex flex-col justify-between items-start gap-4 w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection for switches using RadioGroup */}
-                <RadioGroup
-                  name="brand"
+                <Dropdown
+                  
                   label="Select Brand*"
                   options={[
                     { value: "Siemens", label: "Siemens" },
@@ -117,10 +153,10 @@ const ItemSelectionScreen = () => {
                   onChange={setBrand}
                   error={itemErrors.brand}
                   width={336}
+                  height={55}
                 />
                 <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                  <RadioGroup
-                    name="style"
+                  <Dropdown
                     label="Select Pole*"
                     options={[
                       { value: "Single Pole", label: "Single Pole" },
@@ -131,9 +167,9 @@ const ItemSelectionScreen = () => {
                     onChange={setStyle}
                     error={itemErrors.style}
                     width={255}
+                    height={55}
                   />
-                  <RadioGroup
-                    name="style"
+                  <Dropdown
                     label="D/General Electric*"
                     options={[
                       { value: " Standard", label: " Standard" },
@@ -144,6 +180,7 @@ const ItemSelectionScreen = () => {
                     onChange={setStyle}
                     error={itemErrors.style}
                     width={255}
+                    height={55}
                   />
                 </div>
               </div>
@@ -154,8 +191,7 @@ const ItemSelectionScreen = () => {
             ) && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection for switches using RadioGroup */}
-                <RadioGroup
-                  name="brand"
+                <Dropdown
                   label="Select Brand*"
                   options={[
                     { value: "Leviton", label: "Leviton" },
@@ -166,11 +202,11 @@ const ItemSelectionScreen = () => {
                   onChange={setBrand}
                   error={itemErrors.brand}
                   width={259}
+                  height={55}
                 />
 
                 {/* Bar 3: Style selection for switches using RadioGroup */}
-                <RadioGroup
-                  name="style"
+                <Dropdown
                   label="Select Style*"
                   options={[
                     { value: "Toggle", label: "Toggle" },
@@ -180,6 +216,7 @@ const ItemSelectionScreen = () => {
                   onChange={setStyle}
                   error={itemErrors.style}
                   width={158}
+                  height={55}
                 />
               </div>
             )}
@@ -251,7 +288,7 @@ const ItemSelectionScreen = () => {
             </label>
           </div>
 
-          <div className="flex flex-row justify-between items-end gap-2 w-[577px] bg-transparent">
+          <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
             {/* Bar 7: Commission Selection */}
             <Dropdown
               label="Commission Type*"
@@ -267,8 +304,8 @@ const ItemSelectionScreen = () => {
               height={55}
             />
 
-            {/* Bar 4: Quantity input */}
-            <div className="flex flex-col items-end w-[145px] bg-transparent">
+            {/* Bar 4: commission value input */}
+            <div className="flex flex-col items-start w-[145px] bg-transparent mt-[37px]">
               {/* <label className="text-primary mb-1 bg-transparent">Quantity*</label> */}
               <input
                 type="number"
@@ -284,8 +321,8 @@ const ItemSelectionScreen = () => {
                 disabled={!isCommission}
                 className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-full"
               />
-              {itemErrors.quantity && (
-                <p className="text-red-500 bg-transparent">{itemErrors.quantity}</p>
+              {itemErrors.commissionValue && (
+                <p className="text-red-500 bg-transparent">{itemErrors.commissionValue}</p>
               )}
             </div>
 
@@ -294,7 +331,7 @@ const ItemSelectionScreen = () => {
                 Grand Total*
               </label>
               <div className="p-2 border-2 border-[#A9A5A5] rounded-[10px] w-full h-[55px] focus:border-[#00C5FF] bg-[#D9D9D980] text-lg ">
-                ${computeTotal()}
+                ${computeGrandTotal()}
               </div>
             </div>
           </div>

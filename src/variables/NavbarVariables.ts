@@ -1,5 +1,11 @@
 import { atom } from "jotai";
 
+// Atom to store the list of projects
+export const projectsAtom = atom<{ name: string; id: number }[]>([]);
+
+// Atom to store the active project ID
+export const activeProjectIdAtom = atom<number | null>(null);
+
 // State atoms
 export const activeDropdownAtom = atom<string | null>(null);
 export const activeInnerDropdownAtom = atom<string | null>(null);
@@ -18,8 +24,8 @@ export const showOutlineColorPickerAtom = atom(false);
 export const showDescriptionsColorPickerAtom = atom(false);
 
 // Color atoms
-export const labelColorAtom = atom("#FF5900");
-export const outlineColorAtom = atom("#FF0000");
+export const labelColorAtom = atom("#00000099");
+export const outlineColorAtom = atom("#000000E5");
 export const valuesColorAtom = atom("#FFEA00");
 export const descriptionsColorAtom = atom("#00FF11");
 

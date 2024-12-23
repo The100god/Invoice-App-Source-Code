@@ -2,10 +2,12 @@ import { Outlet } from "react-router-dom";
 import NavBar from "../components/navigation/NavBar";
 import CostCalculator from "../components/costCalculator/CostCalculator";
 import { useAtom } from "jotai";
-import { costCalculatorAtom, projectMaterialDetailsAtom } from "../variables/NavbarVariables";
+import { activeProjectIdAtom, costCalculatorAtom, projectMaterialDetailsAtom, projectsAtom } from "../variables/NavbarVariables";
 import { useEffect, useRef, useState } from "react";
 import ProjectMaterialDetails from "../components/projectMaterialDetails/ProjectMaterialDetails";
 const App = () => {
+  const [activeProjectId, ] = useAtom(activeProjectIdAtom);
+  const [projects, setProjects] = useAtom(projectsAtom);
   const [isDragging, setIsDragging] = useState<number | null>(null);
   const [isProjectDragging, setIsProjectDragging] = useState<number | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -90,6 +92,18 @@ const App = () => {
     }
   };
 
+  useEffect(() => {
+    // Load projects from localStorage
+    const savedProjects = localStorage.getItem("projects");
+    if (savedProjects) {
+      setProjects(JSON.parse(savedProjects));
+    }
+  }, []);
+  
+  useEffect(() => {
+    // Save projects to localStorage
+    localStorage.setItem("projects", JSON.stringify(projects));
+  }, [projects]);
   
 
   return (

@@ -17,7 +17,6 @@ import {
   variableAddEmployeesAtom,
   varriableContRatePerHourAtom,
   varriableContTotHourRateAtom,
-  
 } from "../../../variables/electricalInvoiceVariable";
 import RadioGroup from "../../../components/form/RadioGroup";
 
@@ -45,20 +44,20 @@ const labourSection = () => {
   const [uniformProjectAmount, setUniformProjectAmount] = useAtom(
     uniformProjectAmountAtom
   );
-  const [
-    varriableContTotHourRate,
-    setVarriableContTotHourRate,
-  ] = useAtom(varriableContTotHourRateAtom);
-  const [
-    varriableContRatePerHour,
-    setVarriableContRatePerHour,
-  ] = useAtom(varriableContRatePerHourAtom);
+  const [varriableContTotHourRate, setVarriableContTotHourRate] = useAtom(
+    varriableContTotHourRateAtom
+  );
+  const [varriableContRatePerHour, setVarriableContRatePerHour] = useAtom(
+    varriableContRatePerHourAtom
+  );
   const [variableAddEmployees, setVariableAddEmployees] = useAtom(
     variableAddEmployeesAtom
   );
   const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
   const [materialCostVal, setMaterialCostVal] = useAtom(labourMaterialCostAtom);
-  const [projectAmountQuantityVal, setProjectAmountQuantityVal] = useAtom(projectAmountQuantityValAtom);
+  const [projectAmountQuantityVal, setProjectAmountQuantityVal] = useAtom(
+    projectAmountQuantityValAtom
+  );
 
   const addEmployee = () => {
     setVariableAddEmployees([
@@ -85,19 +84,19 @@ const labourSection = () => {
     () =>
       setLabourErrors({
         labourType: "",
-      labourSelectedVal: "",
-      labourHour: "",
-      contContractorRate: "",
-      employeesNo: "",
-      employeesRate: "",
-      uniformScopeWork: "",
-      uniformProjectAmount: "",
-      varriableContTotHourRate: "",
-      variableAddEmployees: "",
-      varriableContRatePerHour: "",
-      materialCostVal: "",
-      hourlyRateScopeWork: "",
-      projectAmountQuantityVal: "",
+        labourSelectedVal: "",
+        labourHour: "",
+        contContractorRate: "",
+        employeesNo: "",
+        employeesRate: "",
+        uniformScopeWork: "",
+        uniformProjectAmount: "",
+        varriableContTotHourRate: "",
+        variableAddEmployees: "",
+        varriableContRatePerHour: "",
+        materialCostVal: "",
+        hourlyRateScopeWork: "",
+        projectAmountQuantityVal: "",
       }),
     [materialCostVal]
   );
@@ -106,36 +105,37 @@ const labourSection = () => {
     <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
       <div className="flex flex-col w-[390px] gap-y-6 justify-center items-center bg-transparent">
         {/* labour selection page */}
-        {
-          !labourSelectedVal  &&
-        <div className="flex flex-col gap-4 w-fit h-fit justify-center items-center bg-transparent mt-12">
-          <button
-            className={`flex justify-center items-center text-[32px] font-[500] rounded-[20px] dark:text-white text-center w-[306px] h-[81px] ${
-              labourSelectedVal === "Hourly Rate"
-                ? "bg-[#00C5FF] text-white"
-                : labourSelectedVal === ""?"bg-[#00C5FF] text-white": "bg-[#D9D9D9] text-[#00000066] dark:text-black"
-            }`}
-            onClick={() => setLabourSelectedVal("Hourly Rate")}
-          >
-            Hourly Rate
-          </button>
-          <button
-            className={`flex justify-center items-center text-center text-[32px] font-[500] rounded-[20px] w-[306px] h-[81px] ${
-              labourSelectedVal === "Project Amount"
-                ? "bg-[#00C5FF] text-white"
-                : "bg-[#D9D9D9] text-[#00000066] dark:text-black"
-            }`}
-            onClick={() => setLabourSelectedVal("Project Amount")}
-          >
-            Project Amount
-          </button>
-          {labourErrors.labourSelectedVal && (
-            <p className="text-red-500 bg-transparent">
-              {labourErrors.labourSelectedVal}
-            </p>
-          )}
-        </div>
-        }
+        {!labourSelectedVal && (
+          <div className="flex flex-col gap-4 w-fit h-fit justify-center items-center bg-transparent mt-12">
+            <button
+              className={`flex justify-center items-center text-[32px] font-[500] rounded-[20px] dark:text-white text-center w-[306px] h-[81px] ${
+                labourSelectedVal === "Hourly Rate"
+                  ? "bg-[#00C5FF] text-white"
+                  : labourSelectedVal === ""
+                  ? "bg-[#00C5FF] text-white"
+                  : "bg-[#D9D9D9] text-[#00000066] dark:text-black"
+              }`}
+              onClick={() => setLabourSelectedVal("Hourly Rate")}
+            >
+              Hourly Rate
+            </button>
+            <button
+              className={`flex justify-center items-center text-center text-[32px] font-[500] rounded-[20px] w-[306px] h-[81px] ${
+                labourSelectedVal === "Project Amount"
+                  ? "bg-[#00C5FF] text-white"
+                  : "bg-[#D9D9D9] text-[#00000066] dark:text-black"
+              }`}
+              onClick={() => setLabourSelectedVal("Project Amount")}
+            >
+              Project Amount
+            </button>
+            {labourErrors.labourSelectedVal && (
+              <p className="text-red-500 bg-transparent">
+                {labourErrors.labourSelectedVal}
+              </p>
+            )}
+          </div>
+        )}
 
         {labourSelectedVal === "Hourly Rate" && (
           <div className="flex flex-col gap-y-6 bg-transparent">
@@ -348,7 +348,7 @@ const labourSection = () => {
                           varriableContTotHourRate: "",
                         }));
                       }}
-                      className="p-2 outline-none w-full h-[55px] text-primary dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
+                      className="p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                       placeholder="No."
                     />
                   </div>
@@ -361,7 +361,7 @@ const labourSection = () => {
 
                 <div className="flex flex-col w-[337px] bg-transparent">
                   <label className="text-primary  dark:text-white mb-1 bg-transparent">
-                  Contractor’s Rate/hr*
+                    Contractor’s Rate/hr*
                   </label>
                   <div className="relative bg-transparent">
                     <input
@@ -374,7 +374,7 @@ const labourSection = () => {
                           varriableContRatePerHour: "",
                         }));
                       }}
-                      className="p-2 outline-none w-full h-[55px] text-primary dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
+                      className="p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                       placeholder="15"
                     />
                     <span className="absolute left-12 top-1/2 dark:text-white transform -translate-y-1/2 bg-transparent ">
@@ -401,7 +401,7 @@ const labourSection = () => {
                         </label>
                         <input
                           type="text"
-                          className="p-2 text-[#00000080] dark:text-white text-[12px] font-[400] outline-none border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                          className="p-2 text-[#00000080] dark:text-white text-[12px] font-[400] outline-none border-2 bg-transparent border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
                           placeholder="Electrician (John Doe)"
                           value={employee.name}
                           onChange={(e) => {
@@ -415,7 +415,7 @@ const labourSection = () => {
                         </label>
                         <input
                           type="number"
-                          className="p-2 text-[#00000080] dark:text-white outline-none border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                          className="p-2 text-[#00000080] dark:text-white outline-none border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
                           placeholder="5"
                           value={employee.hours}
                           onChange={(e) =>
@@ -434,7 +434,7 @@ const labourSection = () => {
                         <div className=" relative bg-transparent">
                           <input
                             type="number"
-                            className="p-2 outline-none text-[#00000080] dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                            className="p-2 outline-none text-[#00000080] dark:text-white border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
                             placeholder="5$"
                             value={employee.rate}
                             onChange={(e) =>
@@ -504,8 +504,10 @@ const labourSection = () => {
                       uniformScopeWork: "",
                     }));
                   }}
-                  disabled = {materialCostVal==="No"?true:false}
-                  className={` p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full min-h-[55px] ${materialCostVal==="No"?"opacity-50":""}`}
+                  disabled={materialCostVal === "No" ? true : false}
+                  className={` p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full min-h-[55px] ${
+                    materialCostVal === "No" ? "opacity-50" : ""
+                  }`}
                 />
                 {labourErrors.uniformScopeWork && (
                   <p className="text-red-500 mt-1 bg-transparent">
@@ -529,8 +531,10 @@ const labourSection = () => {
                         uniformProjectAmount: "",
                       }));
                     }}
-                    disabled = {materialCostVal==="No"?true:false}
-                    className={`p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${materialCostVal==="No"?"opacity-50":""}`}
+                    disabled={materialCostVal === "No" ? true : false}
+                    className={`p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${
+                      materialCostVal === "No" ? "opacity-50" : ""
+                    }`}
                     placeholder="15"
                   />
                   <span className="absolute left-8 top-1/2 dark:text-white transform -translate-y-1/2 bg-transparent ">
@@ -559,8 +563,10 @@ const labourSection = () => {
                         projectAmountQuantityVal: "",
                       }));
                     }}
-                    disabled = {materialCostVal==="No"?true:false}
-                    className={`p-2 outline-none w-full h-[55px] text-primary bg-transparent dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${materialCostVal==="No"?"opacity-50":""}`}
+                    disabled={materialCostVal === "No" ? true : false}
+                    className={`p-2 outline-none w-full h-[55px] text-primary bg-transparent dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${
+                      materialCostVal === "No" ? "opacity-50" : ""
+                    }`}
                     placeholder="1"
                   />
                 </div>

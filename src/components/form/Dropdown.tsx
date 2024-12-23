@@ -54,7 +54,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const selectedLabel = selectedValue || linkProductType ||
   options.find((option) => option.value === selectedValue)?.label ||
-  (label === "Commission Type*" ? "$ or %" : label === "Preferred Color*" ? "Choose Color" : "Select an option");
+  (label === "Commission Type*" ? "$ or %" : label === "Preferred Color*" ? "Choose Color" : label);
   
   
   

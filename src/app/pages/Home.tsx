@@ -1,20 +1,39 @@
-import { activeDropdownAtom } from "../../variables/NavbarVariables";
+import {
+  activeDropdownAtom,
+  showDescriptionsColorPickerAtom,
+  showLabelColorPickerAtom,
+  showOutlineColorPickerAtom,
+  showValueColorPickerAtom,
+} from "../../variables/NavbarVariables";
 import { useAtom } from "jotai";
 import { Link } from "react-router-dom";
 // import { IoClose } from "react-icons/io5";
 
 const Home = () => {
   const [, setActiveDropdown] = useAtom(activeDropdownAtom);
+  const [, setShowDescriptionsColorPicker] = useAtom(
+    showDescriptionsColorPickerAtom
+  );
+  const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
+  const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
+  const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
 
-  const handleClick =()=>{
-    setActiveDropdown(null)
-      }
+  const handleClick = () => {
+    setActiveDropdown(null);
+    setShowDescriptionsColorPicker(false);
+    setShowValueColorPicker(false);
+    setShowLabalColorPicker(false);
+    setShowOutlineColorPicker(false);
+  };
   return (
-    <div onClick={handleClick} className="h-full w-full flex flex-col items-center justify-center">
+    <div
+      onClick={handleClick}
+      className="h-full w-full flex flex-col items-center justify-center overflow-y-scroll"
+    >
       <div className=" relative h-[80%] w-[60%] bg-diamond-gradient bg-blend-multiply flex flex-col items-center justify-center gap-y-4 shadow-[0_0px_10.2px_7px_rgba(0,0,0,0.3)] rounded-[25px]">
         {/* <span className=" absolute flex justify-center items-center top-2 right-2 w-6 h-6 text-[18px] cursor-pointer"><IoClose /></span> */}
         <div className="flex flex-col w-[480px] justify-center items-center gap-0">
-          <div className="text-[32px]  text-secondary font-[Helvetica Neue]">
+          <div className="text-[32px] text-secondary font-[Helvetica Neue]">
             Welcome to
           </div>
           <div className="text-[72px] font-[700] text-secondary mt-[-15px] font-[Helvetica Neue]">

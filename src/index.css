@@ -21,22 +21,5 @@ body #titlebar {
   }
 
 
-/* Light mode styling for the calendar icon
-input[type="date"].date-input::-webkit-calendar-picker-indicator {
-  color: black; 
-  opacity: 1; 
-  background: transparent;
-  cursor: pointer;
-}
 
-
-input[type="date"].date-input::-webkit-calendar-picker-indicator {
-  color: white; 
-}
-
-
-input[type="date"].date-input::-webkit-calendar-picker-indicator {
-  appearance: none;
-  border: none;
-} */
-
+  

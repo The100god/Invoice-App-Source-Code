@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 
-export const stepsAtom = atom<number>(4);
+export const stepsAtom = atom<number>(1);
 
 // Atom for invoice selection (default: "Electrical Invoice")
 export const invoiceSelectAtom = atom<string>("Electrical Invoice");

@@ -33,6 +33,7 @@ import {
   errorsAtom,
   formDataAtom,
   hourlyRateScopeWorkAtom,
+  isCommissionAtom,
   itemErrorsAtom,
   labourErrorsAtom,
   labourHourAtom,
@@ -77,6 +78,8 @@ const InvoiceSelection = () => {
   const [style] = useAtom(styleAtom);
   const [quantity] = useAtom(quantityAtom);
   const [color] = useAtom(colorAtom);
+  const [isCommission,] = useAtom(isCommissionAtom);
+
   const [commissionType] = useAtom(commissionTypeAtom);
   const [commissionValue] = useAtom(commissionValueAtom);
   const [, setItemErrors] = useAtom(itemErrorsAtom);
@@ -147,6 +150,7 @@ const InvoiceSelection = () => {
         style,
         quantity,
         color,
+        isCommission,
         commissionType,
         commissionValue,
         setItemErrors,
@@ -229,7 +233,7 @@ const InvoiceSelection = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-row items-center justify-between ">
+    <div className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll ">
       <div className=" m-auto relative h-[80%] w-[926px] flex flex-col items-center justify-between dark:bg-black shadow-[0_0px_12.2px_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0px_12.2px_5px_rgba(256,256,256,0.2)] rounded-[25px]">
         <span className=" absolute flex flex-col justify-center items-center top-2 right-2 w-6 h-6 text-[18px] cursor-pointer bg-transparent">
           <IoClose />

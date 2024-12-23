@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { LuAlignCenter, LuAlignLeft, LuAlignRight } from "react-icons/lu";
 import { MdFormatListNumbered, MdArrowRight } from "react-icons/md";
 import { HiListBullet } from "react-icons/hi2";
 import { IoIosCheckmark } from "react-icons/io";
 import { useAtom } from "jotai";
-import { activeDropdownAtom, activeInnerDropdownAtom, costCalculatorAtom, descriptionsColorAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, labelColorAtom, outlineColorAtom, projectMaterialDetailsAtom, searchTermAtom, SelectedProjectNameAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom, valuesColorAtom } from "../../variables/NavbarVariables";
+import { activeDropdownAtom, activeInnerDropdownAtom, activeProjectIdAtom, costCalculatorAtom, descriptionsColorAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, labelColorAtom, outlineColorAtom, projectMaterialDetailsAtom, projectsAtom, searchTermAtom, SelectedProjectNameAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom, valuesColorAtom } from "../../variables/NavbarVariables";
 import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
+import BreakDownSwitch from "../breakDownSwitch/BreakDownSwitch";
 
 interface ElectronAPI {
   minimizeWindow: () => void;
@@ -22,6 +24,9 @@ declare global {
 }
 
 const Navbar: React.FC = () => {
+
+  const [projects, setProjects] = useAtom(projectsAtom);
+  const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdAtom);
   
   const [activeDropdown, setActiveDropdown] = useAtom(activeDropdownAtom);
   const [activeInnerDropdown, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom);
@@ -52,6 +57,45 @@ const Navbar: React.FC = () => {
     { id: number; title: string; x: number; y: number }[]
   >([]);
   const [,SetSelectedProjectName ] = useAtom(SelectedProjectNameAtom);
+  const navigate = useNavigate();
+
+   // Add a new project
+  const addNewProject = () => {
+    const newProjectId = projects.length + 1;
+    setProjects([
+      ...projects,
+      { name: `Untitled - Project ${newProjectId}`, id: newProjectId },
+    ]);
+    setActiveProjectId(newProjectId); // Make the new project active
+    navigate(`/project/${newProjectId}`);
+  };
+
+  // Select a project
+  const selectProject = (id: number) => {
+    setActiveProjectId(id);
+  };
+
+
+   // Remove a project
+   const removeProject = (id: number) => {
+    const updatedProjects = projects.filter((project) => project.id !== id);
+
+    setProjects(updatedProjects);
+
+    // If the active project is removed, set the active project to null or the first available project
+    if (activeProjectId === id) {
+      const newActiveProjectId = updatedProjects.length > 0 ? updatedProjects[0].id : null;
+      setActiveProjectId(newActiveProjectId);
+      if (newActiveProjectId) {
+        navigate(`/project/${newActiveProjectId}`);
+      } else {
+        navigate("/");
+      }
+    }
+  };
+
+
+
   // const [isDragging, setIsDragging] = useState<number | null>(null);
   // const [panelPosition, setPanelPosition] = useState({ x: 50, y: 50 });
   // const panelRef = useRef<HTMLDivElement>(null);
@@ -680,7 +724,8 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Second Row */}
-      <div className="flex items-center w-full h-[34px] px-4 py-2 space-x-6 bg-[#1E1E1E] dark:bg-black">
+      <div className="flex items-center justify-between w-full h-[44px] px-4 py-2 bg-[#1E1E1E] dark:bg-[#000000E5]">
+        <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
         <div className="relative flex flex-row gap-3 justify-center items-center">
           <span
             style={{
@@ -689,16 +734,23 @@ const Navbar: React.FC = () => {
             className="flex w-[11px] h-[11px]"
           ></span>
           <button
-            onClick={() => setShowOutlineColorPicker(!showOutlineColorPicker)}
+            onClick={() => {
+              setShowOutlineColorPicker(!showOutlineColorPicker)
+              setShowDescriptionsColorPicker(false)
+              setShowValueColorPicker(false)
+              setShowLabalColorPicker(false)
+              
+            }}
             className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
           >
             Outline
           </button>
           {showOutlineColorPicker && (
-            <div className="absolute top-6 left-2 bg-primary text-sm p-1 rounded shadow-lg z-50">
+            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
               {/* <label className="block mb-2 text-white">Select Color:</label> */}
               {/* <div className="flex items-center justify-center h-[498px] w-[300px] bg-gray-900"> */}
-      <ColorPicker />
+      <ColorPicker onColorChange={(color) => setOutlineColor(color)}
+        initialColor={outlineColor}/>
     {/* </div> */}
               {/* <input
                 type="color"
@@ -723,14 +775,21 @@ const Navbar: React.FC = () => {
             className="flex w-[11px] h-[11px]"
           ></span>
           <button
-            onClick={() => setShowLabalColorPicker(!showLabalColorPicker)}
+            onClick={() => {
+              setShowLabalColorPicker(!showLabalColorPicker)
+              setShowDescriptionsColorPicker(false)
+              setShowValueColorPicker(false)
+              setShowOutlineColorPicker(false)
+            }}
             className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
           >
             Labels
           </button>
           {showLabalColorPicker && (
-            <div className="absolute top-6 bg-gray-900 text-sm p-4 rounded shadow-lg z-50">
-              <label className="block mb-2 text-white">Select Color:</label>
+            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+              <ColorPicker onColorChange={(color) => setLabelColor(color)}
+        initialColor={labelColor}/>
+              {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={labelColor}
@@ -742,7 +801,7 @@ const Navbar: React.FC = () => {
                 value={labelColor}
                 onChange={(e) => setLabelColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -754,14 +813,21 @@ const Navbar: React.FC = () => {
             className="flex w-[11px] h-[11px]"
           ></span>
           <button
-            onClick={() => setShowValueColorPicker(!showValueColorPicker)}
+            onClick={() => {
+              setShowValueColorPicker(!showValueColorPicker)
+              setShowDescriptionsColorPicker(false)
+              setShowLabalColorPicker(false)
+              setShowOutlineColorPicker(false)
+            }}
             className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
           >
             Values
           </button>
           {showValueColorPicker && (
-            <div className="absolute top-6 bg-gray-900 text-sm p-4 rounded shadow-lg z-50">
-              <label className="block mb-2 text-white">Select Color:</label>
+            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+              <ColorPicker onColorChange={(color) => setValuesColor(color)}
+        initialColor={valuesColor}/>
+              {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={valuesColor}
@@ -773,7 +839,7 @@ const Navbar: React.FC = () => {
                 value={valuesColor}
                 onChange={(e) => setValuesColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -786,15 +852,23 @@ const Navbar: React.FC = () => {
           ></span>
           <button
             onClick={() =>
+            {
+
               setShowDescriptionsColorPicker(!showDescriptionsColorPicker)
+              setShowValueColorPicker(false)
+              setShowLabalColorPicker(false)
+              setShowOutlineColorPicker(false)
+            }
             }
             className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
           >
             Descriptions
           </button>
           {showDescriptionsColorPicker && (
-            <div className="absolute top-6 bg-gray-900 text-sm p-4 rounded shadow-lg z-50">
-              <label className="block mb-2 text-white">Select Color:</label>
+            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+              <ColorPicker onColorChange={(color) => setDescriptionsColor(color)}
+        initialColor={descriptionsColor}/>
+              {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={descriptionsColor}
@@ -806,7 +880,7 @@ const Navbar: React.FC = () => {
                 value={descriptionsColor}
                 onChange={(e) => setDescriptionsColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              />
+              /> */}
             </div>
           )}
         </div>
@@ -831,9 +905,48 @@ const Navbar: React.FC = () => {
             <MdFormatListNumbered width={17} height={17} />
           </div>
         </div>
+        </div>
+        <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
+        <BreakDownSwitch title={"Labour"} />
+        <BreakDownSwitch title={"Material"} />
+        <BreakDownSwitch title={"Trip Charge"} />
+
+        </div>
       </div>
 
       {/* Third Row: Panel */}
+
+      <div className="flex p-1 items-center justify-start h-[34px] w-full">
+        {projects.map((project) => (
+          <div key={project.id} className={`relative flex p-1 rounded-sm items-center justify-between w-[182px] h-full space-x-2  ${
+              activeProjectId === project.id
+                ? "bg-[#262626] text-white"
+                : "bg-[#1E1E1E80] text-[#585656]"
+            }`}>
+          <button
+            onClick={() => {selectProject(project.id)
+              navigate(`/project/${project.id}`);
+            }}
+            className="w-full h-full"
+          >
+            {project.name}
+          </button>
+          {/* Remove Button */}
+          <button
+            onClick={() => removeProject(project.id)}
+          >
+            ✖
+          </button>
+        </div>
+          
+        ))}
+        <button
+          onClick={addNewProject}
+          className="px-4 py-2 text-white bg-transparent"
+        >
+          +
+        </button>
+      </div>
       {/* <div
         ref={panelRef}
         className="absolute bg-blue-700 text-white p-4 rounded"
