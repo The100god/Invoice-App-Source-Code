@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 
 // Define the type for the form data
-export interface FormData {
+export interface InvoiceFormData {
   dateOfIssue: string;
   companyName: string;
   phoneNumber: string;
@@ -20,23 +20,23 @@ export interface Errors {
 }
 
 // Form data atom
-export const formDataAtom = atom<FormData>({
+export const formDataAtom = atom<InvoiceFormData[]>([{
   dateOfIssue: "",
   companyName: "",
   phoneNumber: "",
   countryCode: "+1",
   email: "",
   companyLogo: null,
-});
+}]);
 
 // Errors atom
-export const errorsAtom = atom<Errors>({
+export const errorsAtom = atom<Errors[]>([{
   dateOfIssue: "",
   companyName: "",
   phoneNumber: "",
   email: "",
   companyLogo: "",
-});
+}]);
 
 
 //client details
@@ -58,23 +58,23 @@ export interface ClientFormData {
   }
   
   // Client form data atom
-  export const clientFormDataAtom = atom<ClientFormData>({
+  export const clientFormDataAtom = atom<ClientFormData[]>([{
     clientName: "",
     address: "",
     city: "",
     state: "",
     zipCode: "",
-  });
-  
+  }]);
+
   
   // Client errors atom
-  export const clientErrorsAtom = atom<ClientErrors>({
+  export const clientErrorsAtom = atom<ClientErrors[]>([{
     clientName: "",
     address: "",
     city: "",
     state: "",
     zipCode: "",
-  });
+  }]);
 
 
 

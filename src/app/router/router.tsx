@@ -15,7 +15,7 @@ const AppRouter = () => {
         <Route path="/" element={<App />} >
           <Route index element={<Home />} />
           {/* <Route index element={<InvoiceBill />} /> */}
-          <Route path="selection" element={<InvoiceSelection />} />
+          <Route path="/project/selection" element={<InvoiceSelection />} />
           <Route path="/project/:id" element={<Home />} />
           {/* <Route path="info/:invoice-type" element={<InvoiceInfo />} /> */}
           {/* <Route path="client-details" element={<ClientDetails />} /> */}

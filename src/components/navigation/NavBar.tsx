@@ -5,10 +5,38 @@ import { MdFormatListNumbered, MdArrowRight } from "react-icons/md";
 import { HiListBullet } from "react-icons/hi2";
 import { IoIosCheckmark } from "react-icons/io";
 import { useAtom } from "jotai";
-import { activeDropdownAtom, activeInnerDropdownAtom, activeProjectIdAtom, costCalculatorAtom, descriptionsColorAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, labelColorAtom, outlineColorAtom, projectMaterialDetailsAtom, projectsAtom, searchTermAtom, SelectedProjectNameAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom, valuesColorAtom } from "../../variables/NavbarVariables";
+import {
+  activeDropdownAtom,
+  activeInnerDropdownAtom,
+  activeProjectIdAtom,
+  activeTabIndexAtom,
+  costCalculatorAtom,
+  descriptionsColorAtom,
+  disableContractorClientSignaturesAtom,
+  disableTaxAtom,
+  disableTermsConAtom,
+  disableTripChargeAtom,
+  labelColorAtom,
+  outlineColorAtom,
+  projectMaterialDetailsAtom,
+  projectsAtom,
+  searchTermAtom,
+  SelectedProjectNameAtom,
+  showDescriptionsColorPickerAtom,
+  showLabelColorPickerAtom,
+  showOutlineColorPickerAtom,
+  showValueColorPickerAtom,
+  valuesColorAtom,
+} from "../../variables/NavbarVariables";
 import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
 import BreakDownSwitch from "../breakDownSwitch/BreakDownSwitch";
+import {
+  clientErrorsAtom,
+  clientFormDataAtom,
+  errorsAtom,
+  formDataAtom,
+} from "../../variables/electricalInvoiceVariable";
 
 interface ElectronAPI {
   minimizeWindow: () => void;
@@ -24,14 +52,17 @@ declare global {
 }
 
 const Navbar: React.FC = () => {
-
   const [projects, setProjects] = useAtom(projectsAtom);
   const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdAtom);
-  
+
   const [activeDropdown, setActiveDropdown] = useAtom(activeDropdownAtom);
-  const [activeInnerDropdown, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom);
-  
-  const [disableTripCharge, setDisableTripCharge] = useAtom(disableTripChargeAtom);
+  const [activeInnerDropdown, setActiveInnerDropdown] = useAtom(
+    activeInnerDropdownAtom
+  );
+
+  const [disableTripCharge, setDisableTripCharge] = useAtom(
+    disableTripChargeAtom
+  );
   const [disableTax, setDisableTax] = useAtom(disableTaxAtom);
   const [disableTermsCon, setDisableTermsCon] = useAtom(disableTermsConAtom);
   const [
@@ -39,33 +70,99 @@ const Navbar: React.FC = () => {
     setDisableContractorClientSignatures,
   ] = useAtom(disableContractorClientSignaturesAtom);
   const [costCalculator, setCostCalculator] = useAtom(costCalculatorAtom);
-  const [, setProjectMaterialDetails] = useAtom(
-    projectMaterialDetailsAtom
-  );
+  const [, setProjectMaterialDetails] = useAtom(projectMaterialDetailsAtom);
 
-  const [showLabalColorPicker, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
-  const [showValueColorPicker, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
-  const [showOutlineColorPicker, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
-  const [showDescriptionsColorPicker, setShowDescriptionsColorPicker] =
-    useAtom(showDescriptionsColorPickerAtom);
+  const [showLabalColorPicker, setShowLabalColorPicker] = useAtom(
+    showLabelColorPickerAtom
+  );
+  const [showValueColorPicker, setShowValueColorPicker] = useAtom(
+    showValueColorPickerAtom
+  );
+  const [showOutlineColorPicker, setShowOutlineColorPicker] = useAtom(
+    showOutlineColorPickerAtom
+  );
+  const [showDescriptionsColorPicker, setShowDescriptionsColorPicker] = useAtom(
+    showDescriptionsColorPickerAtom
+  );
   const [labelColor, setLabelColor] = useAtom(labelColorAtom);
   const [outlineColor, setOutlineColor] = useAtom(outlineColorAtom);
   const [valuesColor, setValuesColor] = useAtom(valuesColorAtom);
-  const [descriptionsColor, setDescriptionsColor] = useAtom(descriptionsColorAtom);
+  const [descriptionsColor, setDescriptionsColor] = useAtom(
+    descriptionsColorAtom
+  );
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [panels, setPanels] = useState<
     { id: number; title: string; x: number; y: number }[]
   >([]);
-  const [,SetSelectedProjectName ] = useAtom(SelectedProjectNameAtom);
+  const [activeTabIndex, setActiveTabIndex] = useAtom(activeTabIndexAtom);
+  const [, SetSelectedProjectName] = useAtom(SelectedProjectNameAtom);
+
+  const [formData, setFormData] = useAtom(formDataAtom);
+  const [errors, setErrors] = useAtom(errorsAtom);
+
+  const [clientFormData, setClientFormData] = useAtom(clientFormDataAtom);
+  const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
+
   const navigate = useNavigate();
 
-   // Add a new project
+  // Add a new project
   const addNewProject = () => {
-    const newProjectId = projects.length + 1;
+    const newProjectId = projects.length;
+    // console.log(newProjectId)
+
     setProjects([
       ...projects,
-      { name: `Untitled - Project ${newProjectId}`, id: newProjectId },
+      { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
     ]);
+
+    //form data
+    setFormData([
+      ...formData,
+      {
+        dateOfIssue: "",
+        companyName: "",
+        phoneNumber: "",
+        countryCode: "+1",
+        email: "",
+        companyLogo: null,
+      },
+    ]);
+    setErrors([
+      ...errors,
+      {
+        dateOfIssue: "",
+        companyName: "",
+        phoneNumber: "",
+        email: "",
+        companyLogo: "",
+      },
+    ]);
+
+    //client details data
+    setClientFormData([
+      ...clientFormData,
+      {
+        clientName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+    ]);
+
+    setClientErrors([
+      ...clientErrors,
+      {
+        clientName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+    ]);
+
+    setActiveTabIndex(newProjectId); // New tab index
+
     setActiveProjectId(newProjectId); // Make the new project active
     navigate(`/project/${newProjectId}`);
   };
@@ -73,18 +170,22 @@ const Navbar: React.FC = () => {
   // Select a project
   const selectProject = (id: number) => {
     setActiveProjectId(id);
+    setActiveTabIndex(id);
   };
+  console.log("activeTabIndex", activeTabIndex);
+  console.log("activeProjectId", activeProjectId);
 
-
-   // Remove a project
-   const removeProject = (id: number) => {
+  // Remove a project
+  const removeProject = (id: number) => {
     const updatedProjects = projects.filter((project) => project.id !== id);
-
+    const updatedFromData = formData.filter((data, index) => index != id);
+    setFormData(updatedFromData);
     setProjects(updatedProjects);
 
     // If the active project is removed, set the active project to null or the first available project
     if (activeProjectId === id) {
-      const newActiveProjectId = updatedProjects.length > 0 ? updatedProjects[0].id : null;
+      const newActiveProjectId =
+        updatedProjects.length > 0 ? updatedProjects[0].id : null;
       setActiveProjectId(newActiveProjectId);
       if (newActiveProjectId) {
         navigate(`/project/${newActiveProjectId}`);
@@ -93,8 +194,6 @@ const Navbar: React.FC = () => {
       }
     }
   };
-
-
 
   // const [isDragging, setIsDragging] = useState<number | null>(null);
   // const [panelPosition, setPanelPosition] = useState({ x: 50, y: 50 });
@@ -163,7 +262,9 @@ const Navbar: React.FC = () => {
     setActiveDropdown((prev: string | null) => (prev === menu ? null : menu));
   };
   const toggleInnerDropdown = (menu: string) => {
-    setActiveInnerDropdown((prev : string | null) => (prev === menu ? null : menu));
+    setActiveInnerDropdown((prev: string | null) =>
+      prev === menu ? null : menu
+    );
   };
 
   // Color Picker Handler
@@ -239,363 +340,348 @@ const Navbar: React.FC = () => {
         {/* Left Side: Logo and Buttons */}
         <div className="flex items-center space-x-4 relative">
           <div className="font-bold text-2xl">S</div>
-          {["File", "Edit", "View", "Tools", "Share", "Help"].map(
-            (item) => (
-              <div key={item} className="relative">
-                <button
-                  onClick={() => toggleDropdown(item)}
-                  className="hover:underline focus:outline-none"
-                >
-                  {item}
-                </button>
-                {activeDropdown === item && (
-                  <div className="absolute mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                    {item === "File" && (
-                      <ul className="py-2 px-2 w-[246px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {[
-                          ["New Invoice", "Ctrl+N"],
-                          ["Save", "Ctrl+S"],
-                          ["Save As", "Shift+Ctrl+S"],
-                          ["Rename Invoice", "F2"],
-                          ["Export", "Ctrl+E"],
-                          ["Print", "Ctrl+P"],
-                        ].map((option, index) => (
-                          <li
-                            key={index}
-                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                            onClick={() =>
-                              handleFileDropdownAction(option[0], option[1])
-                            }
-                          >
-                            <span>{option[0]}</span>
-                            <span>{option[1]}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+          {["File", "Edit", "View", "Tools", "Share", "Help"].map((item) => (
+            <div key={item} className="relative">
+              <button
+                onClick={() => toggleDropdown(item)}
+                className="hover:underline focus:outline-none"
+              >
+                {item}
+              </button>
+              {activeDropdown === item && (
+                <div className="absolute mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                  {item === "File" && (
+                    <ul className="py-2 px-2 w-[246px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {[
+                        ["New Invoice", "Ctrl+N"],
+                        ["Save", "Ctrl+S"],
+                        ["Save As", "Shift+Ctrl+S"],
+                        ["Rename Invoice", "F2"],
+                        ["Export", "Ctrl+E"],
+                        ["Print", "Ctrl+P"],
+                      ].map((option, index) => (
+                        <li
+                          key={index}
+                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                          onClick={() =>
+                            handleFileDropdownAction(option[0], option[1])
+                          }
+                        >
+                          <span>{option[0]}</span>
+                          <span>{option[1]}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
-                    {item === "Edit" && (
-                      <ul className="py-2 px-2 w-[240px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {[
-                          "Add New Material",
-                          "Remove Existing Project",
-                          "Select Material",
-                          "Edit/Add Attribute",
-                        ].map((option) => (
-                          <li
-                            key={option}
-                            className="flex flex-row relative justify-between items-center text-primary px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                            onClick={() => handleEditDropdownAction(option)}
-                          >
-                            {option === "Add New Material" && (
+                  {item === "Edit" && (
+                    <ul className="py-2 px-2 w-[240px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {[
+                        "Add New Material",
+                        "Remove Existing Project",
+                        "Select Material",
+                        "Edit/Add Attribute",
+                      ].map((option) => (
+                        <li
+                          key={option}
+                          className="flex flex-row relative justify-between items-center text-primary px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                          onClick={() => handleEditDropdownAction(option)}
+                        >
+                          {option === "Add New Material" && (
+                            <span>{option}</span>
+                          )}
+                          {option === "Remove Existing Project" && (
+                            <div className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer">
                               <span>{option}</span>
-                            )}
-                            {option === "Remove Existing Project" && (
-                              <div className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer">
-                                <span>{option}</span>
-                                <span>
-                                  <MdArrowRight />
-                                </span>
-                              </div>
-                            )}
-                            {option === "Select Material" && (
-                              <div
-                                className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
-                                onClick={() => toggleInnerDropdown(option)}
-                              >
-                                <span>{option}</span>
-                                <span>
-                                  <MdArrowRight />
-                                </span>
-                                {activeInnerDropdown === option && (
-                                  <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                    {
-                                      <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                        <li className="flex w-full p-2">
-                                          Project A
+                              <span>
+                                <MdArrowRight />
+                              </span>
+                            </div>
+                          )}
+                          {option === "Select Material" && (
+                            <div
+                              className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                              onClick={() => toggleInnerDropdown(option)}
+                            >
+                              <span>{option}</span>
+                              <span>
+                                <MdArrowRight />
+                              </span>
+                              {activeInnerDropdown === option && (
+                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                  {
+                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                      <li className="flex w-full p-2">
+                                        Project A
+                                      </li>
+                                      {[
+                                        "-  Material 01",
+                                        "-  Material 02",
+                                        "-  Material 03",
+                                      ].map((mat, index) => (
+                                        <li
+                                          key={index}
+                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                        >
+                                          <span>{mat}</span>
                                         </li>
-                                        {[
-                                          "-  Material 01",
-                                          "-  Material 02",
-                                          "-  Material 03",
-                                        ].map((mat, index) => (
+                                      ))}
+                                    </ul>
+                                  }
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {option === "Edit/Add Attribute" && (
+                            <div
+                              className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                              onClick={() => toggleInnerDropdown(option)}
+                            >
+                              <span>{option}</span>
+                              <span>
+                                <MdArrowRight />
+                              </span>
+                              {activeInnerDropdown === option && (
+                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                  {
+                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                      {[
+                                        "-  Material 01",
+                                        "-  Material 02",
+                                        "-  Material 03",
+                                      ].map((mat, index) => (
+                                        <li
+                                          key={index}
+                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                        >
+                                          <span>{mat}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  }
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item === "View" && (
+                    <ul className="py-2 px-2 w-[345px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {[
+                        "Zoom",
+                        "Layout",
+                        "Disable Trip Charge",
+                        "Disable Tax",
+                        "Disable Terms& Con...",
+                        "Disable Contractor/Client Signatures",
+                      ].map((option, index) => (
+                        <li
+                          key={index}
+                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                          onClick={() => handleViewDropdownAction(option)}
+                        >
+                          {option === "Zoom" && (
+                            <div
+                              className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              // onClick={() => toggleInnerDropdown(option)}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center">
+                                Ctrl + / -
+                              </span>
+                            </div>
+                          )}
+
+                          {option === "Layout" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              onClick={() => toggleInnerDropdown(option)}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center">
+                                <MdArrowRight />
+                              </span>
+                              {activeInnerDropdown === option && (
+                                <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                  {
+                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                      {["Layout 1", "Layout 2", "Layout 3"].map(
+                                        (mat, index) => (
                                           <li
                                             key={index}
                                             className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
                                           >
                                             <span>{mat}</span>
                                           </li>
-                                        ))}
-                                      </ul>
-                                    }
-                                  </div>
+                                        )
+                                      )}
+                                    </ul>
+                                  }
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {option === "Disable Trip Charge" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              onClick={() => {
+                                setActiveInnerDropdown(null);
+                                setDisableTripCharge(!disableTripCharge);
+                              }}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center text-[24px]">
+                                {disableTripCharge && <IoIosCheckmark />}
+                              </span>
+                            </div>
+                          )}
+                          {option === "Disable Tax" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              onClick={() => {
+                                setActiveInnerDropdown(null);
+                                setDisableTax(!disableTax);
+                              }}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center text-[24px]">
+                                {disableTax && <IoIosCheckmark />}
+                              </span>
+                            </div>
+                          )}
+                          {option === "Disable Terms& Con..." && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              onClick={() => {
+                                setActiveInnerDropdown(null);
+                                setDisableTermsCon(!disableTermsCon);
+                              }}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center text-[24px]">
+                                {disableTermsCon && <IoIosCheckmark />}
+                              </span>
+                            </div>
+                          )}
+                          {option ===
+                            "Disable Contractor/Client Signatures" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              onClick={() => {
+                                setDisableContractorClientSignatures(
+                                  !disableContractorClientSignatures
+                                );
+                                setActiveInnerDropdown(null);
+                              }}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center text-[24px]">
+                                {disableContractorClientSignatures && (
+                                  <IoIosCheckmark />
                                 )}
-                              </div>
-                            )}
-                            {option === "Edit/Add Attribute" && (
-                              <div
-                                className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
-                                onClick={() => toggleInnerDropdown(option)}
-                              >
-                                <span>{option}</span>
-                                <span>
-                                  <MdArrowRight />
-                                </span>
-                                {activeInnerDropdown === option && (
-                                  <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                    {
-                                      <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                        {[
-                                          "-  Material 01",
-                                          "-  Material 02",
-                                          "-  Material 03",
-                                        ].map((mat, index) => (
-                                          <li
-                                            key={index}
-                                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          >
-                                            <span>{mat}</span>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    }
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {item === "View" && (
-                      <ul className="py-2 px-2 w-[345px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {[
-                          "Zoom",
-                          "Layout",
-                          "Disable Trip Charge",
-                          "Disable Tax",
-                          "Disable Terms& Con...",
-                          "Disable Contractor/Client Signatures",
-                        ].map((option, index) => (
-                          <li
-                            key={index}
-                            className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                            onClick={() => handleViewDropdownAction(option)}
-                          >
-                            {option === "Zoom" && (
+                              </span>
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item === "Tools" && (
+                    <ul className="py-2 px-2 w-[277px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {["Cost Calculator", "Project-Material"].map((option) => (
+                        <li
+                          key={option}
+                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                        >
+                          {option === "Cost Calculator" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] h-fit w-full bg-transparent cursor-pointer"
+                              onClick={() => {
+                                setCostCalculator(!costCalculator);
+                                setActiveInnerDropdown(null);
+                              }}
+                            >
+                              <span>{option}</span>
+                              <span className="flex justify-center items-center text-[24px]">
+                                {costCalculator && <IoIosCheckmark />}
+                              </span>
+                            </div>
+                          )}
+
+                          {option === "Project-Material" && (
+                            <div
+                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                              // onClick={() => toggleInnerDropdown(option)}
+                            >
                               <div
                                 className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                // onClick={() => toggleInnerDropdown(option)}
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center">
-                                  Ctrl + / -
-                                </span>
-                              </div>
-                            )}
-
-                            {option === "Layout" && (
-                              <div
-                                className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
                                 onClick={() => toggleInnerDropdown(option)}
                               >
                                 <span>{option}</span>
                                 <span className="flex justify-center items-center">
                                   <MdArrowRight />
                                 </span>
-                                {activeInnerDropdown === option && (
-                                  <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                    {
-                                      <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                        {[
-                                          "Layout 1",
-                                          "Layout 2",
-                                          "Layout 3",
-                                        ].map((mat, index) => (
-                                          <li
-                                            key={index}
-                                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          >
-                                            <span>{mat}</span>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    }
-                                  </div>
-                                )}
                               </div>
-                            )}
-                            {option === "Disable Trip Charge" && (
-                              <div
-                                className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                onClick={() =>
-                                {
-                                  setActiveInnerDropdown(null)
-                                  setDisableTripCharge(!disableTripCharge)
-                                }
-                                }
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center text-[24px]">
-                                  {disableTripCharge && <IoIosCheckmark />}
-                                </span>
-                              </div>
-                            )}
-                            {option === "Disable Tax" && (
-                              <div
-                                className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                onClick={() => {
-                                  setActiveInnerDropdown(null)
-                                  setDisableTax(!disableTax)}}
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center text-[24px]">
-                                  {disableTax && <IoIosCheckmark />}
-                                </span>
-                              </div>
-                            )}
-                            {option === "Disable Terms& Con..." && (
-                              <div
-                                className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                onClick={() =>{
-                                  setActiveInnerDropdown(null)
-                                  setDisableTermsCon(!disableTermsCon)
-                                }
-                                }
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center text-[24px]">
-                                  {disableTermsCon && <IoIosCheckmark />}
-                                </span>
-                              </div>
-                            )}
-                            {option ===
-                              "Disable Contractor/Client Signatures" && (
-                              <div
-                                className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                onClick={() =>{
-
-                                  setDisableContractorClientSignatures(
-                                    !disableContractorClientSignatures
-                                  )
-                                  setActiveInnerDropdown(null)
-                                }
-                                }
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center text-[24px]">
-                                  {disableContractorClientSignatures && (
-                                    <IoIosCheckmark />
-                                  )}
-                                </span>
-                              </div>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {item === "Tools" && (
-                      <ul className="py-2 px-2 w-[277px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {["Cost Calculator", "Project-Material"].map(
-                          (option) => (
-                            <li
-                              key={option}
-                              className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                            >
-                              {option === "Cost Calculator" && (
-                                <div
-                                  className="flex flex-row relative justify-between items-center text-[16px] h-fit w-full bg-transparent cursor-pointer"
-                                  onClick={() =>{
-
-                                    setCostCalculator(!costCalculator)
-                                    setActiveInnerDropdown(null)
+                              {activeInnerDropdown === option && (
+                                <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                  {
+                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                      {[
+                                        "Project 1",
+                                        "Project 2",
+                                        "Project 3",
+                                      ].map((mat, index) => (
+                                        <li
+                                          key={index}
+                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                          onClick={() => {
+                                            setProjectMaterialDetails(true);
+                                            SetSelectedProjectName(mat);
+                                          }}
+                                        >
+                                          <span>{mat}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
                                   }
-                                  }
-                                >
-                                  <span>{option}</span>
-                                  <span className="flex justify-center items-center text-[24px]">
-                                    {costCalculator && <IoIosCheckmark />}
-                                  </span>
                                 </div>
                               )}
-
-                              {option === "Project-Material" && (
-                                <div
-                                  className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                  // onClick={() => toggleInnerDropdown(option)}
-                                >
-                                  <div 
-                                  className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                  onClick={() => toggleInnerDropdown(option)}
-                                  >
-
-                                  <span>{option}</span>
-                                  <span className="flex justify-center items-center">
-                                    <MdArrowRight />
-                                  </span>
-                                  </div>
-                                  {activeInnerDropdown === option && (
-                                    <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                      {
-                                        <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                          {[
-                                            "Project 1",
-                                            "Project 2",
-                                            "Project 3",
-                                          ].map((mat, index) => (
-                                            <li
-                                              key={index}
-                                              className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                              onClick={()=>{
-                                                setProjectMaterialDetails(true)
-                                                SetSelectedProjectName(mat)
-                                              }}
-                                            >
-                                              <span>{mat}</span>
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      }
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    )}
-                    {item === "Share" && (
-                      <ul className="py-2 px-2 w-[136px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {["Send File", "Send as PDF"].map((option) => (
-                          <li
-                            key={option}
-                            className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                          >
-                            {option}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {item === "Help" && (
-                      <ul className="py-2 px-2 w-[177px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                        {["Check for Updates", "Leave Feedback"].map(
-                          (option) => (
-                            <li
-                              key={option}
-                              className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                            >
-                              {option}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          )}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item === "Share" && (
+                    <ul className="py-2 px-2 w-[136px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {["Send File", "Send as PDF"].map((option) => (
+                        <li
+                          key={option}
+                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {item === "Help" && (
+                    <ul className="py-2 px-2 w-[177px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                      {["Check for Updates", "Leave Feedback"].map((option) => (
+                        <li
+                          key={option}
+                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                        >
+                          {option}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Right Side: Search Bar, Action Buttons, and Window Controls */}
@@ -697,8 +783,7 @@ const Navbar: React.FC = () => {
             </form>
           </div>
           <div className="flex flex-row items-center justify-between space-x-2">
-            <LightDarkThemeBtn/>
-
+            <LightDarkThemeBtn />
           </div>
           <div className="flex flex-row items-center justify-between space-x-2">
             <button
@@ -726,33 +811,34 @@ const Navbar: React.FC = () => {
       {/* Second Row */}
       <div className="flex items-center justify-between w-full h-[44px] px-4 py-2 bg-[#1E1E1E] dark:bg-[#000000E5]">
         <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
-        <div className="relative flex flex-row gap-3 justify-center items-center">
-          <span
-            style={{
-              backgroundColor: outlineColor,
-            }}
-            className="flex w-[11px] h-[11px]"
-          ></span>
-          <button
-            onClick={() => {
-              setShowOutlineColorPicker(!showOutlineColorPicker)
-              setShowDescriptionsColorPicker(false)
-              setShowValueColorPicker(false)
-              setShowLabalColorPicker(false)
-              
-            }}
-            className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-          >
-            Outline
-          </button>
-          {showOutlineColorPicker && (
-            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-              {/* <label className="block mb-2 text-white">Select Color:</label> */}
-              {/* <div className="flex items-center justify-center h-[498px] w-[300px] bg-gray-900"> */}
-      <ColorPicker onColorChange={(color) => setOutlineColor(color)}
-        initialColor={outlineColor}/>
-    {/* </div> */}
-              {/* <input
+          <div className="relative flex flex-row gap-3 justify-center items-center">
+            <span
+              style={{
+                backgroundColor: outlineColor,
+              }}
+              className="flex w-[11px] h-[11px]"
+            ></span>
+            <button
+              onClick={() => {
+                setShowOutlineColorPicker(!showOutlineColorPicker);
+                setShowDescriptionsColorPicker(false);
+                setShowValueColorPicker(false);
+                setShowLabalColorPicker(false);
+              }}
+              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+            >
+              Outline
+            </button>
+            {showOutlineColorPicker && (
+              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                {/* <label className="block mb-2 text-white">Select Color:</label> */}
+                {/* <div className="flex items-center justify-center h-[498px] w-[300px] bg-gray-900"> */}
+                <ColorPicker
+                  onColorChange={(color) => setOutlineColor(color)}
+                  initialColor={outlineColor}
+                />
+                {/* </div> */}
+                {/* <input
                 type="color"
                 value={outlineColor}
                 onChange={(e) => setOutlineColor(e.target.value)}
@@ -764,32 +850,34 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setOutlineColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
               /> */}
-            </div>
-          )}
-        </div>
-        <div className="relative flex flex-row gap-3 justify-center items-center">
-          <span
-            style={{
-              backgroundColor: labelColor,
-            }}
-            className="flex w-[11px] h-[11px]"
-          ></span>
-          <button
-            onClick={() => {
-              setShowLabalColorPicker(!showLabalColorPicker)
-              setShowDescriptionsColorPicker(false)
-              setShowValueColorPicker(false)
-              setShowOutlineColorPicker(false)
-            }}
-            className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-          >
-            Labels
-          </button>
-          {showLabalColorPicker && (
-            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-              <ColorPicker onColorChange={(color) => setLabelColor(color)}
-        initialColor={labelColor}/>
-              {/* <label className="block mb-2 text-white">Select Color:</label>
+              </div>
+            )}
+          </div>
+          <div className="relative flex flex-row gap-3 justify-center items-center">
+            <span
+              style={{
+                backgroundColor: labelColor,
+              }}
+              className="flex w-[11px] h-[11px]"
+            ></span>
+            <button
+              onClick={() => {
+                setShowLabalColorPicker(!showLabalColorPicker);
+                setShowDescriptionsColorPicker(false);
+                setShowValueColorPicker(false);
+                setShowOutlineColorPicker(false);
+              }}
+              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+            >
+              Labels
+            </button>
+            {showLabalColorPicker && (
+              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                <ColorPicker
+                  onColorChange={(color) => setLabelColor(color)}
+                  initialColor={labelColor}
+                />
+                {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={labelColor}
@@ -802,32 +890,34 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setLabelColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
               /> */}
-            </div>
-          )}
-        </div>
-        <div className="relative flex flex-row gap-3 justify-center items-center">
-          <span
-            style={{
-              backgroundColor: valuesColor,
-            }}
-            className="flex w-[11px] h-[11px]"
-          ></span>
-          <button
-            onClick={() => {
-              setShowValueColorPicker(!showValueColorPicker)
-              setShowDescriptionsColorPicker(false)
-              setShowLabalColorPicker(false)
-              setShowOutlineColorPicker(false)
-            }}
-            className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-          >
-            Values
-          </button>
-          {showValueColorPicker && (
-            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-              <ColorPicker onColorChange={(color) => setValuesColor(color)}
-        initialColor={valuesColor}/>
-              {/* <label className="block mb-2 text-white">Select Color:</label>
+              </div>
+            )}
+          </div>
+          <div className="relative flex flex-row gap-3 justify-center items-center">
+            <span
+              style={{
+                backgroundColor: valuesColor,
+              }}
+              className="flex w-[11px] h-[11px]"
+            ></span>
+            <button
+              onClick={() => {
+                setShowValueColorPicker(!showValueColorPicker);
+                setShowDescriptionsColorPicker(false);
+                setShowLabalColorPicker(false);
+                setShowOutlineColorPicker(false);
+              }}
+              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+            >
+              Values
+            </button>
+            {showValueColorPicker && (
+              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                <ColorPicker
+                  onColorChange={(color) => setValuesColor(color)}
+                  initialColor={valuesColor}
+                />
+                {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={valuesColor}
@@ -840,35 +930,34 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setValuesColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
               /> */}
-            </div>
-          )}
-        </div>
-        <div className="relative flex flex-row gap-3 justify-center items-center">
-          <span
-            style={{
-              backgroundColor: descriptionsColor,
-            }}
-            className="flex w-[11px] h-[11px]"
-          ></span>
-          <button
-            onClick={() =>
-            {
-
-              setShowDescriptionsColorPicker(!showDescriptionsColorPicker)
-              setShowValueColorPicker(false)
-              setShowLabalColorPicker(false)
-              setShowOutlineColorPicker(false)
-            }
-            }
-            className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-          >
-            Descriptions
-          </button>
-          {showDescriptionsColorPicker && (
-            <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-              <ColorPicker onColorChange={(color) => setDescriptionsColor(color)}
-        initialColor={descriptionsColor}/>
-              {/* <label className="block mb-2 text-white">Select Color:</label>
+              </div>
+            )}
+          </div>
+          <div className="relative flex flex-row gap-3 justify-center items-center">
+            <span
+              style={{
+                backgroundColor: descriptionsColor,
+              }}
+              className="flex w-[11px] h-[11px]"
+            ></span>
+            <button
+              onClick={() => {
+                setShowDescriptionsColorPicker(!showDescriptionsColorPicker);
+                setShowValueColorPicker(false);
+                setShowLabalColorPicker(false);
+                setShowOutlineColorPicker(false);
+              }}
+              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+            >
+              Descriptions
+            </button>
+            {showDescriptionsColorPicker && (
+              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                <ColorPicker
+                  onColorChange={(color) => setDescriptionsColor(color)}
+                  initialColor={descriptionsColor}
+                />
+                {/* <label className="block mb-2 text-white">Select Color:</label>
               <input
                 type="color"
                 value={descriptionsColor}
@@ -881,36 +970,35 @@ const Navbar: React.FC = () => {
                 onChange={(e) => setDescriptionsColor(e.target.value)}
                 className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
               /> */}
+              </div>
+            )}
+          </div>
+
+          <div className="icon flex flex-row gap-1 justify-center items-center ">
+            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+              <LuAlignLeft width={17} height={17} />
             </div>
-          )}
-        </div>
+            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+              <LuAlignCenter width={17} height={17} />
+            </div>
+            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+              <LuAlignRight width={17} height={17} />
+            </div>
+          </div>
 
-        <div className="icon flex flex-row gap-1 justify-center items-center ">
-          <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-            <LuAlignLeft width={17} height={17} />
+          <div className="icon flex flex-row gap-1 justify-center items-center ">
+            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+              <HiListBullet width={17} height={17} />
+            </div>
+            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+              <MdFormatListNumbered width={17} height={17} />
+            </div>
           </div>
-          <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-            <LuAlignCenter width={17} height={17} />
-          </div>
-          <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-            <LuAlignRight width={17} height={17} />
-          </div>
-        </div>
-
-        <div className="icon flex flex-row gap-1 justify-center items-center ">
-          <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-            <HiListBullet width={17} height={17} />
-          </div>
-          <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-            <MdFormatListNumbered width={17} height={17} />
-          </div>
-        </div>
         </div>
         <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
-        <BreakDownSwitch title={"Labour"} />
-        <BreakDownSwitch title={"Material"} />
-        <BreakDownSwitch title={"Trip Charge"} />
-
+          <BreakDownSwitch title={"Labour"} />
+          <BreakDownSwitch title={"Material"} />
+          <BreakDownSwitch title={"Trip Charge"} />
         </div>
       </div>
 
@@ -918,27 +1006,26 @@ const Navbar: React.FC = () => {
 
       <div className="flex p-1 items-center justify-start h-[34px] w-full">
         {projects.map((project) => (
-          <div key={project.id} className={`relative flex p-1 rounded-sm items-center justify-between w-[182px] h-full space-x-2  ${
+          <div
+            key={project.id}
+            className={`relative flex p-1 rounded-sm items-center justify-between w-[182px] h-full space-x-2  ${
               activeProjectId === project.id
                 ? "bg-[#262626] text-white"
                 : "bg-[#1E1E1E80] text-[#585656]"
-            }`}>
-          <button
-            onClick={() => {selectProject(project.id)
-              navigate(`/project/${project.id}`);
-            }}
-            className="w-full h-full"
+            }`}
           >
-            {project.name}
-          </button>
-          {/* Remove Button */}
-          <button
-            onClick={() => removeProject(project.id)}
-          >
-            ✖
-          </button>
-        </div>
-          
+            <button
+              onClick={() => {
+                selectProject(project.id);
+                navigate(`/project/${project.id}`);
+              }}
+              className="w-full h-full"
+            >
+              {project.name}
+            </button>
+            {/* Remove Button */}
+            <button onClick={() => removeProject(project.id)}>✖</button>
+          </div>
         ))}
         <button
           onClick={addNewProject}

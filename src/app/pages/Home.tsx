@@ -1,5 +1,7 @@
 import {
   activeDropdownAtom,
+  // activeProjectIdAtom,
+  // activeTabIndexAtom,
   showDescriptionsColorPickerAtom,
   showLabelColorPickerAtom,
   showOutlineColorPickerAtom,
@@ -14,6 +16,8 @@ const Home = () => {
   const [, setShowDescriptionsColorPicker] = useAtom(
     showDescriptionsColorPickerAtom
   );
+  // const[activeProjectId]=useAtom(activeProjectIdAtom)
+  // const [,setActiveTabIndex] = useAtom(activeTabIndexAtom);
   const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
   const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
   const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
@@ -43,7 +47,7 @@ const Home = () => {
             Your tool for creating efficient, detailed invoices, tailored for
             electrical contractors in few steps.
           </p>
-          <Link to="selection">
+          <Link to={`/project/selection`}>
             <button className="mt-10 text-center text-[20px] w-[210px] h-[50px] leading-[19.9px] bg-custom-gradient tracking-[0.02em] shadow-custom-inset bg-bgcol rounded-md text-secondary font-[700]">
               Let’s Get Started
             </button>

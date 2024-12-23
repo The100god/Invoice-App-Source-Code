@@ -58,10 +58,12 @@ import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
+import { activeTabIndexAtom } from "../../variables/NavbarVariables";
 
 const InvoiceSelection = () => {
-  const divide = 100 / 9
+  const divide = 100 / 9;
   const navigate = useNavigate();
+  const [activeTabIndex] = useAtom(activeTabIndexAtom);
   const [progress, setProgress] = useState(Math.ceil(divide));
   const [electricalSteps, setElectricalSteps] = useAtom(stepsAtom);
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
@@ -70,7 +72,7 @@ const InvoiceSelection = () => {
   const [errors, setErrors] = useAtom(errorsAtom);
   //clientdetails
   const [clientFormData] = useAtom(clientFormDataAtom);
-  const [, setClientErrors] = useAtom(clientErrorsAtom);
+  const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
 
   //itemselection
   const [selectedItem] = useAtom(selectedItemAtom);
@@ -78,7 +80,7 @@ const InvoiceSelection = () => {
   const [style] = useAtom(styleAtom);
   const [quantity] = useAtom(quantityAtom);
   const [color] = useAtom(colorAtom);
-  const [isCommission,] = useAtom(isCommissionAtom);
+  const [isCommission] = useAtom(isCommissionAtom);
 
   const [commissionType] = useAtom(commissionTypeAtom);
   const [commissionValue] = useAtom(commissionValueAtom);
@@ -93,9 +95,7 @@ const InvoiceSelection = () => {
   const [employeesRate] = useAtom(employeesRateAtom);
   const [uniformScopeWork] = useAtom(uniformScopeWorkAtom);
   const [uniformProjectAmount] = useAtom(uniformProjectAmountAtom);
-  const [varriableContTotHourRate] = useAtom(
-    varriableContTotHourRateAtom
-  );
+  const [varriableContTotHourRate] = useAtom(varriableContTotHourRateAtom);
   const [variableAddEmployees] = useAtom(variableAddEmployeesAtom);
   const [materialCostVal] = useAtom(labourMaterialCostAtom);
   const [hourlyRateScopeWork] = useAtom(hourlyRateScopeWorkAtom);
@@ -109,20 +109,18 @@ const InvoiceSelection = () => {
 
   //clientContractor sign variables
 
-  const [contractorNameValue, ] = useAtom(contractorNameValueAtom);
-  const [contractDateValue, ] = useAtom(contractorDateValueAtom);
-  const [contractorSign, ] = useAtom(contractorSignAtom);
-  const [clientNameValue, ] = useAtom(clientNameValueAtom);
-  const [clientDateValue, ] = useAtom(clientDateValueAtom);
-  const [clientSign, ] = useAtom(clientSignAtom);
-  const [sign,] = useAtom(signAtom);
+  const [contractorNameValue] = useAtom(contractorNameValueAtom);
+  const [contractDateValue] = useAtom(contractorDateValueAtom);
+  const [contractorSign] = useAtom(contractorSignAtom);
+  const [clientNameValue] = useAtom(clientNameValueAtom);
+  const [clientDateValue] = useAtom(clientDateValueAtom);
+  const [clientSign] = useAtom(clientSignAtom);
+  const [sign] = useAtom(signAtom);
   const [, setClientContractorErrors] = useAtom(clientContractorErrorsAtom);
 
-  const handlePreview = ()=>{
+  const handlePreview = () => {
     //
-  }
-
-  
+  };
 
   const handleBack = () => {
     if (electricalSteps == 1) {
@@ -134,11 +132,22 @@ const InvoiceSelection = () => {
 
   const handleNext = () => {
     // You can add your logic here if there's a 'next' page
-    if (electricalSteps == 1 && validate({ formData, setErrors })) {
+    if (
+      electricalSteps == 1 &&
+      validate({ formData, activeTabIndex, errors, setErrors })
+    ) {
       setElectricalSteps(2);
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if (electricalSteps == 2 && clientValidate({ clientFormData, setClientErrors })) {
+    if (
+      electricalSteps == 2 &&
+      clientValidate({
+        clientFormData,
+        activeTabIndex,
+        clientErrors,
+        setClientErrors,
+      })
+    ) {
       setElectricalSteps(3);
       setProgress(electricalSteps * Math.ceil(divide));
     }
@@ -182,35 +191,35 @@ const InvoiceSelection = () => {
       setElectricalSteps(5);
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if (
-      electricalSteps == 5 
-    ) {
+    if (electricalSteps == 5) {
       setElectricalSteps(6);
       // console.log(steps)
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if (
-      electricalSteps == 6 
-    ) {
+    if (electricalSteps == 6) {
       setElectricalSteps(7);
       // console.log(steps)
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if (
-      electricalSteps == 7 
-    ) {
+    if (electricalSteps == 7) {
       setElectricalSteps(8);
       // console.log(steps)
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if ( sign ==="Yes"?
-      electricalSteps == 8 && ClientContractorSignValidation({contractorNameValue,contractDateValue,
-        contractorSign,
-        clientNameValue,
-        clientDateValue,
-        clientSign,
-        sign,
-        setClientContractorErrors}): electricalSteps == 8
+    if (
+      sign === "Yes"
+        ? electricalSteps == 8 &&
+          ClientContractorSignValidation({
+            contractorNameValue,
+            contractDateValue,
+            contractorSign,
+            clientNameValue,
+            clientDateValue,
+            clientSign,
+            sign,
+            setClientContractorErrors,
+          })
+        : electricalSteps == 8
     ) {
       setElectricalSteps(9);
       // console.log(steps)
@@ -229,7 +238,7 @@ const InvoiceSelection = () => {
 
   const handleCloseForm = () => {
     navigate(-1);
-    setElectricalSteps(1)
+    setElectricalSteps(1);
   };
 
   return (
@@ -240,9 +249,9 @@ const InvoiceSelection = () => {
         </span>
         <div className="flex flex-col justify-center w-full items-center h-[fit-content] bg-transparent">
           <div className="flex flex-col justify-center w-full items-center gap-4 h-[fit-content] px-6 py-6 bg-transparent">
-            {invoiceSelect == "Electrical Invoice" &&
-            <ElectricalInvoiceHeading/>
-            }
+            {invoiceSelect == "Electrical Invoice" && (
+              <ElectricalInvoiceHeading />
+            )}
           </div>
           <ProgrssBar progress={progress} />
         </div>
@@ -278,10 +287,7 @@ const InvoiceSelection = () => {
             </div>
           )}
           <div className="mt-8 bg-transparent">
-            {invoiceSelect == "Electrical Invoice" &&
-
-              <ElecricalInvoiceHero/>
-            }
+            {invoiceSelect == "Electrical Invoice" && <ElecricalInvoiceHero />}
           </div>
         </div>
 
@@ -292,7 +298,9 @@ const InvoiceSelection = () => {
           </div>
         ) : (
           <div className="flex justify-between w-full h-[fit-content] bg-[#C5D9DE80] dark:darkBottom bottom-0 px-4 py-6 rounded-b-[15px]">
-            {![5, 6, 7, 8, 9, 10].includes(electricalSteps) && <NavigatePreview handlePreview={handlePreview}/>}
+            {![5, 6, 7, 8, 9, 10].includes(electricalSteps) && (
+              <NavigatePreview handlePreview={handlePreview} />
+            )}
             <NavigateButtons handleBack={handleBack} handleNext={handleNext} />
           </div>
         )}
