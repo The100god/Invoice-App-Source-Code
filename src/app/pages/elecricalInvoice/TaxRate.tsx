@@ -1,11 +1,24 @@
 
-import React, { useState } from "react";
+import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
+import { taxRateAtom } from "../../../variables/electricalInvoiceVariable";
+import { useAtom } from "jotai";
 
 const TaxRate = () => {
 
-    const [taxRate, setTaxRate] = useState("")
-    // const [taxRateError, setTaxRateError] = useState("")
+    const [taxRate, setTaxRate] = useAtom(taxRateAtom);
+    const [activeTabIndex]= useAtom(activeTabIndexAtom)
+
+    const updateTaxData = (key:keyof typeof activeTaxData, value:string)=>{
+      setTaxRate((prev)=>{
+        const updated = [...prev]
+        updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+      return updated;
+
+      })
+    }
     
+    const activeTaxData = taxRate[activeTabIndex]
+
     return (
       <div className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
         <div className="flex flex-col justify-center items-center w-[361px] h-fit mt-10 gap-y-4 bg-transparent">
@@ -16,9 +29,10 @@ const TaxRate = () => {
             <input
               type="number"
               placeholder="Enter the % of tax rate"
-              value={taxRate}
+              value={activeTaxData.tax}
               onChange={(e) => {
-                setTaxRate(e.target.value);
+                updateTaxData("tax", e.target.value)
+                // setTaxRate(e.target.value);
                 // setTaxRateError("");
               }}
               className=" p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full h-[51px]"

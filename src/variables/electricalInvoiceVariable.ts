@@ -79,6 +79,23 @@ export interface ClientFormData {
 
 
   //item selection
+  
+
+  export interface ItemSelectionData {
+    selectedItem: string;
+    brand: string;
+    style: string;
+    quantity: number;
+    color: string;
+    commissionType: string;
+    linkPoductType:string,
+    productLinkAmount:string;
+    commissionValue: string;
+    isCommission: boolean;
+    productDetails:{
+      price:string;
+    } | null;
+  }
   export interface ItemErrors {
     selectedItem: string;
     brand: string;
@@ -88,34 +105,39 @@ export interface ClientFormData {
     commissionType: string;
     commissionValue: string;
   }
-  
-  // Atoms for each field
-  export const selectedItemAtom = atom<string>(""); 
-  export const brandAtom = atom<string>(""); 
-  export const styleAtom = atom<string>(""); 
-  export const quantityAtom = atom<number>(1); 
-  export const colorAtom = atom<string>(""); 
-  export const commissionTypeAtom = atom<string>("");
-  export const commissionValueAtom = atom<string>("");
-  export const linkProductTypeAtom = atom<string>("");
-  export const isCommissionAtom = atom<boolean>(false);
 
-  export const productDetailsAtom = atom<{
-    price: string;
-    // color: string;
-    // type: string;
-  } | null>(null);
-  
-  // Errors atom
-  export const itemErrorsAtom = atom<ItemErrors>({
-    selectedItem: "",
+  export const itemSelectionDataAtom = atom<ItemSelectionData[]>([{selectedItem: "",
     brand: "",
     style: "",
-    quantity: "",
+    quantity: 1,
     color: "",
     commissionType: "",
     commissionValue: "",
-  });
+    linkPoductType:"",
+    productLinkAmount:"0",
+    isCommission: false,
+    productDetails:{
+      price:"",
+    }}]);
+
+    // Errors atom
+    export const itemErrorsAtom = atom<ItemErrors[]>([
+      {
+      selectedItem: "",
+      brand: "",
+      style: "",
+      quantity: "",
+      color: "",
+      commissionType: "",
+      commissionValue: "",
+    }
+  ]);
+  // export const productDetailsAtom = atom<{
+  //   price: string;
+  //   // color: string;
+  //   // type: string;
+  // } | null>(null);
+  
 
   //labour variable data
 
@@ -128,11 +150,11 @@ export interface ClientFormData {
     employeesRate: string;
     uniformScopeWork: string;
     uniformProjectAmount: string;
-    varriableContTotHourRate: string;
+    variableContTotHourRate: string;
     variableAddEmployees: string;
     materialCostVal: string;
     hourlyRateScopeWork:string;
-    varriableContRatePerHour:string;
+    variableContRatePerHour:string;
     projectAmountQuantityVal:string;
   }
   
@@ -143,23 +165,47 @@ export interface ClientFormData {
     hours: number;
     rate: number;
   }
-  export const labourSelectedValAtom = atom<string>("");
-  export const labourTypeAtom = atom<string>("Uniform");
-  export const labourHourAtom = atom<string>("0");
-  export const contContractorRateAtom = atom<string>("");
-  export const employeesNoAtom = atom<string>("0");
-  export const employeesRateAtom = atom<string>("");
-  export const uniformScopeWorkAtom = atom<string>("");
-  export const hourlyRateScopeWorkAtom = atom<string>("");
-  export const labourMaterialCostAtom = atom<string>("Yes");
-  export const uniformProjectAmountAtom = atom<string>("0");
-  export const varriableContRatePerHourAtom = atom<string>("");
-  export const varriableContTotHourRateAtom = atom<string>("");
-  export const projectAmountQuantityValAtom = atom<string>("");
-  export const variableAddEmployeesAtom = atom<Employee[]>([]);
+  interface LabourState {
+    labourSelectedVal: string;
+    labourType: string;
+    labourHour: string;
+    contContractorRate: string;
+    employeesNo: string;
+    employeesRate: string;
+    uniformScopeWork: string;
+    hourlyRateScopeWork: string;
+    materialCostVal: string;
+    uniformProjectAmount: string;
+    variableContRatePerHour: string;
+    variableContTotHourRate: string;
+    projectAmountQuantityVal: string;
+    variableAddEmployees: Employee[];
+  }
   
+  export const labourStateAtom = atom<LabourState[]>([{
+    labourSelectedVal: "",
+    labourType: "Uniform",
+    labourHour: "0",
+    contContractorRate: "",
+    employeesNo: "0",
+    employeesRate: "",
+    uniformScopeWork: "",
+    hourlyRateScopeWork: "",
+    materialCostVal: "Yes",
+    uniformProjectAmount: "0",
+    variableContRatePerHour: "",
+    variableContTotHourRate: "",
+    projectAmountQuantityVal: "",
+    variableAddEmployees: [{
+      name: "",
+      hours: 0,
+      rate: 0},
+    ],
+  },]);
+  
+
   // Errors atom
-  export const labourErrorsAtom = atom<LabourErrors>({
+  export const labourErrorsAtom = atom<LabourErrors[]>([{
     labourType: "",
     labourSelectedVal: "",
     labourHour: "",
@@ -168,21 +214,59 @@ export interface ClientFormData {
     employeesRate: "",
     uniformScopeWork: "",
     uniformProjectAmount: "",
-    varriableContTotHourRate: "",
+    variableContTotHourRate: "",
     variableAddEmployees: "",
     materialCostVal:"",
     hourlyRateScopeWork:"",
-    varriableContRatePerHour:"",
+    variableContRatePerHour:"",
     projectAmountQuantityVal:"",
-  });
+  }]);
 
 
   // Trip charge
   // Atoms for trip charge value and error state
-export const tripChargeValAtom = atom<string>("");
-export const tripChargeErrorAtom = atom<string>("");
+interface tripChargeStates {
+  tripChargeVal:string,
+  isStandardCost:boolean,
+  isCalculateCost:boolean,
+  amountPerMiles:string,
+  traveledMiles:string,
+  totalMilesAmount:string,
+}
+interface tripChargeError {
+  tripChargeVal:string,
+  amountPerMiles:string,
+  traveledMiles:string,
+}
 
-export const productLinkAmountAtom = atom<string>("0");
+export const tripChargeAtom = atom<tripChargeStates[]>([{
+  tripChargeVal:"",
+  isStandardCost:false,
+  isCalculateCost:false,
+  amountPerMiles:"",
+  traveledMiles:"",
+  totalMilesAmount:"00.00",
+}]);
+    
+export const tripChargeErrorAtom = atom<tripChargeError[]>([{
+  tripChargeVal:"",
+  amountPerMiles:"",
+  traveledMiles:"",
+}]);
+
+//term and conditions  
+interface TermsConditionStates{
+  termAndCondition:string,
+}
+export const termConditionAtom = atom<TermsConditionStates[]>([{termAndCondition:""}])
+
+//taxRate Data
+interface TaxRateStates{
+  tax:string,
+}
+export const taxRateAtom = atom<TaxRateStates[]>([{tax:""}])
+
+// export const productLinkAmountAtom = atom<string>("0");
 
 
 

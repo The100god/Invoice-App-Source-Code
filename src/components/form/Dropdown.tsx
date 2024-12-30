@@ -1,4 +1,4 @@
-import { linkProductTypeAtom } from "../../variables/electricalInvoiceVariable";
+import { itemSelectionDataAtom } from "../../variables/electricalInvoiceVariable";
 import { useAtom } from "jotai";
 import React, { useState, useRef, useEffect } from "react";
 
@@ -10,6 +10,7 @@ interface DropdownProps {
   error?: string;
   width: number;
   height: number;
+  activeTabIndex: number;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -20,13 +21,15 @@ const Dropdown: React.FC<DropdownProps> = ({
   error,
   width,
   height,
+  activeTabIndex,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   // const [, setProductLinkAmount] = useAtom(productLinkAmountAtom)
   // const [, setProductLinkAmount] = useAtom(productLinkAmountAtom)
-  const [err, setErr] = useState(false)
-  const [linkProductType,] = useAtom(linkProductTypeAtom)
+  const [err, setErr] = useState(false);
+  const [itemSelectionData] = useAtom(itemSelectionDataAtom);
+  // const [linkProductType,] = useAtom(linkProductTypeAtom)
   // const [,setColor] = useAtom(colorAtom);
 
   useEffect(() => {
@@ -47,18 +50,18 @@ const Dropdown: React.FC<DropdownProps> = ({
   const handleSelect = (value: string) => {
     onChange(value);
     setIsOpen(false);
-    setErr(true)
+    setErr(true);
   };
 
-  
-
-  const selectedLabel = selectedValue || linkProductType ||
-  options.find((option) => option.value === selectedValue)?.label ||
-  (label === "Commission Type*" ? "$ or %" : label === "Preferred Color*" ? "Choose Color" : label);
-  
-  
-  
-
+  const selectedLabel =
+    selectedValue ||
+    itemSelectionData[activeTabIndex].linkPoductType ||
+    options.find((option) => option.value === selectedValue)?.label ||
+    (label === "Commission Type*"
+      ? "$ or %"
+      : label === "Preferred Color*"
+      ? "Choose Color"
+      : label);
 
   return (
     <div
@@ -66,7 +69,9 @@ const Dropdown: React.FC<DropdownProps> = ({
       className="flex relative flex-col items-start dark:bg-black dark:text-white"
       ref={dropdownRef}
     >
-      <label className="text-lg font-medium text-[#000000B2] bg-transparent dark:text-white mb-2">{label}</label>
+      <label className="text-lg font-medium text-[#000000B2] bg-transparent dark:text-white mb-2">
+        {label}
+      </label>
       <button
         type="button"
         onClick={toggleDropdown}
@@ -75,8 +80,12 @@ const Dropdown: React.FC<DropdownProps> = ({
         }`}
         style={{ height: `${height}px` }}
       >
-        <span className="w-full max-h-[23px] overflow-hidden text-ellipsis whitespace-nowrap bg-transparent">{selectedLabel}</span>
-        <span className="text-primary bg-transparent dark:text-white text-[35px] flex-shrink-0 ml-2 mb-[25px]">&#x2304;</span>
+        <span className="w-full max-h-[23px] overflow-hidden text-ellipsis whitespace-nowrap bg-transparent">
+          {selectedLabel}
+        </span>
+        <span className="text-primary bg-transparent dark:text-white text-[35px] flex-shrink-0 ml-2 mb-[25px]">
+          &#x2304;
+        </span>
       </button>
       {isOpen && (
         <div
@@ -96,7 +105,11 @@ const Dropdown: React.FC<DropdownProps> = ({
           ))}
         </div>
       )}
-      {(error && !err )&& <p className="text-red-500 w-full text-wrap mt-1 bg-transparent">{error}</p>}
+      {error && !err && (
+        <p className="text-red-500 w-full text-wrap mt-1 bg-transparent">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

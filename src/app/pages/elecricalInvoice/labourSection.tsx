@@ -2,23 +2,11 @@ import FormField from "../../../components/form/FormField";
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
 import {
-  contContractorRateAtom,
-  employeesNoAtom,
-  employeesRateAtom,
-  hourlyRateScopeWorkAtom,
   labourErrorsAtom,
-  labourHourAtom,
-  labourMaterialCostAtom,
-  labourSelectedValAtom,
-  labourTypeAtom,
-  projectAmountQuantityValAtom,
-  uniformProjectAmountAtom,
-  uniformScopeWorkAtom,
-  variableAddEmployeesAtom,
-  varriableContRatePerHourAtom,
-  varriableContTotHourRateAtom,
+  labourStateAtom,
 } from "../../../variables/electricalInvoiceVariable";
 import RadioGroup from "../../../components/form/RadioGroup";
+import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 
 interface Employee {
   name: string;
@@ -27,47 +15,20 @@ interface Employee {
 }
 
 const labourSection = () => {
-  const [labourSelectedVal, setLabourSelectedVal] = useAtom(
-    labourSelectedValAtom
-  );
-  const [labourType, setLabourType] = useAtom(labourTypeAtom);
-  const [labourHour, setLabourHour] = useAtom(labourHourAtom);
-  const [contContractorRate, setContContractorRate] = useAtom(
-    contContractorRateAtom
-  );
-  const [employeesNo, setEmployeesNo] = useAtom(employeesNoAtom);
-  const [employeesRate, setEmployeesRate] = useAtom(employeesRateAtom);
-  const [uniformScopeWork, setUniformScopeWork] = useAtom(uniformScopeWorkAtom);
-  const [hourlyRateScopeWork, setHourlyRateScopeWork] = useAtom(
-    hourlyRateScopeWorkAtom
-  );
-  const [uniformProjectAmount, setUniformProjectAmount] = useAtom(
-    uniformProjectAmountAtom
-  );
-  const [varriableContTotHourRate, setVarriableContTotHourRate] = useAtom(
-    varriableContTotHourRateAtom
-  );
-  const [varriableContRatePerHour, setVarriableContRatePerHour] = useAtom(
-    varriableContRatePerHourAtom
-  );
-  const [variableAddEmployees, setVariableAddEmployees] = useAtom(
-    variableAddEmployeesAtom
-  );
+  const [labourStateVariable, setLabourStateVariable] =
+    useAtom(labourStateAtom);
   const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
-  const [materialCostVal, setMaterialCostVal] = useAtom(labourMaterialCostAtom);
-  const [projectAmountQuantityVal, setProjectAmountQuantityVal] = useAtom(
-    projectAmountQuantityValAtom
-  );
+  const [activeTabIndex] = useAtom(activeTabIndexAtom);
 
+  const activeLabourData = labourStateVariable[activeTabIndex];
+  const activeLabourError = labourErrors[activeTabIndex];
   const addEmployee = () => {
-    setVariableAddEmployees([
-      ...variableAddEmployees,
+    const updatedEmployees = [
+      ...activeLabourData.variableAddEmployees,
       { name: "", hours: 0, rate: 0 },
-    ]);
-    setLabourErrors((prev) => ({
-      ...prev,
-      variableAddEmployees: "",
-    }));
+    ];
+    updateLabourData("variableAddEmployees", updatedEmployees);
+    updateLabourErrors("variableAddEmployees", "");
   };
 
   const updateEmployee = <K extends keyof Employee>(
@@ -75,69 +36,126 @@ const labourSection = () => {
     field: K,
     value: Employee[K]
   ) => {
-    const updatedEmployees = [...variableAddEmployees];
-    updatedEmployees[index][field] = value;
-    setVariableAddEmployees(updatedEmployees);
+    setLabourStateVariable((prev) => {
+      const updated = [...prev];
+      const currentTab = updated[activeTabIndex];
+
+      if (currentTab.variableAddEmployees) {
+        const updatedEmployees = [...currentTab.variableAddEmployees];
+
+        // Ensure index exists before trying to update
+        if (updatedEmployees[index]) {
+          updatedEmployees[index] = {
+            ...updatedEmployees[index],
+            [field]: value,
+          };
+
+          // Update the state
+          updated[activeTabIndex] = {
+            ...currentTab,
+            variableAddEmployees: updatedEmployees,
+          };
+        }
+        updateLabourErrors("variableAddEmployees", updatedEmployees);
+      }
+      return updated;
+    });
+    // const updatedEmployees = [...activeLabourData.variableAddEmployees];
+    // updatedEmployees[index][field] = value;
+    // console.log("updatedEmployees", updatedEmployees)
+  };
+
+  const updateLabourErrors = (
+    key: keyof typeof activeLabourError,
+    value: any
+  ) => {
+    setLabourErrors((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+      return updated;
+    });
   };
 
   useEffect(
     () =>
-      setLabourErrors({
-        labourType: "",
-        labourSelectedVal: "",
-        labourHour: "",
-        contContractorRate: "",
-        employeesNo: "",
-        employeesRate: "",
-        uniformScopeWork: "",
-        uniformProjectAmount: "",
-        varriableContTotHourRate: "",
-        variableAddEmployees: "",
-        varriableContRatePerHour: "",
-        materialCostVal: "",
-        hourlyRateScopeWork: "",
-        projectAmountQuantityVal: "",
+      setLabourErrors((prev) => {
+        const updated = [...prev];
+        updated[activeTabIndex] = {
+          labourType: "",
+          labourSelectedVal: "",
+          labourHour: "",
+          contContractorRate: "",
+          employeesNo: "",
+          employeesRate: "",
+          uniformScopeWork: "",
+          uniformProjectAmount: "",
+          variableContTotHourRate: "",
+          variableAddEmployees: "",
+          variableContRatePerHour: "",
+          materialCostVal: "",
+          hourlyRateScopeWork: "",
+          projectAmountQuantityVal: "",
+        };
+        return updated;
       }),
-    [materialCostVal]
+    [activeLabourData.materialCostVal]
   );
+  useEffect(() => {
+    updateLabourErrors("variableAddEmployees", "");
+  }, [activeLabourData.variableAddEmployees]);
 
+  const updateLabourData = (key: keyof typeof activeLabourData, value: any) => {
+    setLabourStateVariable((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+      return updated;
+    });
+  };
+  // activeLabourData.variableAddEmployees
+  console.log("active", activeLabourData)
+  console.log("data", activeLabourData.variableAddEmployees);
+  console.log("Rendered JSX:", activeLabourData.variableAddEmployees.map((employee) => <div>{employee.name}</div>));
   return (
     <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
       <div className="flex flex-col w-[390px] gap-y-6 justify-center items-center bg-transparent">
         {/* labour selection page */}
-        {!labourSelectedVal && (
+        {!activeLabourData.labourSelectedVal && (
           <div className="flex flex-col gap-4 w-fit h-fit justify-center items-center bg-transparent mt-12">
             <button
               className={`flex justify-center items-center text-[32px] font-[500] rounded-[20px] dark:text-white text-center w-[306px] h-[81px] ${
-                labourSelectedVal === "Hourly Rate"
+                activeLabourData.labourSelectedVal === "Hourly Rate"
                   ? "bg-[#00C5FF] text-white"
-                  : labourSelectedVal === ""
+                  : activeLabourData.labourSelectedVal === ""
                   ? "bg-[#00C5FF] text-white"
                   : "bg-[#D9D9D9] text-[#00000066] dark:text-black"
               }`}
-              onClick={() => setLabourSelectedVal("Hourly Rate")}
+              onClick={() =>
+                updateLabourData("labourSelectedVal", "Hourly Rate")
+              }
             >
               Hourly Rate
             </button>
             <button
               className={`flex justify-center items-center text-center text-[32px] font-[500] rounded-[20px] w-[306px] h-[81px] ${
-                labourSelectedVal === "Project Amount"
+                activeLabourData.labourSelectedVal === "Project Amount"
                   ? "bg-[#00C5FF] text-white"
                   : "bg-[#D9D9D9] text-[#00000066] dark:text-black"
               }`}
-              onClick={() => setLabourSelectedVal("Project Amount")}
+              onClick={() =>
+                updateLabourData("labourSelectedVal", "Project Amount")
+              }
             >
               Project Amount
             </button>
-            {labourErrors.labourSelectedVal && (
+            {activeLabourError.labourSelectedVal && (
               <p className="text-red-500 bg-transparent">
-                {labourErrors.labourSelectedVal}
+                {activeLabourError.labourSelectedVal}
               </p>
             )}
           </div>
         )}
 
-        {labourSelectedVal === "Hourly Rate" && (
+        {activeLabourData.labourSelectedVal === "Hourly Rate" && (
           <div className="flex flex-col gap-y-6 bg-transparent">
             <div className="flex flex-row w-full h-[41px] justify-between items-center bg-transparent">
               <div className="flex flex-row h-full justify-start items-center bg-transparent">
@@ -146,25 +164,27 @@ const labourSection = () => {
                     type="radio"
                     name="Uniform"
                     value="Uniform"
-                    checked={labourType === "Uniform"}
-                    onChange={(e) => setLabourType(e.target.value)}
+                    checked={activeLabourData.labourType === "Uniform"}
+                    onChange={(e) =>
+                      updateLabourData("labourType", e.target.value)
+                    }
                     className="mr-2 text-[#00C5FF66] checked:bg-[#00C5FF66]"
                     hidden
                   />
                   <span
                     className={`w-4 h-4 mr-2 flex items-center justify-center bg-transparent border-2 rounded-full ${
-                      labourType === "Uniform"
+                      activeLabourData.labourType === "Uniform"
                         ? "border-[#00C5FF]"
                         : "border-gray-400 dark:border-white"
                     }`}
                   >
-                    {labourType === "Uniform" && (
+                    {activeLabourData.labourType === "Uniform" && (
                       <span className="w-2 h-2 bg-[#00C5FF] rounded-full"></span>
                     )}
                   </span>
                   <span
                     className={`flex w-[104px] h-[40px] justify-center items-center rounded-[10px] ${
-                      labourType === "Uniform"
+                      activeLabourData.labourType === "Uniform"
                         ? "bg-[#00C5FF] text-white dark:text-white "
                         : "bg-[#D9D9D9] text-[#00000066] dark:bg-black dark:text-white"
                     }`}
@@ -179,25 +199,27 @@ const labourSection = () => {
                     type="radio"
                     name="Variable"
                     value="Variable"
-                    checked={labourType === "Variable"}
-                    onChange={(e) => setLabourType(e.target.value)}
+                    checked={activeLabourData.labourType === "Variable"}
+                    onChange={(e) =>
+                      updateLabourData("labourType", e.target.value)
+                    }
                     className="mr-2 text-[#00C5FF66] checked:bg-[#00C5FF66]"
                     hidden
                   />
                   <span
                     className={`w-4 h-4 mr-2 flex items-center justify-center border-2 bg-transparent rounded-full ${
-                      labourType === "Variable"
+                      activeLabourData.labourType === "Variable"
                         ? "border-[#00C5FF]"
                         : "border-gray-400 dark:border-white"
                     }`}
                   >
-                    {labourType === "Variable" && (
+                    {activeLabourData.labourType === "Variable" && (
                       <span className="w-2 h-2 bg-[#00C5FF] rounded-full"></span>
                     )}
                   </span>
                   <span
                     className={`flex w-[104px] h-[40px] justify-center items-center rounded-[10px] ${
-                      labourType === "Variable"
+                      activeLabourData.labourType === "Variable"
                         ? "bg-[#00C5FF] text-white dark:text-white"
                         : "bg-[#D9D9D9] text-[#00000066] dark:bg-black dark:text-white"
                     }`}
@@ -214,39 +236,40 @@ const labourSection = () => {
               </label>
               <textarea
                 placeholder="Describe the work being done, including key details..."
-                value={hourlyRateScopeWork}
+                value={activeLabourData.hourlyRateScopeWork}
                 onChange={(e) => {
-                  setHourlyRateScopeWork(e.target.value);
-                  setLabourErrors((prev) => ({
-                    ...prev,
-                    hourlyRateScopeWork: "",
-                  }));
+                  updateLabourData("hourlyRateScopeWork", e.target.value);
+                  setLabourErrors((prev) => {
+                    const updatedErrors = [...prev];
+                    updatedErrors[activeTabIndex] = {
+                      ...updatedErrors[activeTabIndex],
+                      hourlyRateScopeWork: "",
+                    };
+                    return updatedErrors;
+                  });
                 }}
                 className=" p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full min-h-[55px]"
               />
-              {labourErrors.hourlyRateScopeWork && (
+              {activeLabourError.hourlyRateScopeWork && (
                 <p className="text-red-500 mt-1 bg-transparent">
-                  {labourErrors.hourlyRateScopeWork}
+                  {activeLabourError.hourlyRateScopeWork}
                 </p>
               )}
             </div>
 
-            {labourType == "Uniform" && (
+            {activeLabourData.labourType == "Uniform" && (
               <div className="flex flex-col w-full gap-y-4 justify-center items-center bg-transparent">
                 <div className="flex flex-row w-full justify-between items-start gap-3 bg-transparent">
                   <FormField
                     title="Total Hours*"
                     name="text"
                     type="number"
-                    value={labourHour}
+                    value={activeLabourData.labourHour}
                     handleChange={(e) => {
-                      setLabourHour(e.target.value);
-                      setLabourErrors((prev) => ({
-                        ...prev,
-                        labourHour: "",
-                      }));
+                      updateLabourData("labourHour", e.target.value);
+                      updateLabourErrors("labourHour", "");
                     }}
-                    error={labourErrors.labourHour}
+                    error={activeLabourError.labourHour}
                     width={176}
                     height={55}
                   />
@@ -257,13 +280,13 @@ const labourSection = () => {
                     <div className="relative bg-transparent">
                       <input
                         type="number"
-                        value={contContractorRate}
+                        value={activeLabourData.contContractorRate}
                         onChange={(e) => {
-                          setContContractorRate(e.target.value);
-                          setLabourErrors((prev) => ({
-                            ...prev,
-                            contContractorRate: "",
-                          }));
+                          updateLabourData(
+                            "contContractorRate",
+                            e.target.value
+                          );
+                          updateLabourErrors("contContractorRate", "");
                         }}
                         className="p-2 outline-none w-full h-[55px] bg-transparent text-primary dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                         placeholder="15"
@@ -272,9 +295,9 @@ const labourSection = () => {
                         $
                       </span>
                     </div>
-                    {labourErrors.contContractorRate && (
+                    {activeLabourError.contContractorRate && (
                       <p className="text-red-500 bg-transparent">
-                        {labourErrors.contContractorRate}
+                        {activeLabourError.contContractorRate}
                       </p>
                     )}
                   </div>
@@ -285,15 +308,12 @@ const labourSection = () => {
                       title="No. of Employees*"
                       name="text"
                       type="number"
-                      value={employeesNo}
+                      value={activeLabourData.employeesNo}
                       handleChange={(e) => {
-                        setEmployeesNo(e.target.value);
-                        setLabourErrors((prev) => ({
-                          ...prev,
-                          employeesNo: "",
-                        }));
+                        updateLabourData("employeesNo", e.target.value);
+                        updateLabourErrors("employeesNo", "");
                       }}
-                      error={labourErrors.employeesNo}
+                      error={activeLabourError.employeesNo}
                       width={176}
                       height={55}
                     />
@@ -305,13 +325,10 @@ const labourSection = () => {
                       <div className="relative bg-transparent">
                         <input
                           type="number"
-                          value={employeesRate}
+                          value={activeLabourData.employeesRate}
                           onChange={(e) => {
-                            setEmployeesRate(e.target.value);
-                            setLabourErrors((prev) => ({
-                              ...prev,
-                              employeesRate: "",
-                            }));
+                            updateLabourData("employeesRate", e.target.value);
+                            updateLabourErrors("employeesRate", "");
                           }}
                           className="p-2 outline-none w-full h-[55px] text-primary bg-transparent dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                           placeholder="15"
@@ -320,9 +337,9 @@ const labourSection = () => {
                           $
                         </span>
                       </div>
-                      {labourErrors.employeesRate && (
+                      {activeLabourError.employeesRate && (
                         <p className="text-red-500 bg-transparent">
-                          {labourErrors.employeesRate}
+                          {activeLabourError.employeesRate}
                         </p>
                       )}
                     </div>
@@ -331,7 +348,7 @@ const labourSection = () => {
               </div>
             )}
 
-            {labourType == "Variable" && (
+            {activeLabourData.labourType == "Variable" && (
               <div className="flex flex-col gap-y-4 bg-transparent">
                 <div className="flex flex-col w-[337px] bg-transparent">
                   <label className="text-primary  dark:text-white mb-1 bg-transparent">
@@ -340,21 +357,21 @@ const labourSection = () => {
                   <div className=" bg-transparent">
                     <input
                       type="number"
-                      value={varriableContTotHourRate}
+                      value={activeLabourData.variableContTotHourRate}
                       onChange={(e) => {
-                        setVarriableContTotHourRate(e.target.value);
-                        setLabourErrors((prev) => ({
-                          ...prev,
-                          varriableContTotHourRate: "",
-                        }));
+                        updateLabourData(
+                          "variableContTotHourRate",
+                          e.target.value
+                        );
+                        updateLabourErrors("variableContTotHourRate", "");
                       }}
                       className="p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                       placeholder="No."
                     />
                   </div>
-                  {labourErrors.varriableContTotHourRate && (
+                  {activeLabourError.variableContTotHourRate && (
                     <p className="text-red-500 bg-transparent">
-                      {labourErrors.varriableContTotHourRate}
+                      {activeLabourError.variableContTotHourRate}
                     </p>
                   )}
                 </div>
@@ -366,13 +383,13 @@ const labourSection = () => {
                   <div className="relative bg-transparent">
                     <input
                       type="number"
-                      value={varriableContRatePerHour}
+                      value={activeLabourData.variableContRatePerHour}
                       onChange={(e) => {
-                        setVarriableContRatePerHour(e.target.value);
-                        setLabourErrors((prev) => ({
-                          ...prev,
-                          varriableContRatePerHour: "",
-                        }));
+                        updateLabourData(
+                          "variableContRatePerHour",
+                          e.target.value
+                        );
+                        updateLabourErrors("variableContRatePerHour", "");
                       }}
                       className="p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none"
                       placeholder="15"
@@ -381,78 +398,80 @@ const labourSection = () => {
                       $
                     </span>
                   </div>
-                  {labourErrors.varriableContRatePerHour && (
+                  {activeLabourError.variableContRatePerHour && (
                     <p className="text-red-500 bg-transparent">
-                      {labourErrors.varriableContRatePerHour}
+                      {activeLabourError.variableContRatePerHour}
                     </p>
                   )}
                 </div>
 
                 {/* add item by click */}
-                {variableAddEmployees.map((employee, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-row justify-between items-center mb-2 w-full pt-2 bg-transparent"
-                  >
-                    <div className="flex flex-row justify-between items-center w-full bg-transparent">
-                      <div className="flex flex-col w-[134px] bg-transparent">
-                        <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
-                          Employee Name*
-                        </label>
-                        <input
-                          type="text"
-                          className="p-2 text-[#00000080] dark:text-white text-[12px] font-[400] outline-none border-2 bg-transparent border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
-                          placeholder="Electrician (John Doe)"
-                          value={employee.name}
-                          onChange={(e) => {
-                            updateEmployee(index, "name", e.target.value);
-                          }}
-                        />
-                      </div>
-                      <div className="flex flex-col w-[80px] bg-transparent">
-                        <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
-                          Total Hours*
-                        </label>
-                        <input
-                          type="number"
-                          className="p-2 text-[#00000080] dark:text-white outline-none border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
-                          placeholder="5"
-                          value={employee.hours}
-                          onChange={(e) =>
-                            updateEmployee(
-                              index,
-                              "hours",
-                              parseInt(e.target.value, 10)
-                            )
-                          }
-                        />
-                      </div>
-                      <div className="flex flex-col w-[80px] bg-transparent">
-                        <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
-                          Hourly Rate*
-                        </label>
-                        <div className=" relative bg-transparent">
+                {activeLabourData.variableAddEmployees?.map(
+                  (employee, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-row justify-between items-center mb-2 w-full pt-2 bg-transparent"
+                    >
+                      <div className="flex flex-row justify-between items-center w-full bg-transparent">
+                        <div className="flex flex-col w-[134px] bg-transparent">
+                          <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
+                            Employee Name*
+                          </label>
+                          <input
+                            type="text"
+                            className="p-2 text-[#00000080] dark:text-white text-[12px] font-[400] outline-none border-2 bg-transparent border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                            placeholder="Electrician (John Doe)"
+                            value={employee.name || ""}
+                            onChange={(e) =>
+                              updateEmployee(index, "name", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="flex flex-col w-[80px] bg-transparent">
+                          <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
+                            Total Hours*
+                          </label>
                           <input
                             type="number"
-                            className="p-2 outline-none text-[#00000080] dark:text-white border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
-                            placeholder="5$"
-                            value={employee.rate}
+                            className="p-2 text-[#00000080] dark:text-white outline-none border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                            placeholder="5"
+                            value={employee.hours || 0}
                             onChange={(e) =>
                               updateEmployee(
                                 index,
-                                "rate",
-                                parseInt(e.target.value, 10)
+                                "hours",
+                                parseInt(e.target.value, 10) || 0
                               )
                             }
                           />
-                          <span className="absolute text-[#00000080] bg-transparent dark:text-white left-10 top-1/2 transform -translate-y-1/2 ">
-                            $
-                          </span>
+                        </div>
+                        <div className="flex flex-col w-[80px] bg-transparent">
+                          <label className="text-[#00000080] dark:text-white text-[12px] leading-[11.86px] font-[500] mb-2 bg-transparent">
+                            Hourly Rate*
+                          </label>
+                          <div className=" relative bg-transparent">
+                            <input
+                              type="number"
+                              className="p-2 outline-none text-[#00000080] dark:text-white border-2 border-[#A9A5A5] bg-transparent dark:border-white rounded-[10px] focus:border-[#00C5FF] w-full h-[55px]"
+                              placeholder="5$"
+                              value={employee.rate || 0}
+                              onChange={(e) =>
+                                updateEmployee(
+                                  index,
+                                  "rate",
+                                  parseInt(e.target.value, 10) || 0
+                                )
+                              }
+                            />
+                            <span className="absolute text-[#00000080] bg-transparent dark:text-white left-10 top-1/2 transform -translate-y-1/2 ">
+                              $
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                )}
 
                 <div className="flex flex-col w-full bg-transparent">
                   <div
@@ -461,9 +480,9 @@ const labourSection = () => {
                   >
                     Add Employee +
                   </div>
-                  {labourErrors.variableAddEmployees && (
+                  {activeLabourError.variableAddEmployees && (
                     <p className="text-red-500 mt-1 bg-transparent">
-                      {labourErrors.variableAddEmployees}
+                      {activeLabourError.variableAddEmployees}
                     </p>
                   )}
                 </div>
@@ -472,7 +491,7 @@ const labourSection = () => {
           </div>
         )}
 
-        {labourSelectedVal === "Project Amount" && (
+        {activeLabourData.labourSelectedVal === "Project Amount" && (
           <div className="flex flex-col gap-y-6 bg-transparent">
             <div className="flex flex-col gap-y-6 bg-transparent">
               <div className="flex w-full justify-center mt-2 bg-transparent">
@@ -483,9 +502,9 @@ const labourSection = () => {
                     { value: "Yes", label: "Yes" },
                     { value: "No", label: "No" },
                   ]}
-                  selectedValue={materialCostVal}
-                  onChange={setMaterialCostVal}
-                  error={labourErrors.materialCostVal}
+                  selectedValue={activeLabourData.materialCostVal}
+                  onChange={(e) => updateLabourData("materialCostVal", e)}
+                  error={activeLabourError.materialCostVal}
                   width={158}
                 />
               </div>
@@ -496,22 +515,23 @@ const labourSection = () => {
                 </label>
                 <textarea
                   placeholder="Describe the work being done, including key details..."
-                  value={uniformScopeWork}
+                  value={activeLabourData.uniformScopeWork}
                   onChange={(e) => {
-                    setUniformScopeWork(e.target.value);
-                    setLabourErrors((prev) => ({
-                      ...prev,
-                      uniformScopeWork: "",
-                    }));
+                    updateLabourData("uniformScopeWork", e.target.value);
+                    updateLabourErrors("uniformScopeWork", "");
                   }}
-                  disabled={materialCostVal === "No" ? true : false}
+                  disabled={
+                    activeLabourData.materialCostVal === "No" ? true : false
+                  }
                   className={` p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full min-h-[55px] ${
-                    materialCostVal === "No" ? "opacity-50" : ""
+                    activeLabourData.materialCostVal === "No"
+                      ? "opacity-50"
+                      : ""
                   }`}
                 />
-                {labourErrors.uniformScopeWork && (
+                {activeLabourError.uniformScopeWork && (
                   <p className="text-red-500 mt-1 bg-transparent">
-                    {labourErrors.uniformScopeWork}
+                    {activeLabourError.uniformScopeWork}
                   </p>
                 )}
               </div>
@@ -523,17 +543,18 @@ const labourSection = () => {
                 <div className="relative bg-transparent">
                   <input
                     type="number"
-                    value={uniformProjectAmount}
+                    value={activeLabourData.uniformProjectAmount}
                     onChange={(e) => {
-                      setUniformProjectAmount(e.target.value);
-                      setLabourErrors((prev) => ({
-                        ...prev,
-                        uniformProjectAmount: "",
-                      }));
+                      updateLabourData("uniformProjectAmount", e.target.value);
+                      updateLabourErrors("uniformProjectAmount", "");
                     }}
-                    disabled={materialCostVal === "No" ? true : false}
+                    disabled={
+                      activeLabourData.materialCostVal === "No" ? true : false
+                    }
                     className={`p-2 outline-none w-full h-[55px] text-primary dark:text-white bg-transparent border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${
-                      materialCostVal === "No" ? "opacity-50" : ""
+                      activeLabourData.materialCostVal === "No"
+                        ? "opacity-50"
+                        : ""
                     }`}
                     placeholder="15"
                   />
@@ -541,9 +562,9 @@ const labourSection = () => {
                     $
                   </span>
                 </div>
-                {labourErrors.uniformProjectAmount && (
+                {activeLabourError.uniformProjectAmount && (
                   <p className="text-red-500 bg-transparent">
-                    {labourErrors.uniformProjectAmount}
+                    {activeLabourError.uniformProjectAmount}
                   </p>
                 )}
               </div>
@@ -555,24 +576,28 @@ const labourSection = () => {
                 <div className="relative bg-transparent">
                   <input
                     type="number"
-                    value={projectAmountQuantityVal}
+                    value={activeLabourData.projectAmountQuantityVal}
                     onChange={(e) => {
-                      setProjectAmountQuantityVal(e.target.value);
-                      setLabourErrors((prev) => ({
-                        ...prev,
-                        projectAmountQuantityVal: "",
-                      }));
+                      updateLabourData(
+                        "projectAmountQuantityVal",
+                        e.target.value
+                      );
+                      updateLabourErrors("projectAmountQuantityVal", "");
                     }}
-                    disabled={materialCostVal === "No" ? true : false}
+                    disabled={
+                      activeLabourData.materialCostVal === "No" ? true : false
+                    }
                     className={`p-2 outline-none w-full h-[55px] text-primary bg-transparent dark:text-white border-2 border-[#A9A5A5] dark:border-white rounded-[10px] focus:border-[#00C5FF] appearance-none ${
-                      materialCostVal === "No" ? "opacity-50" : ""
+                      activeLabourData.materialCostVal === "No"
+                        ? "opacity-50"
+                        : ""
                     }`}
                     placeholder="1"
                   />
                 </div>
-                {labourErrors.projectAmountQuantityVal && (
+                {activeLabourError.projectAmountQuantityVal && (
                   <p className="text-red-500 bg-transparent">
-                    {labourErrors.projectAmountQuantityVal}
+                    {activeLabourError.projectAmountQuantityVal}
                   </p>
                 )}
               </div>

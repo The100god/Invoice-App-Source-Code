@@ -2,53 +2,39 @@
 import Dropdown from "../../../components/form/Dropdown"; // New Dropdown Component
 import { useAtom } from "jotai";
 import {
-  brandAtom,
-  colorAtom,
-  commissionTypeAtom,
-  commissionValueAtom,
-  isCommissionAtom,
   itemErrorsAtom,
-  productLinkAmountAtom,
-  quantityAtom,
-  selectedItemAtom,
-  styleAtom,
+  itemSelectionDataAtom,
 } from "../../../variables/electricalInvoiceVariable";
 import ProductDetailsFetcher from "../../../components/form/FatchDetailsByLink";
+import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 
 const ItemSelectionScreen = () => {
-  const [selectedItem, setSelectedItem] = useAtom(selectedItemAtom);
-  const [brand, setBrand] = useAtom(brandAtom);
-  const [style, setStyle] = useAtom(styleAtom);
-  const [quantity, setQuantity] = useAtom(quantityAtom);
-  const [color, setColor] = useAtom(colorAtom);
-  const [commissionType, setCommissionType] = useAtom(commissionTypeAtom);
-  const [commissionValue, setCommissionValue] = useAtom(commissionValueAtom);
+  const [itemSelectionData, setItemSelectionData] = useAtom(itemSelectionDataAtom)
+  const [activeTabIndex,] = useAtom(activeTabIndexAtom)
   const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
-  const [productLinkAmount] = useAtom(productLinkAmountAtom);
-  const [isCommission, setIsCommission] = useAtom(isCommissionAtom);
   // console.log("isCommission:", isCommission)
   // Function to compute the total amount
   let grandTot: number;
 
 const computeTotal = (): string => {
-  const unitPrice = productLinkAmount === "0" ? 10 : parseInt(productLinkAmount, 10); // Example unit price per item
-  const total = quantity * unitPrice;
+  const unitPrice = itemSelectionData[activeTabIndex].productLinkAmount === "0" ? 10 : parseInt(itemSelectionData[activeTabIndex].productLinkAmount, 10); // Example unit price per item
+  const total = itemSelectionData[activeTabIndex].quantity * unitPrice;
   grandTot = total; // Store total as a number
   return total.toFixed(2); // Return total as a string with 2 decimal places
 };
 
 const computeGrandTotal = (): number => {
-  if (!isCommission) {
+  if (!itemSelectionData[activeTabIndex].isCommission) {
     return 0; // If commission is not applicable, return 0
   }
 
   // Ensure grandTot and commissionValue are numbers
   const grandTotal = Number(grandTot) || 0;
-  const commission = Number(commissionValue) || 0;
+  const commission = Number(itemSelectionData[activeTabIndex].commissionValue) || 0;
 
   let grandPrice: number;
 
-  if (commissionType === "$") {
+  if (itemSelectionData[activeTabIndex].commissionType === "$") {
     // Flat commission
     grandPrice = grandTotal + commission;
   } else {
@@ -58,6 +44,37 @@ const computeGrandTotal = (): number => {
 
   return parseFloat(grandPrice.toFixed(2)); // Return grand total rounded to 2 decimal places
 };
+
+
+const activeItemData = itemSelectionData[activeTabIndex];
+  const activeErrors = itemErrors[activeTabIndex];
+
+const updateItemData = (key: keyof typeof activeItemData, value: any) => {
+  setItemSelectionData((prev) => {
+    const updated = [...prev];
+    updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+    return updated;
+  });
+};
+
+const handleQuantityChange = (value: string) => {
+  const quantity = parseInt(value) || 1;
+  updateItemData("quantity", quantity);
+  setItemErrors((prev) => ({
+    ...prev,
+    quantity: "",
+  }));
+};
+const handleCommissionvalueChange = (value: string) => {
+    updateItemData("commissionValue", value)
+    setItemErrors((prev) => ({
+      ...prev,
+      commissionValue: "",
+    }));
+  }
+
+  console.log(itemSelectionData)
+  // console.log( "isCommission",activeItemData.isCommission)
 
   return (
     <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
@@ -88,15 +105,16 @@ const computeGrandTotal = (): number => {
               { value: "40amp Breaker", label: "40amp Breaker" },
               { value: "50amp Breaker", label: "50amp Breaker" },
             ]}
-            selectedValue={selectedItem}
-            onChange={setSelectedItem}
-            error={itemErrors.selectedItem}
+            selectedValue={activeItemData.selectedItem}
+            onChange={(value) => updateItemData("selectedItem",value)}
+            error={activeErrors.selectedItem}
+            activeTabIndex={activeTabIndex}
             width={577}
             height={55}
           />
 
           <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-            {selectedItem === "outlet" && (
+            {activeItemData.selectedItem === "outlet" && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection using RadioGroup */}
                 <Dropdown
@@ -107,9 +125,10 @@ const computeGrandTotal = (): number => {
                     { value: "LeGrand", label: "LeGrand" },
                     { value: "Lutron", label: "Lutron" },
                   ]}
-                  selectedValue={brand}
-                  onChange={setBrand}
-                  error={itemErrors.brand}
+                  selectedValue={activeItemData.brand}
+                  onChange={(value) => updateItemData("brand",value)}
+                  error={activeErrors.brand}
+                  activeTabIndex={activeTabIndex}
                   width={259}
                   height={55}
                 />
@@ -122,9 +141,10 @@ const computeGrandTotal = (): number => {
                     { value: "Decora", label: "Decora" },
                     { value: "Duplex", label: "Duplex" },
                   ]}
-                  selectedValue={style}
-                  onChange={setStyle}
-                  error={itemErrors.style}
+                  selectedValue={activeItemData.style}
+                  onChange={(value) => updateItemData("style",value)}
+                  error={activeErrors.style}
+                  activeTabIndex={activeTabIndex}
                   width={158}
                   height={55}
                 />
@@ -137,7 +157,7 @@ const computeGrandTotal = (): number => {
               "30amp Breaker",
               "40amp Breaker",
               "50amp Breaker",
-            ].includes(selectedItem) && (
+            ].includes(activeItemData.selectedItem) && (
               <div className=" flex flex-col justify-between items-start gap-4 w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection for switches using RadioGroup */}
                 <Dropdown
@@ -149,9 +169,10 @@ const computeGrandTotal = (): number => {
                     { value: "Murray", label: "Murray" },
                     { value: "Square", label: "Square" },
                   ]}
-                  selectedValue={brand}
-                  onChange={setBrand}
-                  error={itemErrors.brand}
+                  selectedValue={activeItemData.brand}
+                  onChange={(value) => updateItemData("brand",value)}
+                  error={activeErrors.brand}
+                  activeTabIndex={activeTabIndex}
                   width={336}
                   height={55}
                 />
@@ -163,9 +184,10 @@ const computeGrandTotal = (): number => {
                       { value: "2-Pole", label: "2-Pole" },
                       { value: "3-Pole", label: "3-Pole" },
                     ]}
-                    selectedValue={style}
-                    onChange={setStyle}
-                    error={itemErrors.style}
+                    selectedValue={activeItemData.style}
+                    onChange={(value) => updateItemData("style",value)}
+                    error={activeErrors.style}
+                    activeTabIndex={activeTabIndex}
                     width={255}
                     height={55}
                   />
@@ -176,9 +198,10 @@ const computeGrandTotal = (): number => {
                       { value: "GFCI", label: "GFCI" },
                       { value: "AFCI", label: "AFCI" },
                     ]}
-                    selectedValue={style}
-                    onChange={setStyle}
-                    error={itemErrors.style}
+                    selectedValue={activeItemData.style}
+                    onChange={(value) => updateItemData("style",value)}
+                    error={activeErrors.style}
+                    activeTabIndex={activeTabIndex}
                     width={255}
                     height={55}
                   />
@@ -187,7 +210,7 @@ const computeGrandTotal = (): number => {
             )}
 
             {["switches", "three-way-switches", "four-way-switches"].includes(
-              selectedItem
+              activeItemData.selectedItem
             ) && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection for switches using RadioGroup */}
@@ -198,9 +221,10 @@ const computeGrandTotal = (): number => {
                     { value: "LeGrand", label: "LeGrand" },
                     { value: "Lutron", label: "Lutron" },
                   ]}
-                  selectedValue={brand}
-                  onChange={setBrand}
-                  error={itemErrors.brand}
+                  selectedValue={activeItemData.brand}
+                  onChange={(value) => updateItemData("brand",value)}
+                  error={activeErrors.brand}
+                  activeTabIndex={activeTabIndex}
                   width={259}
                   height={55}
                 />
@@ -212,9 +236,10 @@ const computeGrandTotal = (): number => {
                     { value: "Toggle", label: "Toggle" },
                     { value: "Rocker", label: "Rocker" },
                   ]}
-                  selectedValue={style}
-                  onChange={setStyle}
-                  error={itemErrors.style}
+                  selectedValue={activeItemData.style}
+                  onChange={(value) => updateItemData("style",value)}
+                  error={activeErrors.style}
+                  activeTabIndex={activeTabIndex}
                   width={158}
                   height={55}
                 />
@@ -230,19 +255,13 @@ const computeGrandTotal = (): number => {
               </label>
               <input
                 type="number"
-                value={quantity}
+                value={activeItemData.quantity}
                 min="1"
-                onChange={(e) => {
-                  setQuantity(parseInt(e.target.value));
-                  setItemErrors((prev) => ({
-                    ...prev,
-                    quantity: "",
-                  }));
-                }}
+                onChange={(e) => handleQuantityChange(e.target.value)}
                 className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] rounded-[10px] focus:border-[#00C5FF] w-full bg-transparent"
               />
-              {itemErrors.quantity && (
-                <p className="text-red-500 bg-transparent">{itemErrors.quantity}</p>
+              {activeErrors.quantity && (
+                <p className="text-red-500 bg-transparent">{activeErrors.quantity}</p>
               )}
             </div>
 
@@ -253,9 +272,10 @@ const computeGrandTotal = (): number => {
                 { value: "White", label: "White" },
                 { value: "Black", label: "Black" },
               ]}
-              selectedValue={color}
-              onChange={setColor}
-              error={itemErrors.color}
+              selectedValue={activeItemData.color}
+              onChange={(value) => updateItemData("color",value)}
+              error={activeErrors.color}
+              activeTabIndex={activeTabIndex}
               width={205}
               height={55}
             />
@@ -271,7 +291,7 @@ const computeGrandTotal = (): number => {
           </div>
 
           <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
-            <ProductDetailsFetcher />
+            <ProductDetailsFetcher activeTabIndex={activeTabIndex}/>
           </div>
 
           {/* Commission Type */}
@@ -282,7 +302,8 @@ const computeGrandTotal = (): number => {
                 type="checkbox"
                 name="commission"
                 className="text-[18px]"
-                onChange={() => setIsCommission(!isCommission)}
+                onChange={() => {
+                  updateItemData("isCommission",!activeItemData.isCommission)}}
               />
               Comission*
             </label>
@@ -296,9 +317,10 @@ const computeGrandTotal = (): number => {
                 { value: "%", label: "%" },
                 { value: "$", label: "$" },
               ]}
-              selectedValue={commissionType}
-              onChange={setCommissionType}
-              error={itemErrors.commissionType}
+              selectedValue={activeItemData.commissionType}
+              onChange={(value) => updateItemData("commissionType",value)}
+              error={activeErrors.commissionType}
+              activeTabIndex={activeTabIndex}
               // width={commissionType ? 150 : 205}
               width={180}
               height={55}
@@ -309,20 +331,14 @@ const computeGrandTotal = (): number => {
               {/* <label className="text-primary mb-1 bg-transparent">Quantity*</label> */}
               <input
                 type="number"
-                value={commissionValue}
+                value={activeItemData.commissionValue}
                 min="1"
-                onChange={(e) => {
-                  setCommissionValue(e.target.value);
-                  setItemErrors((prev) => ({
-                    ...prev,
-                    commissionValue: "",
-                  }));
-                }}
-                disabled={!isCommission}
+                onChange={(e) => handleCommissionvalueChange(e.target.value)}
+                disabled={!activeItemData.isCommission}
                 className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-full"
               />
-              {itemErrors.commissionValue && (
-                <p className="text-red-500 bg-transparent">{itemErrors.commissionValue}</p>
+              {activeErrors.commissionValue && (
+                <p className="text-red-500 bg-transparent">{activeErrors.commissionValue}</p>
               )}
             </div>
 

@@ -1,4 +1,4 @@
-import { labourSelectedValAtom, labourTypeAtom, signAtom } from '../../../variables/electricalInvoiceVariable';
+import { labourStateAtom, signAtom } from '../../../variables/electricalInvoiceVariable';
 import { invoiceSelectAtom } from '../../../variables/Home';
 import { useAtom } from 'jotai';
 import React from 'react'
@@ -10,11 +10,12 @@ import LabourSection from "./labourSection";
 import TaxRate from './TaxRate';
 import TermsConditions from './TermsConditions';
 import ClientContractorSign from './ClientContractorSign';
+import { activeTabIndexAtom } from '../../../variables/NavbarVariables';
 
 const FinalizeSection = () => {
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
-  const [labourType,] = useAtom(labourTypeAtom);
-  const [labourSelectedVal,] = useAtom(labourSelectedValAtom);
+  const [labourStateVariable,] = useAtom(labourStateAtom)
+  const [activeTabIndex,] = useAtom(activeTabIndexAtom)
   const [sign,] = useAtom(signAtom);
   return (
     <div className="flex flex-col justify-center items-center w-full h-fit bg-transparent">
@@ -47,7 +48,7 @@ const FinalizeSection = () => {
                 <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">
-                      Labour {">"} {labourType} {">"} {labourSelectedVal}
+                      Labour {">"} {labourStateVariable[activeTabIndex].labourType} {">"} {labourStateVariable[activeTabIndex].labourSelectedVal}
                     </h1>
                   </div>
                   <LabourSection />

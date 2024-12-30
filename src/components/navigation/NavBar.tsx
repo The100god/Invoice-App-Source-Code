@@ -36,6 +36,14 @@ import {
   clientFormDataAtom,
   errorsAtom,
   formDataAtom,
+  itemErrorsAtom,
+  itemSelectionDataAtom,
+  labourErrorsAtom,
+  labourStateAtom,
+  taxRateAtom,
+  termConditionAtom,
+  tripChargeAtom,
+  tripChargeErrorAtom,
 } from "../../variables/electricalInvoiceVariable";
 
 interface ElectronAPI {
@@ -103,7 +111,23 @@ const Navbar: React.FC = () => {
   const [clientFormData, setClientFormData] = useAtom(clientFormDataAtom);
   const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
 
+  const [itemSelectionData, setItemSelectionData] = useAtom(
+    itemSelectionDataAtom
+  );
+  const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
+
+  const [labourStateVariable, setLabourStateVariable] = useAtom(labourStateAtom
+  )
+    const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
+const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
+);
+    const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
   const navigate = useNavigate();
+
+  const [taxRate, setTaxRate] = useAtom(taxRateAtom);
+
+      const [termsCondition, setTermsConditions] = useAtom(termConditionAtom)
+  
 
   // Add a new project
   const addNewProject = () => {
@@ -161,6 +185,104 @@ const Navbar: React.FC = () => {
       },
     ]);
 
+    //item selection data
+
+    setItemSelectionData([
+      ...itemSelectionData,
+      {
+        selectedItem: "",
+        brand: "",
+        style: "",
+        quantity: 1,
+        color: "",
+        commissionType: "",
+        commissionValue: "",
+        linkPoductType: "",
+        productLinkAmount: "0",
+        isCommission: false,
+        productDetails: {
+          price: "",
+        },
+      },
+    ]);
+
+    setItemErrors([
+      ...itemErrors,
+      {
+        selectedItem: "",
+        brand: "",
+        style: "",
+        quantity: "",
+        color: "",
+        commissionType: "",
+        commissionValue: "",
+      },
+    ]);
+
+    // labour data
+    setLabourStateVariable([
+      ...labourStateVariable,
+      {
+        labourSelectedVal: "",
+    labourType: "Uniform",
+    labourHour: "0",
+    contContractorRate: "",
+    employeesNo: "0",
+    employeesRate: "",
+    uniformScopeWork: "",
+    hourlyRateScopeWork: "",
+    materialCostVal: "Yes",
+    uniformProjectAmount: "0",
+    variableContRatePerHour: "",
+    variableContTotHourRate: "",
+    projectAmountQuantityVal: "",
+    variableAddEmployees: [{name: "",
+      hours: 0,
+      rate: 0,},
+    ],
+      },
+    ]);
+
+    setLabourErrors([
+      ...labourErrors,
+      {
+        labourType: "",
+    labourSelectedVal: "",
+    labourHour: "",
+    contContractorRate: "",
+    employeesNo: "",
+    employeesRate: "",
+    uniformScopeWork: "",
+    uniformProjectAmount: "",
+    variableContTotHourRate: "",
+    variableAddEmployees: "",
+    materialCostVal:"",
+    hourlyRateScopeWork:"",
+    variableContRatePerHour:"",
+    projectAmountQuantityVal:"",
+      },
+    ]);
+
+    // TripCharge data
+    setTripCharge([...tripCharge, {tripChargeVal:"",
+      isStandardCost:false,
+      isCalculateCost:false,
+      amountPerMiles:"",
+      traveledMiles:"",
+      totalMilesAmount:"00.00",}])
+    
+      setTripChargeError([...tripChargeError, {
+        tripChargeVal:"",
+  amountPerMiles:"",
+  traveledMiles:"",
+      }])
+
+      //taxRate data
+      setTaxRate([...taxRate, {tax:""}])
+      //term and conditions data
+      setTermsConditions([...termsCondition, {termAndCondition:""}])
+
+
     setActiveTabIndex(newProjectId); // New tab index
 
     setActiveProjectId(newProjectId); // Make the new project active
@@ -179,7 +301,20 @@ const Navbar: React.FC = () => {
   const removeProject = (id: number) => {
     const updatedProjects = projects.filter((project) => project.id !== id);
     const updatedFromData = formData.filter((data, index) => index != id);
-    setFormData(updatedFromData);
+    const updatedClientFromData = clientFormData.filter((data, index) => index != id);
+    const updatedItemData = itemSelectionData.filter((data, index) => index != id);
+    const updatedLabourData = labourStateVariable.filter((data, index) => index != id);
+    const updatedTripChargeData = tripCharge.filter((data, index) => index != id);
+    const updatedTaxRateData = taxRate.filter((data, index) => index != id);
+    const updatedTermAndConditionData = termsCondition.filter((data, index) => index != id);
+    setFormData(updatedFromData); //from data
+    setClientFormData(updatedClientFromData) // client form data
+    setItemSelectionData(updatedItemData) // item selection form data
+    setLabourStateVariable(updatedLabourData) // labour selection data 
+    setTripCharge(updatedTripChargeData) // Trip charge data 
+    setTaxRate(updatedTaxRateData)  //taxRate data
+    setTermsConditions(updatedTermAndConditionData) // term and condition data
+    setActiveTabIndex(updatedProjects.length);
     setProjects(updatedProjects);
 
     // If the active project is removed, set the active project to null or the first available project

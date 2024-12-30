@@ -1,42 +1,62 @@
-import { productDetailsAtom, productLinkAmountAtom } from "../../variables/electricalInvoiceVariable";
+import { itemSelectionDataAtom } from "../../variables/electricalInvoiceVariable";
 import { useAtom } from "jotai";
 import React, { useState } from "react";
 
-const ProductDetailsFetcher: React.FC = () => {
+const ProductDetailsFetcher: React.FC<{ activeTabIndex: number }> = ({
+  activeTabIndex,
+})  => {
   const [url, setUrl] = useState("");
-  const [, setProductDetails] = useAtom(productDetailsAtom);
+  const [itemSelectionData, setItemSelectionData] = useAtom(itemSelectionDataAtom)
   const [, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [, setProductLinkAmount] = useAtom(productLinkAmountAtom)
-  // const [, setLinkProductType] = useAtom(linkProductTypeAtom)
-  // const [,setColor] = useAtom(colorAtom);
+  const activeTabData = itemSelectionData[activeTabIndex];
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
+    const updatedSelectionData = [...itemSelectionData];
+    updatedSelectionData[activeTabIndex] = {
+      ...activeTabData,
+      productLinkAmount: "",
+      linkPoductType: "",
+      productDetails: { price: "" },
+    };
+    setItemSelectionData(updatedSelectionData);
     if (error) setError(""); // Clear error when user starts typing
   };
 
   const fetchProductDetails = async (url: string) => {
-    const apiKey = "70b73b9615msh21bb8495fe0f504p108782jsn2e8478ceff95"; // Provided RapidAPI key
-    const apiUrl = "https://cheap-web-scarping-api.p.rapidapi.com/api/scrape"; // Scraping API endpoint
+    // const apiKey = "70b73b9615msh21bb8495fe0f504p108782jsn2e8478ceff95"; // Provided RapidAPI key
+    // const apiUrl = "https://cheap-web-scarping-api.p.rapidapi.com/api/scrape"; // Scraping API endpoint
+    const apiKey = "1af3b31e46b16a33bc8e6905ac86c45d"; // Provided RapidAPI key
+    const apiUrl = "https://async.scraperapi.com/jobs"; // Scraping API endpoint
 
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`${apiUrl}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-RapidAPI-Key": apiKey,
-          "X-RapidAPI-Host": "cheap-web-scarping-api.p.rapidapi.com",
-          "X-Rapidapi-Ua": "RapidAPI-Playground",
-        },
-        body: JSON.stringify({
-          url,
-          waitUntil: "domcontentloaded",
-        }),
+      const response = await fetch(`${apiUrl}`, 
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            apiKey: apiKey,
+            urls: [url]
+          })
+          
+      //   {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     // "X-RapidAPI-Key": apiKey,
+      //     // "X-RapidAPI-Host": "cheap-web-scarping-api.p.rapidapi.com",
+      //     // "X-Rapidapi-Ua": "RapidAPI-Playground",
+      //   },
+      //   // body: JSON.stringify({
+      //   //   // url,
+      //   //   // waitUntil: "domcontentloaded",
+      //   //   "test-key": "test-value"
+      //   // }),
       });
-
+console.log(response)
       if (!response.ok) {
         throw new Error(`API request failed with status: ${response.status}`);
       }
@@ -131,10 +151,14 @@ const ProductDetailsFetcher: React.FC = () => {
           // details.type = "Domain not supported or type not found.";
           break;
       }
-      setProductLinkAmount(details.price)
-      // setLinkProductType(details.type)
-      // setColor(details.color)
-      setProductDetails(details);
+      console.log("details",details)
+      const updatedSelectionData = [...itemSelectionData];
+      updatedSelectionData[activeTabIndex] = {
+        ...activeTabData,
+        productLinkAmount: details.price,
+        productDetails: details,
+      };
+      setItemSelectionData(updatedSelectionData);
     } catch (error) {
       console.error("Error fetching product details:", error);
       setError("Failed to fetch product details. Please try again.");
@@ -168,11 +192,11 @@ const ProductDetailsFetcher: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col justify-start dark:bg-black dark:text-white">
-      <label htmlFor="product-url" className="flex text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
+      <label htmlFor={`product-url-${activeTabIndex}`} className="flex text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
         Fetch Price Via URL*
       </label>
       <input
-        id="product-url"
+        id={`product-url-${activeTabIndex}`}
         type="url"
         placeholder="https://link of Item"
         value={url}

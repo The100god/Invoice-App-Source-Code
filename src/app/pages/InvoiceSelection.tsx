@@ -14,44 +14,26 @@ import { validate } from "../../components/formValidation/electricalFormValidati
 // import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 import { useAtom } from "jotai";
 import {
-  brandAtom,
   clientContractorErrorsAtom,
   clientDateValueAtom,
   clientErrorsAtom,
   clientFormDataAtom,
   clientNameValueAtom,
   clientSignAtom,
-  colorAtom,
-  commissionTypeAtom,
-  commissionValueAtom,
-  contContractorRateAtom,
   contractorDateValueAtom,
   contractorNameValueAtom,
   contractorSignAtom,
-  employeesNoAtom,
-  employeesRateAtom,
   errorsAtom,
   formDataAtom,
-  hourlyRateScopeWorkAtom,
-  isCommissionAtom,
   itemErrorsAtom,
+  itemSelectionDataAtom,
   labourErrorsAtom,
-  labourHourAtom,
-  labourMaterialCostAtom,
-  labourSelectedValAtom,
-  labourTypeAtom,
-  projectAmountQuantityValAtom,
-  quantityAtom,
-  selectedItemAtom,
+  labourStateAtom,
   signAtom,
-  styleAtom,
+  tripChargeAtom,
+  tripChargeErrorAtom,
   // tripChargeErrorAtom,
   // tripChargeValAtom,
-  uniformProjectAmountAtom,
-  uniformScopeWorkAtom,
-  variableAddEmployeesAtom,
-  varriableContRatePerHourAtom,
-  varriableContTotHourRateAtom,
 } from "../../variables/electricalInvoiceVariable";
 import { invoiceSelectAtom, stepsAtom } from "../../variables/Home";
 import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
@@ -59,6 +41,7 @@ import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeadin
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
 import { activeTabIndexAtom } from "../../variables/NavbarVariables";
+import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 
 const InvoiceSelection = () => {
   const divide = 100 / 9;
@@ -67,45 +50,26 @@ const InvoiceSelection = () => {
   const [progress, setProgress] = useState(Math.ceil(divide));
   const [electricalSteps, setElectricalSteps] = useAtom(stepsAtom);
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+
   //invoiceinfo
   const [formData] = useAtom(formDataAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
+
   //clientdetails
   const [clientFormData] = useAtom(clientFormDataAtom);
   const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
 
   //itemselection
-  const [selectedItem] = useAtom(selectedItemAtom);
-  const [brand] = useAtom(brandAtom);
-  const [style] = useAtom(styleAtom);
-  const [quantity] = useAtom(quantityAtom);
-  const [color] = useAtom(colorAtom);
-  const [isCommission] = useAtom(isCommissionAtom);
-
-  const [commissionType] = useAtom(commissionTypeAtom);
-  const [commissionValue] = useAtom(commissionValueAtom);
-  const [, setItemErrors] = useAtom(itemErrorsAtom);
+  const [itemSelectionData] = useAtom(itemSelectionDataAtom);
+  const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
 
   //labour data
-  const [labourSelectedVal] = useAtom(labourSelectedValAtom);
-  const [labourType] = useAtom(labourTypeAtom);
-  const [labourHour] = useAtom(labourHourAtom);
-  const [contContractorRate] = useAtom(contContractorRateAtom);
-  const [employeesNo] = useAtom(employeesNoAtom);
-  const [employeesRate] = useAtom(employeesRateAtom);
-  const [uniformScopeWork] = useAtom(uniformScopeWorkAtom);
-  const [uniformProjectAmount] = useAtom(uniformProjectAmountAtom);
-  const [varriableContTotHourRate] = useAtom(varriableContTotHourRateAtom);
-  const [variableAddEmployees] = useAtom(variableAddEmployeesAtom);
-  const [materialCostVal] = useAtom(labourMaterialCostAtom);
-  const [hourlyRateScopeWork] = useAtom(hourlyRateScopeWorkAtom);
-  const [varriableContRatePerHour] = useAtom(varriableContRatePerHourAtom);
-  const [projectAmountQuantityVal] = useAtom(projectAmountQuantityValAtom);
-  const [, setLabourErrors] = useAtom(labourErrorsAtom);
+  const [labourStateVariable] = useAtom(labourStateAtom);
+  const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
 
   //tripcharge
-  // const [tripChargeVal] = useAtom(tripChargeValAtom);
-  // const [, setTripChargeError] = useAtom(tripChargeErrorAtom);
+  const [tripCharge] = useAtom(tripChargeAtom);
+  const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
 
   //clientContractor sign variables
 
@@ -154,14 +118,9 @@ const InvoiceSelection = () => {
     if (
       electricalSteps == 3 &&
       itemValidate({
-        selectedItem,
-        brand,
-        style,
-        quantity,
-        color,
-        isCommission,
-        commissionType,
-        commissionValue,
+        itemSelectionData,
+        activeTabIndex,
+        itemErrors,
         setItemErrors,
       })
     ) {
@@ -171,27 +130,24 @@ const InvoiceSelection = () => {
     if (
       electricalSteps == 4 &&
       labourValidation({
-        labourType,
-        labourSelectedVal,
-        labourHour,
-        contContractorRate,
-        employeesNo,
-        employeesRate,
-        uniformScopeWork,
-        uniformProjectAmount,
-        varriableContTotHourRate,
-        variableAddEmployees,
-        materialCostVal,
-        hourlyRateScopeWork,
-        varriableContRatePerHour,
-        projectAmountQuantityVal,
+        labourStateVariable,
+        activeTabIndex,
+        labourErrors,
         setLabourErrors,
       })
     ) {
       setElectricalSteps(5);
       setProgress(electricalSteps * Math.ceil(divide));
     }
-    if (electricalSteps == 5) {
+    if (
+      electricalSteps == 5 &&
+      TripChargeValidation({
+        tripCharge,
+        activeTabIndex,
+        tripChargeError,
+        setTripChargeError,
+      })
+    ) {
       setElectricalSteps(6);
       // console.log(steps)
       setProgress(electricalSteps * Math.ceil(divide));

@@ -1,10 +1,24 @@
 
-import React, { useState } from "react";
+import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
+import { termConditionAtom } from "../../../variables/electricalInvoiceVariable";
+import { useAtom } from "jotai";
+import React from "react";
 
 
 const TermsConditions = () => {
-    const [termsCondition, setTermsConditions] = useState("")
+    const [termsCondition, setTermsConditions] = useAtom(termConditionAtom)
+    const [activeTabIndex] = useAtom(activeTabIndexAtom)
     // const [taxRateError, setTaxRateError] = useState("")
+    const updateTermCondition = (key: keyof typeof activeTAndCTabData, value:string)=>{
+      setTermsConditions((prev)=>{
+        const updated = [...prev]
+        updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+      return updated;
+      })
+
+    }
+
+    const activeTAndCTabData = termsCondition[activeTabIndex]
     
     return (
       <div className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
@@ -15,9 +29,10 @@ const TermsConditions = () => {
             </label>
             <textarea
               placeholder="Enter the terms & conditions"
-              value={termsCondition}
+              value={activeTAndCTabData.termAndCondition}
               onChange={(e) => {
-                setTermsConditions(e.target.value);
+                updateTermCondition("termAndCondition", e.target.value)
+                // setTermsConditions(e.target.value);
                 // setTaxRateError("");
               }}
               className=" p-3 outline-none border-2 border-[#A9A5A5] dark:border-white bg-transparent rounded-[8px] focus:border-[#00C5FF] w-full min-h-[109px]"

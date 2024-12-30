@@ -1,81 +1,189 @@
+// interface ItemErrorsType {
+//     selectedItem: string;
+//     brand: string;
+//     style: string;
+//     quantity: string;
+//     color: string;
+//     commissionType: string;
+//     commissionValue: string;
+// }
 
+// interface ItemSelectionScreenProps {
+//     selectedItem: string;
+//     brand: string;
+//     style: string;
+//     quantity: number;
+//     color: string;
+//     isCommission:boolean;
+//     commissionType: string;
+//     commissionValue: string;
+//     setItemErrors: React.Dispatch<React.SetStateAction<ItemErrorsType>>
+//   }
 
-interface ItemErrorsType {
-    selectedItem: string;
-    brand: string;
-    style: string;
-    quantity: string;
-    color: string;
-    commissionType: string;
-    commissionValue: string;
+// export const itemValidate = ({selectedItem,
+//     brand,
+//     style,
+//     quantity,
+//     color,
+//     commissionType,
+//     isCommission,
+//     commissionValue,setItemErrors}:ItemSelectionScreenProps) => {
+//     let isValid = true;
+//     const newErrors = {
+//       selectedItem: "",
+//       brand: "",
+//       style: "",
+//       quantity: "",
+//       color: "",
+//       commissionType: "",
+//       commissionValue: "",
+//     };
+
+//     if (!selectedItem) {
+//       newErrors.selectedItem = "Item selection is required.";
+//       isValid = false;
+//     }
+//     if (!brand) {
+//       newErrors.brand = "Brand selection is required.";
+//       isValid = false;
+//     }
+//     if (!style) {
+//       newErrors.style = "Style selection is required.";
+//       isValid = false;
+//     }
+//     if (quantity < 1) {
+//       newErrors.quantity = "Quantity must be at least 1.";
+//       isValid = false;
+//     }
+//     if (!color) {
+//       newErrors.color = "Color is required.";
+//       isValid = false;
+//     }
+//     if (isCommission){
+//       if (!commissionType) {
+//         newErrors.commissionType = "Commission type is required.";
+//         isValid = false;
+//       }
+//       if (!commissionValue || parseFloat(commissionValue) <= 0) {
+//         newErrors.commissionValue = "Valid commission value is required.";
+//         isValid = false;
+//       }
+//     }
+
+//     setItemErrors(newErrors);
+//     return isValid;
+//   };
+
+interface ItemValidateData {
+  selectedItem: string;
+  brand: string;
+  style: string;
+  quantity: number;
+  color: string;
+  commissionType: string;
+  commissionValue: string;
+  isCommission: boolean;
 }
 
+interface ItemValidateErrors {
+  selectedItem: string;
+  brand: string;
+  style: string;
+  quantity: string;
+  color: string;
+  commissionType: string;
+  commissionValue: string;
+}
 
-interface ItemSelectionScreenProps {
-    selectedItem: string; 
-    brand: string; 
-    style: string; 
-    quantity: number; 
-    color: string; 
-    isCommission:boolean;
-    commissionType: string; 
-    commissionValue: string; 
-    setItemErrors: React.Dispatch<React.SetStateAction<ItemErrorsType>>
+interface ItemValidateProps {
+  itemSelectionData: ItemValidateData[];
+  activeTabIndex: number;
+  itemErrors: ItemValidateErrors[];
+  setItemErrors: React.Dispatch<React.SetStateAction<ItemValidateErrors[]>>;
+}
+
+export const itemValidate = ({
+  itemSelectionData,
+  activeTabIndex,
+  itemErrors,
+  setItemErrors,
+}: ItemValidateProps): boolean => {
+  let isValid = true;
+
+  // Initialize errors for the active tab
+  const newErrors: ItemValidateErrors = {
+    selectedItem: "",
+    brand: "",
+    style: "",
+    quantity: "",
+    color: "",
+    commissionType: "",
+    commissionValue: "",
+  };
+
+  const activeFormData = itemSelectionData[activeTabIndex];
+
+  // Validation logic
+  if (!activeFormData.selectedItem.trim()) {
+    newErrors.selectedItem = "Item selection is required.";
+    isValid = false;
+  } else {
+    if (
+      [
+        "outlet",
+        "15amp Breaker",
+        "20amp Breaker",
+        "30amp Breaker",
+        "40amp Breaker",
+        "50amp Breaker",
+        "switches",
+        "three-way-switches",
+        "four-way-switches",
+      ].includes(activeFormData.selectedItem)
+    ) {
+      if (!activeFormData.brand.trim()) {
+        newErrors.brand = "Brand selection is required.";
+        isValid = false;
+      }
+
+      if (!activeFormData.style.trim()) {
+        newErrors.style = "Style selection is required.";
+        isValid = false;
+      }
+    }
   }
 
-export const itemValidate = ({selectedItem,
-    brand,
-    style,
-    quantity,
-    color,
-    commissionType,
-    isCommission,
-    commissionValue,setItemErrors}:ItemSelectionScreenProps) => {
-    let isValid = true;
-    const newErrors = {
-      selectedItem: "",
-      brand: "",
-      style: "",
-      quantity: "",
-      color: "",
-      commissionType: "",
-      commissionValue: "",
-    };
-    
+  if (activeFormData.quantity < 1) {
+    newErrors.quantity = "Quantity must be at least 1.";
+    isValid = false;
+  }
 
-  
-    if (!selectedItem) {
-      newErrors.selectedItem = "Item selection is required.";
+  if (!activeFormData.color.trim()) {
+    newErrors.color = "Color is required.";
+    isValid = false;
+  }
+
+  if (activeFormData.isCommission) {
+    if (!activeFormData.commissionType.trim()) {
+      newErrors.commissionType = "Commission type is required.";
       isValid = false;
     }
-    if (!brand) {
-      newErrors.brand = "Brand selection is required.";
+
+    if (
+      !activeFormData.commissionValue.trim() ||
+      parseFloat(activeFormData.commissionValue) <= 0
+    ) {
+      newErrors.commissionValue = "Valid commission value is required.";
       isValid = false;
     }
-    if (!style) {
-      newErrors.style = "Style selection is required.";
-      isValid = false;
-    }
-    if (quantity < 1) {
-      newErrors.quantity = "Quantity must be at least 1.";
-      isValid = false;
-    }
-    if (!color) {
-      newErrors.color = "Color is required.";
-      isValid = false;
-    }
-    if (isCommission){
-      if (!commissionType) {
-        newErrors.commissionType = "Commission type is required.";
-        isValid = false;
-      }
-      if (!commissionValue || parseFloat(commissionValue) <= 0) {
-        newErrors.commissionValue = "Valid commission value is required.";
-        isValid = false;
-      }
-    }
-  
-    setItemErrors(newErrors);
-    return isValid;
-  };
-  
+  }
+
+  // Update the errors for the active tab
+  // console.log("itemErrors", itemErrors)
+  // const updatedErrors = [itemErrors];
+  itemErrors[activeTabIndex] = newErrors;
+
+  setItemErrors(itemErrors);
+
+  return isValid;
+};
