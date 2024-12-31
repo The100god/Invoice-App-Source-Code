@@ -1,26 +1,35 @@
 import {
   activeDropdownAtom,
-  // activeProjectIdAtom,
-  // activeTabIndexAtom,
+  activeProjectIdAtom,
+  activeTabIndexAtom,
+  homeClickAtom,
+  projectsAtom,
   showDescriptionsColorPickerAtom,
   showLabelColorPickerAtom,
   showOutlineColorPickerAtom,
   showValueColorPickerAtom,
 } from "../../variables/NavbarVariables";
 import { useAtom } from "jotai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { IoClose } from "react-icons/io5";
 
-const Home = () => {
+const Home = ({ projectId }: { projectId?: number }) => {
   const [, setActiveDropdown] = useAtom(activeDropdownAtom);
   const [, setShowDescriptionsColorPicker] = useAtom(
     showDescriptionsColorPickerAtom
   );
-  // const[activeProjectId]=useAtom(activeProjectIdAtom)
-  // const [,setActiveTabIndex] = useAtom(activeTabIndexAtom);
+  const [projects, setProjects] = useAtom(projectsAtom); // All projects
+  const[activeProjectId, setActiveProjectId]=useAtom(activeProjectIdAtom)
+  const [activeTabIndex,setActiveTabIndex] = useAtom(activeTabIndexAtom);
   const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
   const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
   const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
+const navigate = useNavigate();
+const [, setHomeClick] = useAtom(homeClickAtom)
+  if (activeProjectId === null && projects.length > 0) {
+    setActiveProjectId(projects[0]?.id);
+    setActiveTabIndex(0);
+  }
 
   const handleClick = () => {
     setActiveDropdown(null);
@@ -29,6 +38,15 @@ const Home = () => {
     setShowLabalColorPicker(false);
     setShowOutlineColorPicker(false);
   };
+
+  const handleStartFormClick = ()=>{
+    setHomeClick((prev)=>{
+      const updated = [...prev]
+      updated[activeTabIndex]={elctronicHomeClick:true}
+      return updated
+    })
+    navigate("/project/selection")
+  }
   return (
     <div
       onClick={handleClick}
@@ -47,11 +65,11 @@ const Home = () => {
             Your tool for creating efficient, detailed invoices, tailored for
             electrical contractors in few steps.
           </p>
-          <Link to={`/project/selection`}>
-            <button className="mt-10 text-center text-[20px] w-[210px] h-[50px] leading-[19.9px] bg-custom-gradient tracking-[0.02em] shadow-custom-inset bg-bgcol rounded-md text-secondary font-[700]">
+          {/* <Link to={`/project/selection`}> */}
+            <button onClick={handleStartFormClick} className="mt-10 text-center text-[20px] w-[210px] h-[50px] leading-[19.9px] bg-custom-gradient tracking-[0.02em] shadow-custom-inset bg-bgcol rounded-md text-secondary font-[700]">
               Let’s Get Started
             </button>
-          </Link>
+          {/* </Link> */}
         </div>
       </div>
     </div>

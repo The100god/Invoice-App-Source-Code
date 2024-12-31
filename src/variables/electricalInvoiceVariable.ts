@@ -281,9 +281,18 @@ export interface ClientContractorErrorsType {
   clientSign: string;
   sign: string;
 }
+export interface ClientContractorStates {
+  contractorNameValue: string;
+  contractDateValue: string;
+  contractorSign: File | null;
+  clientNameValue: string;
+  clientDateValue: string;
+  clientSign: File | null;
+  sign: string;
+}
 
 // Atom to store error state
-export const clientContractorErrorsAtom = atom<ClientContractorErrorsType>({
+export const clientContractorErrorsAtom = atom<ClientContractorErrorsType[]>([{
   contractorNameValue: "",
   contractDateValue: "",
   contractorSign: "",
@@ -291,17 +300,14 @@ export const clientContractorErrorsAtom = atom<ClientContractorErrorsType>({
   clientDateValue: "",
   clientSign: "",
   sign: "",
-});
-export const contractorNameValueAtom = atom<string>("");
-export const contractorDateValueAtom = atom<string>("");
-export const contractorSignAtom = atom<File | null>(null);
+}]);
+export const clientContractorAtom = atom<ClientContractorStates[]>([{
+  contractorNameValue: "",
+  contractDateValue: "",
+  contractorSign: null,
+  clientNameValue: "",
+  clientDateValue: "",
+  clientSign: null,
+  sign: "No",
+}]);
 
-
-// Client fields
-export const clientNameValueAtom = atom<string>("");
-export const clientDateValueAtom = atom<string>("");
-export const clientSignAtom = atom<File | null>(null);
-
-
-// Radio group
-export const signAtom = atom<string>("Yes");

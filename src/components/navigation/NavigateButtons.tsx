@@ -1,3 +1,4 @@
+import { activeTabIndexAtom } from "../../variables/NavbarVariables";
 import { stepsAtom } from "../../variables/Home";
 import { useAtom } from "jotai";
 
@@ -10,7 +11,9 @@ const NavigateButtons = ({
   handleBack = null,
   handleNext = null,
 }: NavigateButtonsProps) => {
-  const [electricalSteps] = useAtom(stepsAtom);
+  const [stepsData,] = useAtom(stepsAtom);
+   const [activeTabIndex] = useAtom(activeTabIndexAtom);
+   const activeSteps = stepsData[activeTabIndex]
   return (
     <div className="flex flex-row w-full justify-end gap-x-4 items-center bg-transparent">
       <button
@@ -27,7 +30,7 @@ const NavigateButtons = ({
         })}
         className="py-1 px-6 text-lg font-[700] bg-bgcol rounded-[20px] text-secondary"
       >
-       {electricalSteps === 9 ?"Done":"Next Step"}
+       {activeSteps.electricalSteps === 9 ?"Done":"Next Step"}
       </button>
     </div>
   );

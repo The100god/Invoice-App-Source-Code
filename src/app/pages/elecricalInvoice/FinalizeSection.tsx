@@ -1,7 +1,6 @@
-import { labourStateAtom, signAtom } from '../../../variables/electricalInvoiceVariable';
+import { clientContractorAtom, labourStateAtom } from '../../../variables/electricalInvoiceVariable';
 import { invoiceSelectAtom } from '../../../variables/Home';
 import { useAtom } from 'jotai';
-import React from 'react'
 import InvoiceInfo from './InvoiceInfo';
 import ClientDetails from './ClientDetails';
 import ItemSelectionScreen from './ItemSelection';
@@ -16,13 +15,14 @@ const FinalizeSection = () => {
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
   const [labourStateVariable,] = useAtom(labourStateAtom)
   const [activeTabIndex,] = useAtom(activeTabIndexAtom)
-  const [sign,] = useAtom(signAtom);
+  const [clientContractorData,] = useAtom(clientContractorAtom)
+  const activeSelectedInvoice= invoiceSelect[activeTabIndex]
   return (
     <div className="flex flex-col justify-center items-center w-full h-fit bg-transparent">
                 <div className="flex flex-col w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">
                     <button disabled className=" flex justify-center items-center w-[200px] h-[45px] hover:border-blue-200 hover:border-2 text-[20px] font-[500] rounded-[10px] text-secondary bg-invoice-btn-gradient border-2 border-[#069FDA]">
-                      {invoiceSelect}
+                      {activeSelectedInvoice.selectedInvoice}
                     </button>
                   </div>
                   <InvoiceInfo />
@@ -70,7 +70,7 @@ const FinalizeSection = () => {
                   <TaxRate />
                 </div>
                 {
-                  sign === "Yes" && 
+                  clientContractorData[activeTabIndex].sign === "Yes" && 
                   <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">

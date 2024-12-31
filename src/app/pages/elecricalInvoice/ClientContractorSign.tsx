@@ -3,57 +3,57 @@ import FormField from "../../../components/form/FormField";
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
 import {
+  clientContractorAtom,
   clientContractorErrorsAtom,
-  clientDateValueAtom,
-  clientNameValueAtom,
-  clientSignAtom,
-  contractorDateValueAtom,
-  contractorNameValueAtom,
-  contractorSignAtom,
-  signAtom,
 } from "../../../variables/electricalInvoiceVariable";
+import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 
 const ClientContractorSign: React.FC = () => {
-  const [contractorNameValue, setContractorNameValue] = useAtom(
-    contractorNameValueAtom
-  );
-  const [contractDateValue, setContractDateValue] = useAtom(
-    contractorDateValueAtom
-  );
-  const [contractorSign, setContractorSign] = useAtom(contractorSignAtom);
-  const [clientNameValue, setClientNameValue] = useAtom(clientNameValueAtom);
-  const [clientDateValue, setClientDateValue] = useAtom(clientDateValueAtom);
-  const [clientSign, setClientSign] = useAtom(clientSignAtom);
-  const [sign, setSign] = useAtom(signAtom);
+  const [clientContractorData, setClientContractorData] = useAtom(clientContractorAtom)
   const [clientContractorErrors, setClientContractorErrors] = useAtom(
     clientContractorErrorsAtom
   );
+  const [activeTabIndex,] =useAtom(activeTabIndexAtom)
 
+  const activeClientContractorData = clientContractorData[activeTabIndex]
+  const activeClientContractorError = clientContractorErrors[activeTabIndex]
+
+  const updateClientContractorData = (key: keyof typeof activeClientContractorData, value:any)=>{
+    setClientContractorData((prev)=>{
+      const updated = [...prev]
+      updated[activeTabIndex] = {...updated[activeTabIndex], [key]:value}
+      return updated
+    })
+    updateClientContractorError(key, "")
+
+  }
   const handleContractorFileChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setContractorSign(file);
-      setClientContractorErrors((prev) => ({
-        ...prev,
-        contractorSign: "",
-      }));
+      updateClientContractorData("contractorSign",file);
+      updateClientContractorError("contractorSign", "")
     }
   };
   const handleClientFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setClientSign(file);
-      setClientContractorErrors((prev) => ({
-        ...prev,
-        clientSign: "",
-      }));
+      updateClientContractorData("clientSign",file);
+      updateClientContractorError("clientSign", "")
     }
   };
+
+  const updateClientContractorError = (key:keyof typeof activeClientContractorError, value:string)=>{
+    setClientContractorErrors((prev)=>{
+      const updated = [...prev]
+      updated[activeTabIndex] = {...updated[activeTabIndex], [key]:value}
+      return updated
+    })
+  }
   useEffect(
     () =>
-      setClientContractorErrors({
+      setClientContractorErrors([...clientContractorErrors, {
         contractorNameValue: "",
         contractDateValue: "",
         contractorSign: "",
@@ -61,8 +61,8 @@ const ClientContractorSign: React.FC = () => {
         clientDateValue: "",
         clientSign: "",
         sign: "",
-      }),
-    [sign]
+      }]),
+    [activeClientContractorData.sign]
   );
 
   return (
@@ -77,16 +77,16 @@ const ClientContractorSign: React.FC = () => {
               { value: "Yes", label: "Yes" },
               { value: "No", label: "No" },
             ]}
-            selectedValue={sign}
-            onChange={setSign}
-            error={clientContractorErrors.sign}
+            selectedValue={activeClientContractorData.sign}
+            onChange={(e)=>updateClientContractorData("sign",e)}
+            error={activeClientContractorError.sign}
             width={259}
           />
         </div>
 
         <div
           className={`flex flex-row justify-between items-center w-full bg-transparent ${
-            sign === "No" ? "opacity-50" : "opacity-100"
+            activeClientContractorData.sign === "No" ? "opacity-50" : "opacity-100"
           }`}
         >
           {/* Contractor section  */}
@@ -95,15 +95,11 @@ const ClientContractorSign: React.FC = () => {
               title="Contractor’s Full Name*"
               name="contractor name"
               type="text"
-              value={contractorNameValue}
+              value={activeClientContractorData.contractorNameValue}
               handleChange={(e) => {
-                setContractorNameValue(e.target.value);
-                setClientContractorErrors((prev) => ({
-                  ...prev,
-                  contractorNameValue: "",
-                }));
+                updateClientContractorData("contractorNameValue",e.target.value);
               }}
-              error={clientContractorErrors.contractorNameValue}
+              error={activeClientContractorError.contractorNameValue}
               width={244}
               height={51}
             />
@@ -117,7 +113,7 @@ const ClientContractorSign: React.FC = () => {
                   htmlFor="actual-contractor-btn"
                   className="w-full h-full flex flex-col justify-center items-center cursor-pointer bg-transparent"
                 >
-                  {!contractorSign ? (
+                  {!activeClientContractorData.contractorSign ? (
                     <div className="flex flex-col justify-center items-center w-full h-full bg-transparent">
                       <p className="text-[#00000080] dark:text-white text-[32px] font-[400] bg-transparent">
                         +
@@ -130,7 +126,7 @@ const ClientContractorSign: React.FC = () => {
                     <div className="flex justify-center items-center w-full h-full bg-transparent">
                       <img
                         className="max-w-full max-h-full object-contain rounded-[5px]"
-                        src={URL.createObjectURL(contractorSign)}
+                        src={URL.createObjectURL(activeClientContractorData.contractorSign)}
                         alt="Uploaded Contractor Signature"
                       />
                     </div>
@@ -144,9 +140,9 @@ const ClientContractorSign: React.FC = () => {
                   />
                 </label>
               </div>
-              {clientContractorErrors.contractorSign && (
+              {activeClientContractorError.contractorSign && (
                 <p className="text-red-500 bg-transparent">
-                  {clientContractorErrors.contractorSign}
+                  {activeClientContractorError.contractorSign}
                 </p>
               )}
             </div>
@@ -155,15 +151,11 @@ const ClientContractorSign: React.FC = () => {
               title="Date*"
               name="contractDate"
               type="date"
-              value={contractDateValue}
+              value={activeClientContractorData.contractDateValue}
               handleChange={(e) => {
-                setContractDateValue(e.target.value);
-                setClientContractorErrors((prev) => ({
-                  ...prev,
-                  contractDateValue: "",
-                }));
+                updateClientContractorData("contractDateValue",e.target.value);
               }}
-              error={clientContractorErrors.contractDateValue}
+              error={activeClientContractorError.contractDateValue}
               width={244}
               height={51}
             />
@@ -175,15 +167,11 @@ const ClientContractorSign: React.FC = () => {
               title="Client's Full Name*"
               name="client name"
               type="text"
-              value={clientNameValue}
+              value={activeClientContractorData.clientNameValue}
               handleChange={(e) => {
-                setClientNameValue(e.target.value);
-                setClientContractorErrors((prev) => ({
-                  ...prev,
-                  clientNameValue: "",
-                }));
+                updateClientContractorData("clientNameValue",e.target.value);
               }}
-              error={clientContractorErrors.clientNameValue}
+              error={activeClientContractorError.clientNameValue}
               width={244}
               height={51}
             />
@@ -198,7 +186,7 @@ const ClientContractorSign: React.FC = () => {
                   htmlFor="actual-client-btn"
                   className="w-full h-full flex flex-col justify-center items-center cursor-pointer bg-transparent"
                 >
-                  {!clientSign ? (
+                  {!activeClientContractorData.clientSign ? (
                     <div className="flex flex-col justify-center items-center w-full h-full bg-transparent">
                       <p className="text-[#00000080] dark:text-white text-[32px] font-[400]">
                         +
@@ -211,7 +199,7 @@ const ClientContractorSign: React.FC = () => {
                     <div className="flex justify-center items-center w-full h-full bg-transparent">
                       <img
                         className="max-w-full max-h-full object-contain rounded-[5px]"
-                        src={URL.createObjectURL(clientSign)}
+                        src={URL.createObjectURL(activeClientContractorData.clientSign)}
                         alt="Uploaded Client Signature"
                       />
                     </div>
@@ -225,9 +213,9 @@ const ClientContractorSign: React.FC = () => {
                   />
                 </label>
               </div>
-              {clientContractorErrors.clientSign && (
+              {activeClientContractorError.clientSign && (
                 <p className="text-red-500 bg-transparent">
-                  {clientContractorErrors.clientSign}
+                  {activeClientContractorError.clientSign}
                 </p>
               )}
             </div>
@@ -236,15 +224,11 @@ const ClientContractorSign: React.FC = () => {
               title="Date*"
               name="clientDate"
               type="date"
-              value={clientDateValue}
+              value={activeClientContractorData.clientDateValue}
               handleChange={(e) => {
-                setClientDateValue(e.target.value);
-                setClientContractorErrors((prev) => ({
-                  ...prev,
-                  clientDateValue: "",
-                }));
+                updateClientContractorData("clientDateValue",e.target.value);
               }}
-              error={clientContractorErrors.clientDateValue}
+              error={activeClientContractorError.clientDateValue}
               width={244}
               height={51}
             />

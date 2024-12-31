@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import NavigateButtons from "../../components/navigation/NavigateButtons"; // Adjust the path as needed
 import { IoClose } from "react-icons/io5";
 import ProgrssBar from "../../components/progressbar/ProgrssBar";
-import { useState } from "react";
 
 import CostCalculator from "../../components/costCalculator/CostCalculator";
 import NavigateCloseButtons from "../../components/navigation/NavigationCloseBtn";
@@ -14,28 +13,20 @@ import { validate } from "../../components/formValidation/electricalFormValidati
 // import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 import { useAtom } from "jotai";
 import {
+  clientContractorAtom,
   clientContractorErrorsAtom,
-  clientDateValueAtom,
   clientErrorsAtom,
   clientFormDataAtom,
-  clientNameValueAtom,
-  clientSignAtom,
-  contractorDateValueAtom,
-  contractorNameValueAtom,
-  contractorSignAtom,
   errorsAtom,
   formDataAtom,
   itemErrorsAtom,
   itemSelectionDataAtom,
   labourErrorsAtom,
   labourStateAtom,
-  signAtom,
   tripChargeAtom,
   tripChargeErrorAtom,
-  // tripChargeErrorAtom,
-  // tripChargeValAtom,
 } from "../../variables/electricalInvoiceVariable";
-import { invoiceSelectAtom, stepsAtom } from "../../variables/Home";
+import { invoiceSelectAtom, progressAtom, stepsAtom, stepsStates } from "../../variables/Home";
 import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
@@ -47,9 +38,9 @@ const InvoiceSelection = () => {
   const divide = 100 / 9;
   const navigate = useNavigate();
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
-  const [progress, setProgress] = useState(Math.ceil(divide));
-  const [electricalSteps, setElectricalSteps] = useAtom(stepsAtom);
-  const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+  const [progress, setProgress] = useAtom(progressAtom);
+  const [stepsData, setStepsData] = useAtom(stepsAtom);
+  const [invoiceSelect,] = useAtom(invoiceSelectAtom);
 
   //invoiceinfo
   const [formData] = useAtom(formDataAtom);
@@ -72,129 +63,252 @@ const InvoiceSelection = () => {
   const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
 
   //clientContractor sign variables
-
-  const [contractorNameValue] = useAtom(contractorNameValueAtom);
-  const [contractDateValue] = useAtom(contractorDateValueAtom);
-  const [contractorSign] = useAtom(contractorSignAtom);
-  const [clientNameValue] = useAtom(clientNameValueAtom);
-  const [clientDateValue] = useAtom(clientDateValueAtom);
-  const [clientSign] = useAtom(clientSignAtom);
-  const [sign] = useAtom(signAtom);
-  const [, setClientContractorErrors] = useAtom(clientContractorErrorsAtom);
+const [clientContractorData,] = useAtom(clientContractorAtom)
+  const [clientContractorErrors, setClientContractorErrors] = useAtom(
+    clientContractorErrorsAtom
+  );
+  
+  const activeSelectedInvoice = invoiceSelect[activeTabIndex]
+  const activeSteps = stepsData[activeTabIndex]
+  const activeProgress = progress[activeTabIndex]
 
   const handlePreview = () => {
     //
   };
 
+  const updateSteps = (tabIndex: number, newSteps: Partial<stepsStates>) => {
+    setStepsData((prevSteps) => {
+      const updatedSteps = [...prevSteps];
+      updatedSteps[tabIndex] = {
+        ...updatedSteps[tabIndex],
+        ...newSteps,
+      };
+      return updatedSteps;
+    });
+  };
+
   const handleBack = () => {
-    if (electricalSteps == 1) {
+    if (activeSteps.electricalSteps === 1) {
       navigate(-1); // Navigate to the previous page
+    } else {
+      updateSteps(activeTabIndex, {
+        electricalSteps: activeSteps.electricalSteps - 1,
+      });
+      setProgress((prevProgress) => {
+        const updatedProgress = [...prevProgress];
+        updatedProgress[activeTabIndex] = {
+          progress: updatedProgress[activeTabIndex].progress - Math.ceil(divide),
+        };
+        return updatedProgress;
+      });
     }
-    setElectricalSteps(electricalSteps > 1 ? electricalSteps - 1 : 1);
-    setProgress(progress - Math.ceil(divide));
   };
 
   const handleNext = () => {
     // You can add your logic here if there's a 'next' page
-    if (
-      electricalSteps == 1 &&
-      validate({ formData, activeTabIndex, errors, setErrors })
-    ) {
-      setElectricalSteps(2);
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (
-      electricalSteps == 2 &&
-      clientValidate({
-        clientFormData,
-        activeTabIndex,
-        clientErrors,
-        setClientErrors,
-      })
-    ) {
-      setElectricalSteps(3);
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (
-      electricalSteps == 3 &&
-      itemValidate({
-        itemSelectionData,
-        activeTabIndex,
-        itemErrors,
-        setItemErrors,
-      })
-    ) {
-      setElectricalSteps(4);
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (
-      electricalSteps == 4 &&
-      labourValidation({
-        labourStateVariable,
-        activeTabIndex,
-        labourErrors,
-        setLabourErrors,
-      })
-    ) {
-      setElectricalSteps(5);
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (
-      electricalSteps == 5 &&
-      TripChargeValidation({
-        tripCharge,
-        activeTabIndex,
-        tripChargeError,
-        setTripChargeError,
-      })
-    ) {
-      setElectricalSteps(6);
-      // console.log(steps)
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (electricalSteps == 6) {
-      setElectricalSteps(7);
-      // console.log(steps)
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (electricalSteps == 7) {
-      setElectricalSteps(8);
-      // console.log(steps)
-      setProgress(electricalSteps * Math.ceil(divide));
-    }
-    if (
-      sign === "Yes"
-        ? electricalSteps == 8 &&
-          ClientContractorSignValidation({
-            contractorNameValue,
-            contractDateValue,
-            contractorSign,
-            clientNameValue,
-            clientDateValue,
-            clientSign,
-            sign,
-            setClientContractorErrors,
-          })
-        : electricalSteps == 8
-    ) {
-      setElectricalSteps(9);
-      // console.log(steps)
-      setProgress(100);
-    }
-    if (electricalSteps == 9) {
-      setElectricalSteps(10);
-      // console.log(steps)
-      setProgress(100);
-    } else {
-      console.log("Form has errors:", errors);
-    }
+  //   if (
+  //     activeSteps.electricalSteps == 1 &&
+  //     validate({ formData, activeTabIndex, errors, setErrors })
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:2,
+  //     });
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (
+  //     activeSteps.electricalSteps == 2 &&
+  //     clientValidate({
+  //       clientFormData,
+  //       activeTabIndex,
+  //       clientErrors,
+  //       setClientErrors,
+  //     })
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:3,
+  //     });
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (
+  //     activeSteps.electricalSteps == 3 &&
+  //     itemValidate({
+  //       itemSelectionData,
+  //       activeTabIndex,
+  //       itemErrors,
+  //       setItemErrors,
+  //     })
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:4,
+  //     });
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (
+  //     activeSteps.electricalSteps == 4 &&
+  //     labourValidation({
+  //       labourStateVariable,
+  //       activeTabIndex,
+  //       labourErrors,
+  //       setLabourErrors,
+  //     })
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:5,
+  //     });
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (
+  //     activeSteps.electricalSteps == 5 &&
+  //     TripChargeValidation({
+  //       tripCharge,
+  //       activeTabIndex,
+  //       tripChargeError,
+  //       setTripChargeError,
+  //     })
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:6,
+  //     });
+  //     // console.log(steps)
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (activeSteps.electricalSteps == 6) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:7,
+  //     });
+  //     // console.log(steps)
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (activeSteps.electricalSteps == 7) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:8,
+  //     });
+  //     // console.log(steps)
+  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
+  //   }
+  //   if (
+  //     clientContractorData[activeTabIndex].sign === "Yes"
+  //       ? activeSteps.electricalSteps == 8 &&
+  //         ClientContractorSignValidation({
+  //           clientContractorData, activeTabIndex,clientContractorErrors, 
+  //           setClientContractorErrors,
+  //         })
+  //       : activeSteps.electricalSteps == 8
+  //   ) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:9,
+  //     });
+  //     // console.log(steps)
+  //     setProgress(100);
+  //   }
+  //   if (activeSteps.electricalSteps == 9) {
+  //     updateSteps(activeTabIndex, {
+  //       electricalSteps:10,
+  //     });
+  //     // console.log(steps)
+  //     setProgress(100);
+  //   } else {
+  //     console.log("Form has errors:", errors);
+  //   }
 
-    console.log("Proceeding to the next step...");
+  //   console.log("Proceeding to the next step...");
+    const stepConfigurations = [
+      {
+        step: 1,
+        validateFn: () =>
+          validate({ formData, activeTabIndex, errors, setErrors }),
+      },
+      {
+        step: 2,
+        validateFn: () =>
+          clientValidate({
+            clientFormData,
+            activeTabIndex,
+            clientErrors,
+            setClientErrors,
+          }),
+      },
+      {
+        step: 3,
+        validateFn: () =>
+          itemValidate({
+            itemSelectionData,
+            activeTabIndex,
+            itemErrors,
+            setItemErrors,
+          }),
+      },
+      {
+        step: 4,
+        validateFn: () =>
+          labourValidation({
+            labourStateVariable,
+            activeTabIndex,
+            labourErrors,
+            setLabourErrors,
+          }),
+      },
+      {
+        step: 5,
+        validateFn: () =>
+          TripChargeValidation({
+            tripCharge,
+            activeTabIndex,
+            tripChargeError,
+            setTripChargeError,
+          }),
+      },
+      {
+        step: 8,
+        validateFn: () =>
+          clientContractorData[activeTabIndex].sign === "Yes"
+            ? ClientContractorSignValidation({
+                clientContractorData,
+                activeTabIndex,
+                clientContractorErrors,
+                setClientContractorErrors,
+              })
+            : true,
+      },
+    ];
+  
+    const currentStepConfig = stepConfigurations.find(
+      (config) => config.step === activeSteps.electricalSteps
+    );
+  
+    if (currentStepConfig?.validateFn()) {
+      const nextStep = activeSteps.electricalSteps + 1;
+      updateSteps(activeTabIndex, { electricalSteps: nextStep });
+  
+      setProgress((prevProgress) => {
+        const updatedProgress = [...prevProgress];
+        updatedProgress[activeTabIndex] =
+          {progress:nextStep >= 9 ? 100 : nextStep * Math.ceil(divide)};
+        return updatedProgress;
+      });
+  
+      console.log("Proceeding to the next step...");
+    } else if (activeSteps.electricalSteps === 6 || activeSteps.electricalSteps === 7) {
+      const nextStep = activeSteps.electricalSteps + 1;
+      updateSteps(activeTabIndex, { electricalSteps: nextStep });
+      setProgress((prevProgress) => {
+        const updatedProgress = [...prevProgress];
+        updatedProgress[activeTabIndex] =
+          {progress:nextStep >= 9 ? 100 : nextStep * Math.ceil(divide)};
+        return updatedProgress;
+      });
+      console.log("Proceeding to the next step...");
+    } else {
+      console.error("Form has errors:", errors);
+    }
   };
+  
 
   const handleCloseForm = () => {
     navigate(-1);
-    setElectricalSteps(1);
+    updateSteps(activeTabIndex, {
+      electricalSteps:1,
+    });
   };
 
   return (
@@ -205,19 +319,19 @@ const InvoiceSelection = () => {
         </span>
         <div className="flex flex-col justify-center w-full items-center h-[fit-content] bg-transparent">
           <div className="flex flex-col justify-center w-full items-center gap-4 h-[fit-content] px-6 py-6 bg-transparent">
-            {invoiceSelect == "Electrical Invoice" && (
+            {activeSelectedInvoice.selectedInvoice == "Electrical Invoice" && (
               <ElectricalInvoiceHeading />
             )}
           </div>
-          <ProgrssBar progress={progress} />
+          <ProgrssBar progress={activeProgress.progress} />
         </div>
 
         <div
           className={`flex flex-col w-full h-[506px] bg-transparent p-4 ${
-            electricalSteps == 7 ? " overflow-y-hidden" : "overflow-y-scroll"
+            activeSteps.electricalSteps == 7 ? " overflow-y-hidden" : "overflow-y-scroll"
           }`}
         >
-          {electricalSteps == 1 && (
+          {activeSteps.electricalSteps == 1 && (
             <div className="flex flex-row justify-around items-center bg-transparent">
               <Link to="/info/rough-in">
                 <button
@@ -243,18 +357,18 @@ const InvoiceSelection = () => {
             </div>
           )}
           <div className="mt-8 bg-transparent">
-            {invoiceSelect == "Electrical Invoice" && <ElecricalInvoiceHero />}
+            {activeSelectedInvoice.selectedInvoice == "Electrical Invoice" && <ElecricalInvoiceHero />}
           </div>
         </div>
 
         {/* Add the navigation buttons here */}
-        {electricalSteps == 9 ? (
+        {activeSteps.electricalSteps == 9 ? (
           <div className="flex w-full h-[fit-content] bg-[#C5D9DE80] dark:darkBottom bottom-0 px-2 py-6 rounded-b-[15px]">
             <NavigateCloseButtons handleCloseForm={handleCloseForm} />
           </div>
         ) : (
           <div className="flex justify-between w-full h-[fit-content] bg-[#C5D9DE80] dark:darkBottom bottom-0 px-4 py-6 rounded-b-[15px]">
-            {![5, 6, 7, 8, 9, 10].includes(electricalSteps) && (
+            {![5, 6, 7, 8, 9, 10].includes(activeSteps.electricalSteps) && (
               <NavigatePreview handlePreview={handlePreview} />
             )}
             <NavigateButtons handleBack={handleBack} handleNext={handleNext} />
@@ -262,7 +376,7 @@ const InvoiceSelection = () => {
         )}
       </div>
       <div className="relative flex w-fit h-[90%] justify-end items-end m-2 right-0 bg-transparent">
-        {electricalSteps == 4 ? (
+        {activeSteps.electricalSteps == 4 ? (
           <CostCalculator />
         ) : (
           <div className="w-[23.06px] h-[142px] m-auto mr-0 right-0 border-[4px] border-solid border-[#D9D9D9] bg-[#000000] rounded-[5px] backdrop-blur-[100px]">

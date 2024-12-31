@@ -16,6 +16,7 @@ import {
   disableTaxAtom,
   disableTermsConAtom,
   disableTripChargeAtom,
+  homeClickAtom,
   labelColorAtom,
   outlineColorAtom,
   projectMaterialDetailsAtom,
@@ -32,6 +33,8 @@ import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
 import BreakDownSwitch from "../breakDownSwitch/BreakDownSwitch";
 import {
+  clientContractorAtom,
+  clientContractorErrorsAtom,
   clientErrorsAtom,
   clientFormDataAtom,
   errorsAtom,
@@ -45,6 +48,7 @@ import {
   tripChargeAtom,
   tripChargeErrorAtom,
 } from "../../variables/electricalInvoiceVariable";
+import { invoiceSelectAtom, progressAtom, stepsAtom } from "../../variables/Home";
 
 interface ElectronAPI {
   minimizeWindow: () => void;
@@ -68,6 +72,11 @@ const Navbar: React.FC = () => {
     activeInnerDropdownAtom
   );
 
+  const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+
+const [stepsData, setStepsData] = useAtom(stepsAtom);
+  const [progress, setProgress] = useAtom(progressAtom);
+  
   const [disableTripCharge, setDisableTripCharge] = useAtom(
     disableTripChargeAtom
   );
@@ -128,6 +137,12 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
 
       const [termsCondition, setTermsConditions] = useAtom(termConditionAtom)
   
+      const [homeClick,setHomeClick] = useAtom(homeClickAtom)
+      
+  const [clientContractorData, setClientContractorData] = useAtom(clientContractorAtom)
+    const [clientContractorErrors, setClientContractorErrors] = useAtom(
+      clientContractorErrorsAtom
+    );
 
   // Add a new project
   const addNewProject = () => {
@@ -139,6 +154,25 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
       { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
     ]);
 
+    //invoice selction
+    setInvoiceSelect([...invoiceSelect,
+      {selectedInvoice:"Electrical Invoice"}
+    ])
+
+    // homeClick
+    setHomeClick([...homeClick, {
+      elctronicHomeClick:false
+    }])
+
+    //steps
+    setStepsData([...stepsData, {
+      electricalSteps:1
+    }])
+
+    //progress
+    setProgress([...progress, {
+      progress: Math.ceil(100 / 9)
+    }])
     //form data
     setFormData([
       ...formData,
@@ -279,9 +313,28 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
 
       //taxRate data
       setTaxRate([...taxRate, {tax:""}])
+
       //term and conditions data
       setTermsConditions([...termsCondition, {termAndCondition:""}])
 
+      // Client Contractor Data
+setClientContractorData([...clientContractorData, {contractorNameValue: "",
+  contractDateValue: "",
+  contractorSign: null,
+  clientNameValue: "",
+  clientDateValue: "",
+  clientSign: null,
+  sign: "No",}])
+
+  setClientContractorErrors([...clientContractorErrors, {
+    contractorNameValue: "",
+    contractDateValue: "",
+    contractorSign: "",
+    clientNameValue: "",
+    clientDateValue: "",
+    clientSign: "",
+    sign: "", 
+  }])
 
     setActiveTabIndex(newProjectId); // New tab index
 
@@ -293,12 +346,14 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
   const selectProject = (id: number) => {
     setActiveProjectId(id);
     setActiveTabIndex(id);
+    
   };
-  console.log("activeTabIndex", activeTabIndex);
-  console.log("activeProjectId", activeProjectId);
+  // console.log("activeTabIndex", activeTabIndex);
+  // console.log("activeProjectId", activeProjectId);
 
   // Remove a project
   const removeProject = (id: number) => {
+
     const updatedProjects = projects.filter((project) => project.id !== id);
     const updatedFromData = formData.filter((data, index) => index != id);
     const updatedClientFromData = clientFormData.filter((data, index) => index != id);
@@ -307,6 +362,13 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
     const updatedTripChargeData = tripCharge.filter((data, index) => index != id);
     const updatedTaxRateData = taxRate.filter((data, index) => index != id);
     const updatedTermAndConditionData = termsCondition.filter((data, index) => index != id);
+    const updatedClientContractorData = clientContractorData.filter((data, index) => index != id);
+    const updatedSelectedInvoice = invoiceSelect.filter((data, index) => index != id);
+    const updatedProgress = progress.filter((data, index) => index != id);
+    const updatedHomeClick = homeClick.filter((data, index) => index != id);
+    setHomeClick(updatedHomeClick); //homeClick data
+    setInvoiceSelect(updatedSelectedInvoice); //invoice selction data
+    setProgress(updatedProgress); //progress data
     setFormData(updatedFromData); //from data
     setClientFormData(updatedClientFromData) // client form data
     setItemSelectionData(updatedItemData) // item selection form data
@@ -314,6 +376,7 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
     setTripCharge(updatedTripChargeData) // Trip charge data 
     setTaxRate(updatedTaxRateData)  //taxRate data
     setTermsConditions(updatedTermAndConditionData) // term and condition data
+    setClientContractorData(updatedClientContractorData) // Client contractor data
     setActiveTabIndex(updatedProjects.length);
     setProjects(updatedProjects);
 
@@ -441,6 +504,7 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
   // Handle Dropdown Actions
   const handleFileDropdownAction = (op1: string, op2: string) => {
     console.log(op1, op2);
+    
     // switch (action) {
     //   case "Send PDF":
     //     alert("PDF sent!");
@@ -966,25 +1030,10 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
             </button>
             {showOutlineColorPicker && (
               <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                {/* <label className="block mb-2 text-white">Select Color:</label> */}
-                {/* <div className="flex items-center justify-center h-[498px] w-[300px] bg-gray-900"> */}
-                <ColorPicker
+                 <ColorPicker
                   onColorChange={(color) => setOutlineColor(color)}
                   initialColor={outlineColor}
                 />
-                {/* </div> */}
-                {/* <input
-                type="color"
-                value={outlineColor}
-                onChange={(e) => setOutlineColor(e.target.value)}
-                className="w-full"
-              />
-              <input
-                type="text"
-                value={outlineColor}
-                onChange={(e) => setOutlineColor(e.target.value)}
-                className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              /> */}
               </div>
             )}
           </div>
@@ -1153,6 +1202,9 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
               onClick={() => {
                 selectProject(project.id);
                 navigate(`/project/${project.id}`);
+                if (homeClick[project.id].elctronicHomeClick ){
+                  navigate("/project/selection")}
+              
               }}
               className="w-full h-full"
             >

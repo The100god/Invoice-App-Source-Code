@@ -35,3 +35,11 @@ export const descriptionsColorAtom = atom("#00FF11");
 
 // Search term atom
 export const searchTermAtom = atom("");
+
+//
+export interface elctronicFormClickStates{
+    elctronicHomeClick:boolean;
+}
+export const homeClickAtom = atom<elctronicFormClickStates[]>([{
+    elctronicHomeClick:true,
+}])

@@ -5,19 +5,9 @@ import {
   tripChargeErrorAtom,
 } from "../../../variables/electricalInvoiceVariable";
 import { useAtom } from "jotai";
-import React, { useEffect, useState } from "react";
-// interface TripChargeProps {
-//   tripChargeVal: string;
-//   setTripChargeVal: (type: string) => void;
-//   tripChargeError: string;
-// }
+import { useEffect } from "react";
 
 const TripCharge = () =>
-  //   {
-  //   tripChargeVal,
-  //   setTripChargeVal,
-  //   tripChargeError,
-  // }: TripChargeProps
   {
     const [tripCharge, setTripCharge] = useAtom(tripChargeAtom);
     const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
