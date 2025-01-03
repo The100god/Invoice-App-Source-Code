@@ -144,6 +144,9 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
       clientContractorErrorsAtom
     );
 
+    const [isRename, setIsRename] = useState(false)
+    const [newName, setNewName] = useState("")
+
   // Add a new project
   const addNewProject = () => {
     const newProjectId = projects.length;
@@ -458,6 +461,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
   // Dropdown Toggle Handler
   const toggleDropdown = (menu: string) => {
     setActiveDropdown((prev: string | null) => (prev === menu ? null : menu));
+    setIsRename(false)
   };
   const toggleInnerDropdown = (menu: string) => {
     setActiveInnerDropdown((prev: string | null) =>
@@ -483,6 +487,24 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
     console.log(searchTerm);
   };
 
+  const handleRename = ()=>{
+    if (newName && newName.trim()) {
+      // Update the project name
+      setProjects((prevProjects) => {
+        return prevProjects.map((project, index) => {
+          if (index === activeTabIndex) {
+            return { ...project, name: newName };
+          }
+          return project;
+        });
+      });
+
+      console.log(`Project renamed to: ${newName}`);
+    } else {
+      console.log("Invalid name. Operation canceled.");
+    }
+  }
+
   // Drag Panel Logic
   // const handlePanelMouseDown = (e: React.MouseEvent) => {
   //   setIsDragging(1);
@@ -504,7 +526,12 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
   // Handle Dropdown Actions
   const handleFileDropdownAction = (op1: string, op2: string) => {
     console.log(op1, op2);
-    
+
+    if (op1 === "Rename Invoice" || op2 === "F2" ) {
+      setIsRename(true)
+      // Prompt the user to enter a new project name 
+    }
+
     // switch (action) {
     //   case "Send PDF":
     //     alert("PDF sent!");
@@ -559,16 +586,29 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
                         ["Export", "Ctrl+E"],
                         ["Print", "Ctrl+P"],
                       ].map((option, index) => (
+                        <div
+                        key={index}
+                        className=" relative"
+                        >
                         <li
-                          key={index}
                           className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
                           onClick={() =>
                             handleFileDropdownAction(option[0], option[1])
                           }
-                        >
+                          >
                           <span>{option[0]}</span>
                           <span>{option[1]}</span>
                         </li>
+
+                       { isRename && option[0]==="Rename Invoice" && <div>
+                          <input type="text" onChange={(e)=>setNewName(e.target.value)} onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleRename();
+              setIsRename(false);
+            }
+          }}/>
+                        </div>}
+                          </div>
                       ))}
                     </ul>
                   )}

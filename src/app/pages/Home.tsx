@@ -10,7 +10,7 @@ import {
   showValueColorPickerAtom,
 } from "../../variables/NavbarVariables";
 import { useAtom } from "jotai";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import { IoClose } from "react-icons/io5";
 
 const Home = ({ projectId }: { projectId?: number }) => {
@@ -18,7 +18,7 @@ const Home = ({ projectId }: { projectId?: number }) => {
   const [, setShowDescriptionsColorPicker] = useAtom(
     showDescriptionsColorPickerAtom
   );
-  const [projects, setProjects] = useAtom(projectsAtom); // All projects
+  const [projects,] = useAtom(projectsAtom); // All projects
   const[activeProjectId, setActiveProjectId]=useAtom(activeProjectIdAtom)
   const [activeTabIndex,setActiveTabIndex] = useAtom(activeTabIndexAtom);
   const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
