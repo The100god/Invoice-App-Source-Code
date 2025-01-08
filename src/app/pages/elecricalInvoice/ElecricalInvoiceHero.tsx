@@ -12,6 +12,7 @@ import TaxRate from "./TaxRate";
 import TermsConditions from "./TermsConditions";
 import ClientContractorSign from "./ClientContractorSign";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
+// import InvoiceBill from "../../../components/invoiceBill/InvoiceBill";
 
 const ElecricalInvoiceHero = () => {
   const [stepsData] = useAtom(stepsAtom);
@@ -30,6 +31,7 @@ const ElecricalInvoiceHero = () => {
       {activeSteps.electricalSteps == 8 && <ClientContractorSign />}
       {activeSteps.electricalSteps == 9 && <FinalizeSection />}
       {activeSteps.electricalSteps == 10 && <Finished />}
+      {/* {activeSteps.electricalSteps == 11 && <InvoiceBill />} */}
     </div>
   );
 };

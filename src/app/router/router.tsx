@@ -6,7 +6,8 @@ import InvoiceSelection from "../pages/InvoiceSelection";
 import { useAtom } from "jotai";
 import { activeProjectIdAtom, projectsAtom } from "../../variables/NavbarVariables";
 
-// import InvoiceBill from "../../components/invoiceBill/InvoiceBill";
+import InvoiceBill from "../../components/invoiceBill/InvoiceBill";
+import SelectedExistingProject from "../../components/setectedExistingProject/SelectedExistingProject";
 // import InvoiceInfo from "../pages/InvoiceInfo";
 // import ClientDetails from "../pages/ClientDetails";
 // import ItemSelectionScreen from "../pages/ItemSelection";
@@ -19,8 +20,9 @@ const AppRouter = () => {
       <Routes>
         <Route path="/" element={<App />} >
           <Route index element={<Home />} />
-          {/* <Route index element={<InvoiceBill />} /> */}
+          <Route path="/project/bill" element={<InvoiceBill />} />
           <Route path="/project/selection" element={<InvoiceSelection />} />
+          <Route path="/project/existingPtoject" element={<SelectedExistingProject />} />
           {/* Initially open the first project */}
           {projects.map((project, index) => (
             <Route

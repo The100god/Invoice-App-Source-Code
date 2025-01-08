@@ -28,10 +28,22 @@ export const showOutlineColorPickerAtom = atom(false);
 export const showDescriptionsColorPickerAtom = atom(false);
 
 // Color atoms
-export const labelColorAtom = atom("#00000099");
-export const outlineColorAtom = atom("#000000E5");
-export const valuesColorAtom = atom("#FFEA00");
-export const descriptionsColorAtom = atom("#00FF11");
+export interface colorStates {
+    labelColor:string,
+    outlineColor:string,
+    valuesColor:string,
+    descriptionsColor:string,
+}
+export const colorChangeAtom = atom<colorStates[]>([{
+    labelColor:"#00000099",
+    outlineColor:"#000000E5",
+    valuesColor:"#FFEA00",
+    descriptionsColor:"#00FF11",
+}])
+// export const labelColorAtom = atom("#00000099");
+// export const outlineColorAtom = atom("#000000E5");
+// export const valuesColorAtom = atom("#FFEA00");
+// export const descriptionsColorAtom = atom("#00FF11");
 
 // Search term atom
 export const searchTermAtom = atom("");

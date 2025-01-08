@@ -2,9 +2,12 @@ import { Outlet } from "react-router-dom";
 import NavBar from "../components/navigation/NavBar";
 import CostCalculator from "../components/costCalculator/CostCalculator";
 import { useAtom } from "jotai";
-import { activeProjectIdAtom, costCalculatorAtom, projectMaterialDetailsAtom, projectsAtom } from "../variables/NavbarVariables";
+import { activeProjectIdAtom, activeTabIndexAtom, costCalculatorAtom, projectMaterialDetailsAtom, projectsAtom } from "../variables/NavbarVariables";
 import { useEffect, useRef, useState } from "react";
 import ProjectMaterialDetails from "../components/projectMaterialDetails/ProjectMaterialDetails";
+import { newMaterialVariableAtom, openAddNewMaterialAtom } from "../variables/electricalInvoiceVariable";
+import AddNewMaterialPopUp from "../components/addMaterialPopUp/AddNewMaterialPopUp";
+import { ToastContainer } from "react-toastify";
 const App = () => {
   const [activeProjectId, ] = useAtom(activeProjectIdAtom);
   const [projects, setProjects] = useAtom(projectsAtom);
@@ -30,6 +33,12 @@ const App = () => {
   const [projectMaterialDetails] = useAtom(
     projectMaterialDetailsAtom
   );
+
+  const [newMaterial] = useAtom(newMaterialVariableAtom)
+  const [openAddNewMaterial,] = useAtom(openAddNewMaterialAtom)
+  const [activeTabIndex] = useAtom(activeTabIndexAtom)
+
+
   useEffect(() => {
     const stopDragging = () => {
       setIsDragging(0);
@@ -109,7 +118,10 @@ const App = () => {
   return (
     <div  onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center ">
       <NavBar />
+      {openAddNewMaterial[activeTabIndex].openAddNewMaterialPopUp && newMaterial[activeTabIndex].length>0?<AddNewMaterialPopUp/>:
+      
       <Outlet />
+      }
       {costCalculator && (
         <div
         ref={panelRef}
@@ -139,6 +151,7 @@ const App = () => {
       </div>
         
       )}
+      <ToastContainer/>
     </div>
   );
 };

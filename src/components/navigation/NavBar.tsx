@@ -10,15 +10,13 @@ import {
   activeInnerDropdownAtom,
   activeProjectIdAtom,
   activeTabIndexAtom,
+  colorChangeAtom,
   costCalculatorAtom,
-  descriptionsColorAtom,
   disableContractorClientSignaturesAtom,
   disableTaxAtom,
   disableTermsConAtom,
   disableTripChargeAtom,
   homeClickAtom,
-  labelColorAtom,
-  outlineColorAtom,
   projectMaterialDetailsAtom,
   projectsAtom,
   searchTermAtom,
@@ -27,7 +25,6 @@ import {
   showLabelColorPickerAtom,
   showOutlineColorPickerAtom,
   showValueColorPickerAtom,
-  valuesColorAtom,
 } from "../../variables/NavbarVariables";
 import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
@@ -39,16 +36,26 @@ import {
   clientFormDataAtom,
   errorsAtom,
   formDataAtom,
+  isExistingProjectAtom,
   itemErrorsAtom,
   itemSelectionDataAtom,
   labourErrorsAtom,
   labourStateAtom,
+  newMaterialIndexAtom,
+  newMaterialVariableAtom,
+  newMaterialVariableErrorAtom,
+  openAddNewMaterialAtom,
   taxRateAtom,
   termConditionAtom,
   tripChargeAtom,
   tripChargeErrorAtom,
 } from "../../variables/electricalInvoiceVariable";
-import { invoiceSelectAtom, progressAtom, stepsAtom } from "../../variables/Home";
+import {
+  invoiceSelectAtom,
+  progressAtom,
+  stepsAtom,
+} from "../../variables/Home";
+import { toast } from "react-toastify";
 
 interface ElectronAPI {
   minimizeWindow: () => void;
@@ -74,9 +81,9 @@ const Navbar: React.FC = () => {
 
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
-const [stepsData, setStepsData] = useAtom(stepsAtom);
+  const [stepsData, setStepsData] = useAtom(stepsAtom);
   const [progress, setProgress] = useAtom(progressAtom);
-  
+
   const [disableTripCharge, setDisableTripCharge] = useAtom(
     disableTripChargeAtom
   );
@@ -101,12 +108,9 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
   const [showDescriptionsColorPicker, setShowDescriptionsColorPicker] = useAtom(
     showDescriptionsColorPickerAtom
   );
-  const [labelColor, setLabelColor] = useAtom(labelColorAtom);
-  const [outlineColor, setOutlineColor] = useAtom(outlineColorAtom);
-  const [valuesColor, setValuesColor] = useAtom(valuesColorAtom);
-  const [descriptionsColor, setDescriptionsColor] = useAtom(
-    descriptionsColorAtom
-  );
+
+  const [colorChange, setColorChange] = useAtom(colorChangeAtom);
+
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [panels, setPanels] = useState<
     { id: number; title: string; x: number; y: number }[]
@@ -125,28 +129,41 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
   );
   const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
 
-  const [labourStateVariable, setLabourStateVariable] = useAtom(labourStateAtom
-  )
-    const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
-const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
-);
-    const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
+  const [labourStateVariable, setLabourStateVariable] =
+    useAtom(labourStateAtom);
+  const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
+  const [tripCharge, setTripCharge] = useAtom(tripChargeAtom);
+  const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
   const navigate = useNavigate();
 
   const [taxRate, setTaxRate] = useAtom(taxRateAtom);
 
-      const [termsCondition, setTermsConditions] = useAtom(termConditionAtom)
-  
-      const [homeClick,setHomeClick] = useAtom(homeClickAtom)
-      
-  const [clientContractorData, setClientContractorData] = useAtom(clientContractorAtom)
-    const [clientContractorErrors, setClientContractorErrors] = useAtom(
-      clientContractorErrorsAtom
-    );
+  const [termsCondition, setTermsConditions] = useAtom(termConditionAtom);
 
-    const [isRename, setIsRename] = useState(false)
-    const [newName, setNewName] = useState("")
+  const [homeClick, setHomeClick] = useAtom(homeClickAtom);
 
+  const [clientContractorData, setClientContractorData] =
+    useAtom(clientContractorAtom);
+  const [clientContractorErrors, setClientContractorErrors] = useAtom(
+    clientContractorErrorsAtom
+  );
+
+  const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
+  const [newMaterialError, setNewMaterialError] = useAtom(
+    newMaterialVariableErrorAtom
+  );
+  const [newMaterialIndex, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
+
+  const [isRename, setIsRename] = useState(false);
+  const [newName, setNewName] = useState("");
+
+  const [openAddNewMaterial, setOpenAddNewMaterial] = useAtom(
+    openAddNewMaterialAtom
+  );
+
+  const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(
+    isExistingProjectAtom
+  );
   // Add a new project
   const addNewProject = () => {
     const newProjectId = projects.length;
@@ -158,24 +175,45 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
     ]);
 
     //invoice selction
-    setInvoiceSelect([...invoiceSelect,
-      {selectedInvoice:"Electrical Invoice"}
-    ])
+    setInvoiceSelect([
+      ...invoiceSelect,
+      { selectedInvoice: "Electrical Invoice" },
+    ]);
+
+    // navbar color picker
+    setColorChange([
+      ...colorChange,
+      {
+        labelColor: "#00000099",
+        outlineColor: "#000000E5",
+        valuesColor: "#FFEA00",
+        descriptionsColor: "#00FF11",
+      },
+    ]);
 
     // homeClick
-    setHomeClick([...homeClick, {
-      elctronicHomeClick:false
-    }])
+    setHomeClick([
+      ...homeClick,
+      {
+        elctronicHomeClick: false,
+      },
+    ]);
 
     //steps
-    setStepsData([...stepsData, {
-      electricalSteps:1
-    }])
+    setStepsData([
+      ...stepsData,
+      {
+        electricalSteps: 1,
+      },
+    ]);
 
     //progress
-    setProgress([...progress, {
-      progress: Math.ceil(100 / 9)
-    }])
+    setProgress([
+      ...progress,
+      {
+        progress: Math.ceil(100 / 9),
+      },
+    ]);
     //form data
     setFormData([
       ...formData,
@@ -261,22 +299,19 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
       ...labourStateVariable,
       {
         labourSelectedVal: "",
-    labourType: "Uniform",
-    labourHour: "0",
-    contContractorRate: "",
-    employeesNo: "0",
-    employeesRate: "",
-    uniformScopeWork: "",
-    hourlyRateScopeWork: "",
-    materialCostVal: "Yes",
-    uniformProjectAmount: "0",
-    variableContRatePerHour: "",
-    variableContTotHourRate: "",
-    projectAmountQuantityVal: "",
-    variableAddEmployees: [{name: "",
-      hours: 0,
-      rate: 0,},
-    ],
+        labourType: "Uniform",
+        labourHour: "0",
+        contContractorRate: "",
+        employeesNo: "0",
+        employeesRate: "",
+        uniformScopeWork: "",
+        hourlyRateScopeWork: "",
+        materialCostVal: "Yes",
+        uniformProjectAmount: "0",
+        variableContRatePerHour: "",
+        variableContTotHourRate: "",
+        projectAmountQuantityVal: "",
+        variableAddEmployees: [{ name: "", hours: 0, rate: 0 }],
       },
     ]);
 
@@ -284,60 +319,91 @@ const [tripCharge, setTripCharge] = useAtom(tripChargeAtom
       ...labourErrors,
       {
         labourType: "",
-    labourSelectedVal: "",
-    labourHour: "",
-    contContractorRate: "",
-    employeesNo: "",
-    employeesRate: "",
-    uniformScopeWork: "",
-    uniformProjectAmount: "",
-    variableContTotHourRate: "",
-    variableAddEmployees: "",
-    materialCostVal:"",
-    hourlyRateScopeWork:"",
-    variableContRatePerHour:"",
-    projectAmountQuantityVal:"",
+        labourSelectedVal: "",
+        labourHour: "",
+        contContractorRate: "",
+        employeesNo: "",
+        employeesRate: "",
+        uniformScopeWork: "",
+        uniformProjectAmount: "",
+        variableContTotHourRate: "",
+        variableAddEmployees: "",
+        materialCostVal: "",
+        hourlyRateScopeWork: "",
+        variableContRatePerHour: "",
+        projectAmountQuantityVal: "",
       },
     ]);
 
     // TripCharge data
-    setTripCharge([...tripCharge, {tripChargeVal:"",
-      isStandardCost:false,
-      isCalculateCost:false,
-      amountPerMiles:"",
-      traveledMiles:"",
-      totalMilesAmount:"00.00",}])
-    
-      setTripChargeError([...tripChargeError, {
-        tripChargeVal:"",
-  amountPerMiles:"",
-  traveledMiles:"",
-      }])
+    setTripCharge([
+      ...tripCharge,
+      {
+        tripChargeVal: "",
+        isStandardCost: false,
+        isCalculateCost: false,
+        amountPerMiles: "",
+        traveledMiles: "",
+        totalMilesAmount: "00.00",
+      },
+    ]);
 
-      //taxRate data
-      setTaxRate([...taxRate, {tax:""}])
+    setTripChargeError([
+      ...tripChargeError,
+      {
+        tripChargeVal: "",
+        amountPerMiles: "",
+        traveledMiles: "",
+      },
+    ]);
 
-      //term and conditions data
-      setTermsConditions([...termsCondition, {termAndCondition:""}])
+    //taxRate data
+    setTaxRate([...taxRate, { tax: "" }]);
 
-      // Client Contractor Data
-setClientContractorData([...clientContractorData, {contractorNameValue: "",
-  contractDateValue: "",
-  contractorSign: null,
-  clientNameValue: "",
-  clientDateValue: "",
-  clientSign: null,
-  sign: "No",}])
+    //term and conditions data
+    setTermsConditions([...termsCondition, { termAndCondition: "" }]);
 
-  setClientContractorErrors([...clientContractorErrors, {
-    contractorNameValue: "",
-    contractDateValue: "",
-    contractorSign: "",
-    clientNameValue: "",
-    clientDateValue: "",
-    clientSign: "",
-    sign: "", 
-  }])
+    // Client Contractor Data
+    setClientContractorData([
+      ...clientContractorData,
+      {
+        contractorNameValue: "",
+        contractDateValue: "",
+        contractorSign: null,
+        clientNameValue: "",
+        clientDateValue: "",
+        clientSign: null,
+        sign: "No",
+      },
+    ]);
+
+    setClientContractorErrors([
+      ...clientContractorErrors,
+      {
+        contractorNameValue: "",
+        contractDateValue: "",
+        contractorSign: "",
+        clientNameValue: "",
+        clientDateValue: "",
+        clientSign: "",
+        sign: "",
+      },
+    ]);
+
+    // add new Material.
+    setNewMaterial([...newMaterial, []]);
+    setNewMaterialError([...newMaterialError, []]);
+    setNewMaterialIndex([...newMaterialIndex, { activeNewMaterialIndex: 0 }]);
+    setOpenAddNewMaterial([
+      ...openAddNewMaterial,
+      { openAddNewMaterialPopUp: false },
+    ]);
+    setIsExistingProjectVariable([
+      ...isExistingProjectVariable,
+      {
+        isExistingProject: false,
+      },
+    ]);
 
     setActiveTabIndex(newProjectId); // New tab index
 
@@ -349,37 +415,69 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
   const selectProject = (id: number) => {
     setActiveProjectId(id);
     setActiveTabIndex(id);
-    
   };
   // console.log("activeTabIndex", activeTabIndex);
   // console.log("activeProjectId", activeProjectId);
 
   // Remove a project
   const removeProject = (id: number) => {
-
     const updatedProjects = projects.filter((project) => project.id !== id);
+    const updatedColorPickerData = colorChange.filter(
+      (data, index) => index != id
+    );
     const updatedFromData = formData.filter((data, index) => index != id);
-    const updatedClientFromData = clientFormData.filter((data, index) => index != id);
-    const updatedItemData = itemSelectionData.filter((data, index) => index != id);
-    const updatedLabourData = labourStateVariable.filter((data, index) => index != id);
-    const updatedTripChargeData = tripCharge.filter((data, index) => index != id);
+    const updatedClientFromData = clientFormData.filter(
+      (data, index) => index != id
+    );
+    const updatedItemData = itemSelectionData.filter(
+      (data, index) => index != id
+    );
+    const updatedLabourData = labourStateVariable.filter(
+      (data, index) => index != id
+    );
+    const updatedTripChargeData = tripCharge.filter(
+      (data, index) => index != id
+    );
     const updatedTaxRateData = taxRate.filter((data, index) => index != id);
-    const updatedTermAndConditionData = termsCondition.filter((data, index) => index != id);
-    const updatedClientContractorData = clientContractorData.filter((data, index) => index != id);
-    const updatedSelectedInvoice = invoiceSelect.filter((data, index) => index != id);
+    const updatedTermAndConditionData = termsCondition.filter(
+      (data, index) => index != id
+    );
+    const updatedClientContractorData = clientContractorData.filter(
+      (data, index) => index != id
+    );
+    const updatedSelectedInvoice = invoiceSelect.filter(
+      (data, index) => index != id
+    );
+    const updatedAddNewMaterial = newMaterial.filter(
+      (data, index) => index != id
+    );
+    const updatedOpenAddNewMaterial = openAddNewMaterial.filter(
+      (data, index) => index != id
+    );
+    const updatedAddNewMaterialIndex = newMaterialIndex.filter(
+      (data, index) => index != id
+    );
+    const updatedIsExistingProject = isExistingProjectVariable.filter(
+      (data, index) => index != id
+    );
     const updatedProgress = progress.filter((data, index) => index != id);
     const updatedHomeClick = homeClick.filter((data, index) => index != id);
     setHomeClick(updatedHomeClick); //homeClick data
+    setColorChange(updatedColorPickerData); //homeClick data
     setInvoiceSelect(updatedSelectedInvoice); //invoice selction data
     setProgress(updatedProgress); //progress data
     setFormData(updatedFromData); //from data
-    setClientFormData(updatedClientFromData) // client form data
-    setItemSelectionData(updatedItemData) // item selection form data
-    setLabourStateVariable(updatedLabourData) // labour selection data 
-    setTripCharge(updatedTripChargeData) // Trip charge data 
-    setTaxRate(updatedTaxRateData)  //taxRate data
-    setTermsConditions(updatedTermAndConditionData) // term and condition data
-    setClientContractorData(updatedClientContractorData) // Client contractor data
+    setClientFormData(updatedClientFromData); // client form data
+    setItemSelectionData(updatedItemData); // item selection form data
+    setLabourStateVariable(updatedLabourData); // labour selection data
+    setTripCharge(updatedTripChargeData); // Trip charge data
+    setTaxRate(updatedTaxRateData); //taxRate data
+    setTermsConditions(updatedTermAndConditionData); // term and condition data
+    setClientContractorData(updatedClientContractorData); // Client contractor data
+    setNewMaterial(updatedAddNewMaterial);
+    setOpenAddNewMaterial(updatedOpenAddNewMaterial);
+    setNewMaterialIndex(updatedAddNewMaterialIndex);
+    setIsExistingProjectVariable(updatedIsExistingProject);
     setActiveTabIndex(updatedProjects.length);
     setProjects(updatedProjects);
 
@@ -461,7 +559,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
   // Dropdown Toggle Handler
   const toggleDropdown = (menu: string) => {
     setActiveDropdown((prev: string | null) => (prev === menu ? null : menu));
-    setIsRename(false)
+    setIsRename(false);
   };
   const toggleInnerDropdown = (menu: string) => {
     setActiveInnerDropdown((prev: string | null) =>
@@ -487,7 +585,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
     console.log(searchTerm);
   };
 
-  const handleRename = ()=>{
+  const handleRename = () => {
     if (newName && newName.trim()) {
       // Update the project name
       setProjects((prevProjects) => {
@@ -503,7 +601,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
     } else {
       console.log("Invalid name. Operation canceled.");
     }
-  }
+  };
 
   // Drag Panel Logic
   // const handlePanelMouseDown = (e: React.MouseEvent) => {
@@ -527,9 +625,9 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
   const handleFileDropdownAction = (op1: string, op2: string) => {
     console.log(op1, op2);
 
-    if (op1 === "Rename Invoice" || op2 === "F2" ) {
-      setIsRename(true)
-      // Prompt the user to enter a new project name 
+    if (op1 === "Rename Invoice" || op2 === "F2") {
+      setIsRename(true);
+      // Prompt the user to enter a new project name
     }
 
     // switch (action) {
@@ -547,9 +645,116 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
     // }
   };
 
+  const activeColorData = colorChange[activeTabIndex];
+  const handelColorPickerAction = (
+    key: keyof typeof activeColorData,
+    value: string
+  ) => {
+    setColorChange((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = { ...updated[activeTabIndex], [key]: value };
+      return updated;
+    });
+  };
+
+  const handleAddNewMaterial = () => {
+    const newMaterialObject = {
+      selectedItem: "",
+      brand: "",
+      style: "",
+      quantity: 0,
+      color: "",
+      commissionType: "",
+      commissionValue: "",
+      linkProductType: "",
+      productLinkAmount: "0",
+      isCommission: false,
+      productDetails: {
+        price: "",
+      },
+    };
+
+    setNewMaterial((prev) => {
+      const updated = [...prev];
+
+      // Check if the current active tab index exists; if not, initialize a new array
+      if (!updated[activeTabIndex]) {
+        updated[activeTabIndex] = [
+          {
+            selectedItem: "",
+            brand: "",
+            style: "",
+            quantity: 1,
+            color: "",
+            commissionType: "",
+            commissionValue: "",
+            linkProductType: "",
+            productLinkAmount: "0",
+            isCommission: false,
+            productDetails: {
+              price: "",
+            },
+          },
+        ];
+      }
+
+      // Add the new material object to the current active tab's material list
+      updated[activeTabIndex].push(newMaterialObject);
+
+      return updated;
+    });
+
+    const newErrorObject = {
+      selectedItem: "",
+      brand: "",
+      style: "",
+      quantity: "",
+      color: "",
+      commissionType: "",
+      commissionValue: "",
+    };
+
+    setNewMaterialError((prev) => {
+      const updated = [...prev];
+
+      // Check if the current active tab index exists; if not, initialize a new array
+      if (!updated[activeTabIndex]) {
+        updated[activeTabIndex] = [];
+      }
+
+      // Add the new error object to the current active tab's error list
+      updated[activeTabIndex].push(newErrorObject);
+
+      return updated;
+    });
+
+    setNewMaterialIndex((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = {
+        activeNewMaterialIndex: newMaterial[activeTabIndex].length - 1,
+      };
+      return updated;
+    });
+  };
+
   const handleEditDropdownAction = (op: string) => {
     //
     console.log(op);
+    if (op === "Add New Material") {
+      handleAddNewMaterial();
+      setOpenAddNewMaterial((prev) => {
+        const updated = [...prev];
+        updated[activeTabIndex] = {
+          // openAddNewMaterialPopUp:!updated[activeTabIndex].openAddNewMaterialPopUp
+          openAddNewMaterialPopUp: true,
+        };
+        return updated;
+      });
+      setTimeout(() => {
+        setActiveDropdown(null);
+      }, 300);
+      console.log(newMaterial);
+    }
   };
   const handleViewDropdownAction = (op: string) => {
     //
@@ -586,29 +791,33 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
                         ["Export", "Ctrl+E"],
                         ["Print", "Ctrl+P"],
                       ].map((option, index) => (
-                        <div
-                        key={index}
-                        className=" relative"
-                        >
-                        <li
-                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                          onClick={() =>
-                            handleFileDropdownAction(option[0], option[1])
-                          }
+                        <div key={index} className=" relative">
+                          <li
+                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                            onClick={() =>
+                              handleFileDropdownAction(option[0], option[1])
+                            }
                           >
-                          <span>{option[0]}</span>
-                          <span>{option[1]}</span>
-                        </li>
+                            <span>{option[0]}</span>
+                            <span>{option[1]}</span>
+                          </li>
 
-                       { isRename && option[0]==="Rename Invoice" && <div>
-                          <input type="text" onChange={(e)=>setNewName(e.target.value)} onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleRename();
-              setIsRename(false);
-            }
-          }}/>
-                        </div>}
-                          </div>
+                          {isRename && option[0] === "Rename Invoice" && (
+                            <div className="flex justify-center items-center mt-1 m-auto rounded-[5px] w-fit border-[2px] border-black">
+                              <input
+                                type="text"
+                                className=" outline-none p-1 border-1 rounded-[5px] border-black"
+                                onChange={(e) => setNewName(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleRename();
+                                    setIsRename(false);
+                                  }
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
                       ))}
                     </ul>
                   )}
@@ -617,7 +826,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
                     <ul className="py-2 px-2 w-[240px] gap-2 text-primary rounded-[10px] bg-transparent">
                       {[
                         "Add New Material",
-                        "Remove Existing Project",
+                        "Select Existing Project",
                         "Select Material",
                         "Edit/Add Attribute",
                       ].map((option) => (
@@ -629,12 +838,57 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
                           {option === "Add New Material" && (
                             <span>{option}</span>
                           )}
-                          {option === "Remove Existing Project" && (
-                            <div className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer">
+                          {option === "Select Existing Project" && (
+                            <div
+                              className=" relative flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                              onClick={() => toggleInnerDropdown(option)}
+                            >
                               <span>{option}</span>
                               <span>
                                 <MdArrowRight />
                               </span>
+                              {activeInnerDropdown === option && (
+                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                  {
+                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                      {projects.map((mat, index) => (
+                                        <li
+                                          key={index}
+                                          onClick={() => {
+                                            if (
+                                              isExistingProjectVariable[
+                                                activeTabIndex
+                                              ].isExistingProject
+                                            ) {
+                                              selectProject(mat.id);
+                                              navigate(`/project/${mat.id}`);
+                                              if (
+                                                homeClick[mat.id]
+                                                  .elctronicHomeClick
+                                              ) {
+                                                navigate(
+                                                  "/project/existingPtoject"
+                                                );
+                                              }
+                                            } else {
+                                              toast.warning(
+                                                "There is no existing project. Please select one.",
+                                                {
+                                                  position: "bottom-right",
+                                                }
+                                              );
+                                              setActiveDropdown(null);
+                                            }
+                                          }}
+                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                        >
+                                          <span>{mat.name}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  }
+                                </div>
+                              )}
                             </div>
                           )}
                           {option === "Select Material" && (
@@ -867,20 +1121,16 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
                                 <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
                                   {
                                     <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                      {[
-                                        "Project 1",
-                                        "Project 2",
-                                        "Project 3",
-                                      ].map((mat, index) => (
+                                      {projects.map((mat, index) => (
                                         <li
                                           key={index}
                                           className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
                                           onClick={() => {
                                             setProjectMaterialDetails(true);
-                                            SetSelectedProjectName(mat);
+                                            SetSelectedProjectName(mat.name);
                                           }}
                                         >
-                                          <span>{mat}</span>
+                                          <span>{mat.name}</span>
                                         </li>
                                       ))}
                                     </ul>
@@ -1053,7 +1303,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
           <div className="relative flex flex-row gap-3 justify-center items-center">
             <span
               style={{
-                backgroundColor: outlineColor,
+                backgroundColor: colorChange[activeTabIndex].outlineColor,
               }}
               className="flex w-[11px] h-[11px]"
             ></span>
@@ -1070,9 +1320,11 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
             </button>
             {showOutlineColorPicker && (
               <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                 <ColorPicker
-                  onColorChange={(color) => setOutlineColor(color)}
-                  initialColor={outlineColor}
+                <ColorPicker
+                  onColorChange={(color) =>
+                    handelColorPickerAction("outlineColor", color)
+                  }
+                  initialColor={colorChange[activeTabIndex].outlineColor}
                 />
               </div>
             )}
@@ -1080,7 +1332,7 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
           <div className="relative flex flex-row gap-3 justify-center items-center">
             <span
               style={{
-                backgroundColor: labelColor,
+                backgroundColor: colorChange[activeTabIndex].labelColor,
               }}
               className="flex w-[11px] h-[11px]"
             ></span>
@@ -1098,29 +1350,18 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
             {showLabalColorPicker && (
               <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
                 <ColorPicker
-                  onColorChange={(color) => setLabelColor(color)}
-                  initialColor={labelColor}
+                  onColorChange={(color) =>
+                    handelColorPickerAction("labelColor", color)
+                  }
+                  initialColor={colorChange[activeTabIndex].labelColor}
                 />
-                {/* <label className="block mb-2 text-white">Select Color:</label>
-              <input
-                type="color"
-                value={labelColor}
-                onChange={(e) => setLabelColor(e.target.value)}
-                className="w-full"
-              />
-              <input
-                type="text"
-                value={labelColor}
-                onChange={(e) => setLabelColor(e.target.value)}
-                className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              /> */}
               </div>
             )}
           </div>
           <div className="relative flex flex-row gap-3 justify-center items-center">
             <span
               style={{
-                backgroundColor: valuesColor,
+                backgroundColor: colorChange[activeTabIndex].valuesColor,
               }}
               className="flex w-[11px] h-[11px]"
             ></span>
@@ -1138,29 +1379,18 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
             {showValueColorPicker && (
               <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
                 <ColorPicker
-                  onColorChange={(color) => setValuesColor(color)}
-                  initialColor={valuesColor}
+                  onColorChange={(color) =>
+                    handelColorPickerAction("valuesColor", color)
+                  }
+                  initialColor={colorChange[activeTabIndex].valuesColor}
                 />
-                {/* <label className="block mb-2 text-white">Select Color:</label>
-              <input
-                type="color"
-                value={valuesColor}
-                onChange={(e) => setValuesColor(e.target.value)}
-                className="w-full"
-              />
-              <input
-                type="text"
-                value={valuesColor}
-                onChange={(e) => setValuesColor(e.target.value)}
-                className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              /> */}
               </div>
             )}
           </div>
           <div className="relative flex flex-row gap-3 justify-center items-center">
             <span
               style={{
-                backgroundColor: descriptionsColor,
+                backgroundColor: colorChange[activeTabIndex].descriptionsColor,
               }}
               className="flex w-[11px] h-[11px]"
             ></span>
@@ -1178,22 +1408,11 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
             {showDescriptionsColorPicker && (
               <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
                 <ColorPicker
-                  onColorChange={(color) => setDescriptionsColor(color)}
-                  initialColor={descriptionsColor}
+                  onColorChange={(color) =>
+                    handelColorPickerAction("descriptionsColor", color)
+                  }
+                  initialColor={colorChange[activeTabIndex].descriptionsColor}
                 />
-                {/* <label className="block mb-2 text-white">Select Color:</label>
-              <input
-                type="color"
-                value={descriptionsColor}
-                onChange={(e) => setDescriptionsColor(e.target.value)}
-                className="w-full"
-              />
-              <input
-                type="text"
-                value={descriptionsColor}
-                onChange={(e) => setDescriptionsColor(e.target.value)}
-                className="w-full mt-2 px-2 py-1 bg-gray-700 text-white rounded"
-              /> */}
               </div>
             )}
           </div>
@@ -1242,9 +1461,9 @@ setClientContractorData([...clientContractorData, {contractorNameValue: "",
               onClick={() => {
                 selectProject(project.id);
                 navigate(`/project/${project.id}`);
-                if (homeClick[project.id].elctronicHomeClick ){
-                  navigate("/project/selection")}
-              
+                if (homeClick[project.id].elctronicHomeClick) {
+                  navigate("/project/selection");
+                }
               }}
               className="w-full h-full"
             >

@@ -19,6 +19,7 @@ import {
   clientFormDataAtom,
   errorsAtom,
   formDataAtom,
+  isExistingProjectAtom,
   itemErrorsAtom,
   itemSelectionDataAtom,
   labourErrorsAtom,
@@ -57,6 +58,7 @@ const InvoiceSelection = () => {
   //labour data
   const [labourStateVariable] = useAtom(labourStateAtom);
   const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
+  const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(isExistingProjectAtom)
 
   //tripcharge
   const [tripCharge] = useAtom(tripChargeAtom);
@@ -277,6 +279,16 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     );
   
     if (currentStepConfig?.validateFn()) {
+      if (activeSteps.electricalSteps === 4){
+        setIsExistingProjectVariable((prev) => {
+          const updated = [...prev];
+          // Update the value for the active tab
+          updated[activeTabIndex] = { isExistingProject: true };
+      
+          return updated;
+        });
+      }
+      
       const nextStep = activeSteps.electricalSteps + 1;
       updateSteps(activeTabIndex, { electricalSteps: nextStep });
   
@@ -300,14 +312,21 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       console.log("Proceeding to the next step...");
     } else {
       console.error("Form has errors:", errors);
+      setIsExistingProjectVariable((prev) => {
+        const updated = [...prev];
+        // Update the value for the active tab
+        updated[activeTabIndex] = { isExistingProject: false };
+    
+        return updated;
+      });
     }
   };
   
 
   const handleCloseForm = () => {
-    navigate(-1);
+    navigate("/project/bill");
     updateSteps(activeTabIndex, {
-      electricalSteps:1,
+      electricalSteps:11,
     });
   };
 

@@ -1,12 +1,13 @@
-import { activeDropdownAtom, descriptionsColorAtom, labelColorAtom, outlineColorAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom, valuesColorAtom } from "../../variables/NavbarVariables";
+import { clientFormDataAtom } from "../../variables/electricalInvoiceVariable";
+import { activeDropdownAtom, activeTabIndexAtom, colorChangeAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom } from "../../variables/NavbarVariables";
 import { useAtom } from "jotai";
 import React from "react";
 
 const InvoiceBill: React.FC = () => {
-  const [labelColor,] = useAtom(labelColorAtom);
-    const [outlineColor, ] = useAtom(outlineColorAtom);
-    const [valuesColor, ] = useAtom(valuesColorAtom);
-    const [descriptionsColor, ] = useAtom(descriptionsColorAtom);
+  const [colorChange, ] = useAtom(colorChangeAtom)
+  const [activeTabIndex, ] = useAtom(activeTabIndexAtom);
+
+  const [clientFormData] = useAtom(clientFormDataAtom);
     const [, setActiveDropdown] = useAtom(activeDropdownAtom);
       const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
         const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
@@ -20,14 +21,16 @@ const InvoiceBill: React.FC = () => {
         setShowLabalColorPicker(false);
         setShowOutlineColorPicker(false);
       }
+
+  const activeClientData = clientFormData[activeTabIndex]
   const invoiceData = {
     title: "Invoice Type",
     invoiceNumber: "#00000",
     dateOfIssue: "10/21/2024",
     billedTo: {
-      name: "Thomas Residence",
-      address: "123 Example Ave.",
-      city: "Beverly Hills, CA",
+      name: activeClientData.clientName? activeClientData.clientName:"Thomas Residence",
+      address: activeClientData.address?activeClientData.address:"123 Example Ave.",
+      city: activeClientData.city?activeClientData.city:"Beverly Hills, CA",
     },
     items: [
       { description: "Switches & Installations", unitCost: 50, quantity: 10 },
@@ -51,6 +54,8 @@ const InvoiceBill: React.FC = () => {
   const calculateTax = () => (calculateSubtotal() * invoiceData.taxRate) / 100;
 
   const calculateTotal = () => calculateSubtotal() + calculateTax();
+
+  const activeColorData = colorChange[activeTabIndex]
   return (
     <div onClick={handleClickEvent} className="flex justify-center pt-[24rem] pb-8 items-center w-full h-fit bg-transparent overflow-y-scroll">
     <div className="flex flex-col items-center gap-10 w-[782px] h-fit bg-white">
@@ -67,7 +72,7 @@ const InvoiceBill: React.FC = () => {
           </div>
           {/* Date of Issue */}
           <div className="flex flex-col w-fit h-fit bg-transparent">
-            <p style={{color:labelColor}} className="text-xl font-bold  bg-transparent">DATE OF ISSUE</p>
+            <p style={{color:activeColorData.labelColor}} className="text-xl font-bold  bg-transparent">DATE OF ISSUE</p>
             <p className="text-sm text-[#00000099]  bg-transparent">
               {invoiceData.dateOfIssue}
             </p>
@@ -82,7 +87,7 @@ const InvoiceBill: React.FC = () => {
           <div className="grid grid-cols-2 gap-6 bg-transparent">
             {/* Billed To */}
             <div>
-              <p style={{color:labelColor}} className="text-xl font-bold bg-transparent">BILLED TO</p>
+              <p style={{color:activeColorData.labelColor}} className="text-xl font-bold bg-transparent">BILLED TO</p>
               <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.name}</p>
               <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.address}</p>
               <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.city}</p>
@@ -95,8 +100,8 @@ const InvoiceBill: React.FC = () => {
           {/* Table Header */}
           <div className="flex justify-between items-center border-b-4   bg-transparent py-3 text-xl font-bold text-[#00000099] "
           style={{ 
-            borderColor: outlineColor,
-            color:labelColor
+            borderColor: activeColorData.outlineColor,
+            color:activeColorData.labelColor
 
            }}
           >
@@ -115,17 +120,17 @@ const InvoiceBill: React.FC = () => {
             <div
               key={index}
               className="flex justify-between items-center py-3 border-b-2 bg-transparent text-gray-800"
-              style={{ borderColor: outlineColor }}
+              style={{ borderColor: activeColorData.outlineColor }}
             >
               {/* DESCRIPTION */}
-              <p style={{color:descriptionsColor}} className="flex-1 text-left bg-transparent">{item.description}</p>
+              <p style={{color:activeColorData.descriptionsColor}} className="flex-1 text-left bg-transparent">{item.description}</p>
               {/* Smaller Fields on the Right */}
               <div className="flex gap-10 bg-transparent">
-                <p style={{color:valuesColor}} className="w-[150px] text-center bg-transparent">
+                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">
                   ${item.unitCost.toFixed(2)}
                 </p>
-                <p style={{color:valuesColor}} className="w-[150px] text-center bg-transparent">{item.quantity}</p>
-                <p style={{color:valuesColor}} className="w-[150px] text-center bg-transparent">
+                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">{item.quantity}</p>
+                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">
                   ${(item.unitCost * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -142,9 +147,9 @@ const InvoiceBill: React.FC = () => {
           <div className="flex justify-between items-center mb-6 bg-transparent">
             <div>
               <p
-              style={{color:labelColor}}
+              style={{color:activeColorData.labelColor}}
                className="text-xl font-bold bg-transparent">INVOICE TOTAL</p>
-              <p style={{color:valuesColor}} className="text-[52px] font-[400] bg-transparent">
+              <p style={{color:activeColorData.valuesColor}} className="text-[52px] font-[400] bg-transparent">
                 ${calculateTotal().toFixed(2)}
               </p>
             </div>
@@ -154,26 +159,26 @@ const InvoiceBill: React.FC = () => {
           <div className="space-y-2 text-right bg-transparent">
             <div className="flex gap-6 justify-between mb-5 bg-transparent">
               <p className="font-bold text-xl text-[#000000] bg-transparent">SUBTOTAL</p>
-              <p style={{color:valuesColor}} className="font-bold text-xl bg-transparent">${calculateSubtotal().toFixed(2)}</p>
+              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateSubtotal().toFixed(2)}</p>
             </div>
             <div className="flex gap-6 justify-between mb-2 bg-transparent">
               <p className="font-bold text-xl text-[#000000] bg-transparent">(TAX RATE) {invoiceData.taxRate}%</p>
-              <p style={{color:valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
+              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
             </div>
             <div className="flex gap-6 justify-between mb-2 bg-transparent">
               <p className="font-bold text-xl text-[#000000] bg-transparent">TAX</p>
-              <p style={{color:valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
+              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
             </div>
             <div className="flex gap-6 justify-between mb-2 bg-transparent">
               <p className="font-bold text-xl text-[#000000] bg-transparent">TOTAL</p>
-              <p style={{color:valuesColor}} className="font-bold text-xl bg-transparent">${calculateTotal().toFixed(2)}</p>
+              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTotal().toFixed(2)}</p>
             </div>
           </div>
           </div>
 
           {/* Terms */}
           <p className="flex flex-col mt-6 text-xl text-gray-500 bg-transparent">
-            <span style={{color:labelColor}} className="font-bold text-xl  bg-transparent">TERMS</span>
+            <span style={{color:activeColorData.labelColor}} className="font-bold text-xl  bg-transparent">TERMS</span>
             <span className="font-[400] text-xl text-[#000000] bg-transparent"> 
             {invoiceData.terms}
             </span>
