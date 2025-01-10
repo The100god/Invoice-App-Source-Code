@@ -7,25 +7,31 @@ import {
   newMaterialVariableErrorAtom,
   openAddNewMaterialAtom,
 } from "../../variables/electricalInvoiceVariable";
-import { activeTabIndexAtom } from "../../variables/NavbarVariables";
+// import { activeTabIndexAtom } from "../../variables/NavbarVariables";
 import { IoClose } from "react-icons/io5";
 import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
-import { addNewMaterialValidate } from "../formValidation/electricalFormValidatin/AddNewMeterialValidation";
+import { selectMaterialValidate } from "../formValidation/electricalFormValidatin/SelectMaterialPageValidation";
+import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
 
-const AddNewMaterialPopUp = () => {
+const SelectMaterialPage = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const index1 = Number(searchParams.get("index1"));
+  const index2 = Number(searchParams.get("index2"));
   const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
   const [newMaterialError, setNewMaterialError] = useAtom(
     newMaterialVariableErrorAtom
   );
-  const [newMaterialIndex, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
-  const [activeTabIndex] = useAtom(activeTabIndexAtom);
-  const activeNewMaterialIndex =
-    newMaterialIndex[activeTabIndex].activeNewMaterialIndex;
+  const [, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
+//   const [activeTabIndex] = useAtom(activeTabIndexAtom);
+  const activeNewMaterialIndex = index2
+    
   const activeNewMaterialData =
-    newMaterial[activeTabIndex][activeNewMaterialIndex];
+    newMaterial[index1][activeNewMaterialIndex];
   const activeNewMaterialError =
-    newMaterialError[activeTabIndex][activeNewMaterialIndex];
+    newMaterialError[index1][activeNewMaterialIndex];
 
       const [,setOpenAddNewMaterial] = useAtom(openAddNewMaterialAtom)
     
@@ -33,26 +39,26 @@ const AddNewMaterialPopUp = () => {
 
   const computeTotal = (): string => {
     const unitPrice =
-      activeNewMaterialData.productLinkAmount === "0"
+      activeNewMaterialData?.productLinkAmount === "0"
         ? 10
-        : parseInt(activeNewMaterialData.productLinkAmount, 10); // Example unit price per item
-    const total = activeNewMaterialData.quantity * unitPrice;
+        : parseInt(activeNewMaterialData?.productLinkAmount, 10); // Example unit price per item
+    const total = activeNewMaterialData?.quantity * unitPrice;
     grandTot = total; // Store total as a number
     return total.toFixed(2); // Return total as a string with 2 decimal places
   };
 
   const computeGrandTotal = (): number => {
-    if (!activeNewMaterialData.isCommission) {
+    if (!activeNewMaterialData?.isCommission) {
       return 0; // If commission is not applicable, return 0
     }
 
     // Ensure grandTot and commissionValue are numbers
     const grandTotal = Number(grandTot) || 0;
-    const commission = Number(activeNewMaterialData.commissionValue) || 0;
+    const commission = Number(activeNewMaterialData?.commissionValue) || 0;
 
     let grandPrice: number;
 
-    if (activeNewMaterialData.commissionType === "$") {
+    if (activeNewMaterialData?.commissionType === "$") {
       // Flat commission
       grandPrice = grandTotal + commission;
     } else {
@@ -69,8 +75,8 @@ const AddNewMaterialPopUp = () => {
   ) => {
     setNewMaterial((prev) => {
       const updated = [...prev];
-      updated[activeTabIndex][activeNewMaterialIndex] = {
-        ...updated[activeTabIndex][activeNewMaterialIndex],
+      updated[index1][activeNewMaterialIndex] = {
+        ...updated[index1][activeNewMaterialIndex],
         [key]: value,
       };
       return updated;
@@ -82,8 +88,8 @@ const AddNewMaterialPopUp = () => {
     updateItemData("quantity", quantity);
     setNewMaterialError((prev) => {
       const updated = [...prev];
-      updated[activeTabIndex][activeNewMaterialIndex] = {
-        ...updated[activeTabIndex][activeNewMaterialIndex],
+      updated[index1][activeNewMaterialIndex] = {
+        ...updated[index1][activeNewMaterialIndex],
         quantity: "",
       };
       return updated;
@@ -93,8 +99,8 @@ const AddNewMaterialPopUp = () => {
     updateItemData("commissionValue", value);
     setNewMaterialError((prev) => {
       const updated = [...prev];
-      updated[activeTabIndex][activeNewMaterialIndex] = {
-        ...updated[activeTabIndex][activeNewMaterialIndex],
+      updated[index1][activeNewMaterialIndex] = {
+        ...updated[index1][activeNewMaterialIndex],
         commissionValue: "",
       };
       return updated;
@@ -104,15 +110,15 @@ const AddNewMaterialPopUp = () => {
   const handleCancel = () => {
     setOpenAddNewMaterial((prev)=>{
       const updated = [...prev]
-      updated[activeTabIndex] = {
-        // openAddNewMaterialPopUp:!updated[activeTabIndex].openAddNewMaterialPopUp
+      updated[index1] = {
+        // openAddNewMaterialPopUp:!updated[index1].openAddNewMaterialPopUp
         openAddNewMaterialPopUp:false
       }
       return updated
     })
 
     const updatedAddNewMaterial = newMaterial.map((tab, tabIndex) => {
-      if (tabIndex === activeTabIndex) {
+      if (tabIndex === index1) {
         return tab.filter((_, index) => index !== activeNewMaterialIndex);
       }
       return tab;
@@ -121,30 +127,37 @@ const AddNewMaterialPopUp = () => {
     setNewMaterial(updatedAddNewMaterial);
     setNewMaterialIndex((prev)=>{
       const updated = [...prev]
-      updated[activeTabIndex] = {
-        activeNewMaterialIndex:updated[activeTabIndex].activeNewMaterialIndex === 0? 0 : updated[activeTabIndex].activeNewMaterialIndex -1
+      updated[index1] = {
+        activeNewMaterialIndex:updated[index1].activeNewMaterialIndex === 0? 0 : updated[index1].activeNewMaterialIndex -1
       }
       return updated
     })
     // console.log(newMaterial)
   };
   const handleSave = () => {
-    if(addNewMaterialValidate({newMaterial, activeTabIndex, activeNewMaterialIndex, newMaterialError, setNewMaterialError})){
+    if(selectMaterialValidate({newMaterial, index1, activeNewMaterialIndex, newMaterialError, setNewMaterialError})){
       
       setOpenAddNewMaterial((prev)=>{
         const updated = [...prev]
-        updated[activeTabIndex] = {
-          // openAddNewMaterialPopUp:!updated[activeTabIndex].openAddNewMaterialPopUp
+        updated[index1] = {
+          // openAddNewMaterialPopUp:!updated[index1].openAddNewMaterialPopUp
           openAddNewMaterialPopUp:false
         }
         return updated
       })
-      // console.log("add new material is saved")
-      toast.success("Material Added succesfully")
+      console.log("add new material is saved")
+
+      toast.success(`Material ${index2+1} is Saved!`,{
+        position:"bottom-right"
+      })
+      
     }else{
-      console.log("Please add new material")
-      toast.info("Material not added!")
+        console.log("Please add new material")
+        toast.info(`Material ${index2+1} is not changed!`, {
+            position:"bottom-right"
+          })
     }
+    navigate("/project/selection");
   };
 
   //   console.log(itemSelectionData)
@@ -158,7 +171,7 @@ const AddNewMaterialPopUp = () => {
           <div className="flex flex-col justify-center w-full items-center gap-4 h-[fit-content] px-6 py-6 bg-transparent">
             <div className="flex flex-col justify-center w-full items-center gap-4 h-[fit-content] bg-transparent">
               <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">
-                Add New Meterial
+                Material {" "} {index2+1}
               </h1>
             </div>
           </div>
@@ -208,16 +221,16 @@ const AddNewMaterialPopUp = () => {
                       { value: "40amp Breaker", label: "40amp Breaker" },
                       { value: "50amp Breaker", label: "50amp Breaker" },
                     ]}
-                    selectedValue={activeNewMaterialData.selectedItem}
+                    selectedValue={activeNewMaterialData?.selectedItem}
                     onChange={(value) => updateItemData("selectedItem", value)}
-                    error={activeNewMaterialError.selectedItem}
-                    activeTabIndex={activeTabIndex}
+                    error={activeNewMaterialError?.selectedItem}
+                    activeTabIndex={index1}
                     width={577}
                     height={55}
                   />
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-                    {activeNewMaterialData.selectedItem === "outlet" && (
+                    {activeNewMaterialData?.selectedItem === "outlet" && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection using RadioGroup */}
                         <Dropdown
@@ -227,10 +240,10 @@ const AddNewMaterialPopUp = () => {
                             { value: "LeGrand", label: "LeGrand" },
                             { value: "Lutron", label: "Lutron" },
                           ]}
-                          selectedValue={activeNewMaterialData.brand}
+                          selectedValue={activeNewMaterialData?.brand}
                           onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError.brand}
-                          activeTabIndex={activeTabIndex}
+                          error={activeNewMaterialError?.brand}
+                          activeTabIndex={index1}
                           width={259}
                           height={55}
                         />
@@ -242,10 +255,10 @@ const AddNewMaterialPopUp = () => {
                             { value: "Decora", label: "Decora" },
                             { value: "Duplex", label: "Duplex" },
                           ]}
-                          selectedValue={activeNewMaterialData.style}
+                          selectedValue={activeNewMaterialData?.style}
                           onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError.style}
-                          activeTabIndex={activeTabIndex}
+                          error={activeNewMaterialError?.style}
+                          activeTabIndex={index1}
                           width={158}
                           height={55}
                         />
@@ -258,7 +271,7 @@ const AddNewMaterialPopUp = () => {
                       "30amp Breaker",
                       "40amp Breaker",
                       "50amp Breaker",
-                    ].includes(activeNewMaterialData.selectedItem) && (
+                    ].includes(activeNewMaterialData?.selectedItem) && (
                       <div className=" flex flex-col justify-between items-start gap-4 w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
@@ -269,10 +282,10 @@ const AddNewMaterialPopUp = () => {
                             { value: "Murray", label: "Murray" },
                             { value: "Square", label: "Square" },
                           ]}
-                          selectedValue={activeNewMaterialData.brand}
+                          selectedValue={activeNewMaterialData?.brand}
                           onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError.brand}
-                          activeTabIndex={activeTabIndex}
+                          error={activeNewMaterialError?.brand}
+                          activeTabIndex={index1}
                           width={336}
                           height={55}
                         />
@@ -284,10 +297,10 @@ const AddNewMaterialPopUp = () => {
                               { value: "2-Pole", label: "2-Pole" },
                               { value: "3-Pole", label: "3-Pole" },
                             ]}
-                            selectedValue={activeNewMaterialData.style}
+                            selectedValue={activeNewMaterialData?.style}
                             onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError.style}
-                            activeTabIndex={activeTabIndex}
+                            error={activeNewMaterialError?.style}
+                            activeTabIndex={index1}
                             width={255}
                             height={55}
                           />
@@ -298,10 +311,10 @@ const AddNewMaterialPopUp = () => {
                               { value: "GFCI", label: "GFCI" },
                               { value: "AFCI", label: "AFCI" },
                             ]}
-                            selectedValue={activeNewMaterialData.style}
+                            selectedValue={activeNewMaterialData?.style}
                             onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError.style}
-                            activeTabIndex={activeTabIndex}
+                            error={activeNewMaterialError?.style}
+                            activeTabIndex={index1}
                             width={255}
                             height={55}
                           />
@@ -313,7 +326,7 @@ const AddNewMaterialPopUp = () => {
                       "switches",
                       "three-way-switches",
                       "four-way-switches",
-                    ].includes(activeNewMaterialData.selectedItem) && (
+                    ].includes(activeNewMaterialData?.selectedItem) && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
@@ -323,10 +336,10 @@ const AddNewMaterialPopUp = () => {
                             { value: "LeGrand", label: "LeGrand" },
                             { value: "Lutron", label: "Lutron" },
                           ]}
-                          selectedValue={activeNewMaterialData.brand}
+                          selectedValue={activeNewMaterialData?.brand}
                           onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError.brand}
-                          activeTabIndex={activeTabIndex}
+                          error={activeNewMaterialError?.brand}
+                          activeTabIndex={index1}
                           width={259}
                           height={55}
                         />
@@ -338,10 +351,10 @@ const AddNewMaterialPopUp = () => {
                             { value: "Toggle", label: "Toggle" },
                             { value: "Rocker", label: "Rocker" },
                           ]}
-                          selectedValue={activeNewMaterialData.style}
+                          selectedValue={activeNewMaterialData?.style}
                           onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError.style}
-                          activeTabIndex={activeTabIndex}
+                          error={activeNewMaterialError?.style}
+                          activeTabIndex={index1}
                           width={158}
                           height={55}
                         />
@@ -357,14 +370,14 @@ const AddNewMaterialPopUp = () => {
                       </label>
                       <input
                         type="number"
-                        value={activeNewMaterialData.quantity}
+                        value={activeNewMaterialData?.quantity}
                         min="1"
                         onChange={(e) => handleQuantityChange(e.target.value)}
                         className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] rounded-[10px] focus:border-[#00C5FF] w-full bg-transparent"
                       />
-                      {activeNewMaterialError.quantity && (
+                      {activeNewMaterialError?.quantity && (
                         <p className="text-red-500 bg-transparent">
-                          {activeNewMaterialError.quantity}
+                          {activeNewMaterialError?.quantity}
                         </p>
                       )}
                     </div>
@@ -376,10 +389,10 @@ const AddNewMaterialPopUp = () => {
                         { value: "White", label: "White" },
                         { value: "Black", label: "Black" },
                       ]}
-                      selectedValue={activeNewMaterialData.color}
+                      selectedValue={activeNewMaterialData?.color}
                       onChange={(value) => updateItemData("color", value)}
-                      error={activeNewMaterialError.color}
-                      activeTabIndex={activeTabIndex}
+                      error={activeNewMaterialError?.color}
+                      activeTabIndex={index1}
                       width={205}
                       height={55}
                     />
@@ -395,7 +408,7 @@ const AddNewMaterialPopUp = () => {
                   </div>
 
                   <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
-                    <ProductDetailsFetcher activeTabIndex={activeTabIndex} />
+                    <ProductDetailsFetcher activeTabIndex={index1} />
                   </div>
 
                   {/* Commission Type */}
@@ -409,7 +422,7 @@ const AddNewMaterialPopUp = () => {
                         onChange={() => {
                           updateItemData(
                             "isCommission",
-                            !activeNewMaterialData.isCommission
+                            !activeNewMaterialData?.isCommission
                           );
                         }}
                       />
@@ -425,12 +438,12 @@ const AddNewMaterialPopUp = () => {
                         { value: "%", label: "%" },
                         { value: "$", label: "$" },
                       ]}
-                      selectedValue={activeNewMaterialData.commissionType}
+                      selectedValue={activeNewMaterialData?.commissionType}
                       onChange={(value) =>
                         updateItemData("commissionType", value)
                       }
-                      error={activeNewMaterialError.commissionType}
-                      activeTabIndex={activeTabIndex}
+                      error={activeNewMaterialError?.commissionType}
+                      activeTabIndex={index1}
                       // width={commissionType ? 150 : 205}
                       width={180}
                       height={55}
@@ -441,17 +454,17 @@ const AddNewMaterialPopUp = () => {
                       {/* <label className="text-primary mb-1 bg-transparent">Quantity*</label> */}
                       <input
                         type="number"
-                        value={activeNewMaterialData.commissionValue}
+                        value={activeNewMaterialData?.commissionValue}
                         min="1"
                         onChange={(e) =>
                           handleCommissionvalueChange(e.target.value)
                         }
-                        disabled={!activeNewMaterialData.isCommission}
+                        disabled={!activeNewMaterialData?.isCommission}
                         className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-full"
                       />
-                      {activeNewMaterialError.commissionValue && (
+                      {activeNewMaterialError?.commissionValue && (
                         <p className="text-red-500 bg-transparent">
-                          {activeNewMaterialError.commissionValue}
+                          {activeNewMaterialError?.commissionValue}
                         </p>
                       )}
                     </div>
@@ -481,4 +494,4 @@ const AddNewMaterialPopUp = () => {
   );
 };
 
-export default AddNewMaterialPopUp;
+export default SelectMaterialPage;

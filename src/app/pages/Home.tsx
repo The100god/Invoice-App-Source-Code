@@ -37,6 +37,7 @@ const [, setHomeClick] = useAtom(homeClickAtom)
     setShowValueColorPicker(false);
     setShowLabalColorPicker(false);
     setShowOutlineColorPicker(false);
+
   };
 
   const handleStartFormClick = ()=>{
@@ -58,12 +59,14 @@ const [, setHomeClick] = useAtom(homeClickAtom)
           <div className="text-[32px] text-secondary font-[Helvetica Neue]">
             Welcome to
           </div>
-          <div className="text-[72px] font-[700] text-secondary mt-[-15px] font-[Helvetica Neue]">
-            Bill Smart
+          <div className="text-[72px] font-[700] text-secondary mt-[-15px] font-[Helvetica Neue] justify-center">
+            Wise Charge
+          </div>
+          <div className="text-[72px] font-[700] text-secondary mt-[-15px] font-[Helvetica Neue] justify-center">
+            2025
           </div>
           <p className="text-[18px] text-secondary mt-2 leading-5 font-[400] text-center w-full">
-            Your tool for creating efficient, detailed invoices, tailored for
-            electrical contractors in few steps.
+           An Invoice Generator for Electrical Contractors.
           </p>
           {/* <Link to={`/project/selection`}> */}
             <button onClick={handleStartFormClick} className="mt-10 text-center text-[20px] w-[210px] h-[50px] leading-[19.9px] bg-custom-gradient tracking-[0.02em] shadow-custom-inset bg-bgcol rounded-md text-secondary font-[700]">

@@ -32,12 +32,14 @@ import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
-import { activeTabIndexAtom } from "../../variables/NavbarVariables";
+import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom } from "../../variables/NavbarVariables";
 import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 
 const InvoiceSelection = () => {
   const divide = 100 / 9;
   const navigate = useNavigate();
+  const [, setActiveDropdown] = useAtom(activeDropdownAtom)
+  const [, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom)
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
   const [progress, setProgress] = useAtom(progressAtom);
   const [stepsData, setStepsData] = useAtom(stepsAtom);
@@ -58,7 +60,7 @@ const InvoiceSelection = () => {
   //labour data
   const [labourStateVariable] = useAtom(labourStateAtom);
   const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
-  const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(isExistingProjectAtom)
+  const [, setIsExistingProjectVariable] = useAtom(isExistingProjectAtom)
 
   //tripcharge
   const [tripCharge] = useAtom(tripChargeAtom);
@@ -330,8 +332,13 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     });
   };
 
+  const handleOnClick = ()=>{
+    setActiveDropdown(null);
+    setActiveInnerDropdown(null);
+  }
+
   return (
-    <div className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll ">
+    <div onClick={handleOnClick} className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll ">
       <div className=" m-auto relative h-[80%] w-[926px] flex flex-col items-center justify-between dark:bg-black shadow-[0_0px_12.2px_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0px_12.2px_5px_rgba(256,256,256,0.2)] rounded-[25px]">
         <span className=" absolute flex flex-col justify-center items-center top-2 right-2 w-6 h-6 text-[18px] cursor-pointer bg-transparent">
           <IoClose />

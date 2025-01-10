@@ -116,11 +116,11 @@ const App = () => {
   
 
   return (
-    <div  onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center ">
+    <div onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center ">
       <NavBar />
       {openAddNewMaterial[activeTabIndex].openAddNewMaterialPopUp && newMaterial[activeTabIndex].length>0?<AddNewMaterialPopUp/>:
       
-      <Outlet />
+      <Outlet/>
       }
       {costCalculator && (
         <div

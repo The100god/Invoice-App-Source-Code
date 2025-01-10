@@ -657,6 +657,12 @@ const Navbar: React.FC = () => {
     });
   };
 
+  const handleSelectMaterialClick = (index1:number, index2:number)=>{
+    console.log(index1, index2)
+    navigate(`/project/selectMaterial?index1=${index1}&index2=${index2}`);
+    setActiveDropdown(null);
+  }
+
   const handleAddNewMaterial = () => {
     const newMaterialObject = {
       selectedItem: "",
@@ -739,7 +745,7 @@ const Navbar: React.FC = () => {
 
   const handleEditDropdownAction = (op: string) => {
     //
-    console.log(op);
+    // console.log(op);
     if (op === "Add New Material") {
       handleAddNewMaterial();
       setOpenAddNewMaterial((prev) => {
@@ -753,7 +759,7 @@ const Navbar: React.FC = () => {
       setTimeout(() => {
         setActiveDropdown(null);
       }, 300);
-      console.log(newMaterial);
+      // console.log(newMaterial);
     }
   };
   const handleViewDropdownAction = (op: string) => {
@@ -828,7 +834,7 @@ const Navbar: React.FC = () => {
                         "Add New Material",
                         "Select Existing Project",
                         "Select Material",
-                        "Edit/Add Attribute",
+                        "Edit/Add Attribute",``
                       ].map((option) => (
                         <li
                           key={option}
@@ -848,7 +854,7 @@ const Navbar: React.FC = () => {
                                 <MdArrowRight />
                               </span>
                               {activeInnerDropdown === option && (
-                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                <div className="absolute left-[100%] top-0 mt-2 ml-6 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
                                   {
                                     <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
                                       {projects.map((mat, index) => (
@@ -877,8 +883,8 @@ const Navbar: React.FC = () => {
                                                   position: "bottom-right",
                                                 }
                                               );
-                                              setActiveDropdown(null);
                                             }
+                                            setActiveDropdown(null);
                                           }}
                                           className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
                                         >
@@ -901,25 +907,23 @@ const Navbar: React.FC = () => {
                                 <MdArrowRight />
                               </span>
                               {activeInnerDropdown === option && (
-                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
                                   {
-                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                    projects.map((project, ind)=>(
+                                    <ul key={ind} className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
                                       <li className="flex w-full p-2">
-                                        Project A
+                                       {project.name}
                                       </li>
-                                      {[
-                                        "-  Material 01",
-                                        "-  Material 02",
-                                        "-  Material 03",
-                                      ].map((mat, index) => (
+                                      {newMaterial[project.id].map((mat, index) => (
                                         <li
                                           key={index}
                                           className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                          onClick={()=>handleSelectMaterialClick(ind, index)}
                                         >
-                                          <span>{mat}</span>
+                                          <span>- Material {index+1}</span>
                                         </li>
                                       ))}
-                                    </ul>
+                                    </ul>))
                                   }
                                 </div>
                               )}
@@ -935,7 +939,7 @@ const Navbar: React.FC = () => {
                                 <MdArrowRight />
                               </span>
                               {activeInnerDropdown === option && (
-                                <div className="absolute left-[100%] top-0 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                                <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
                                   {
                                     <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
                                       {[
