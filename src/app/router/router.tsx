@@ -9,6 +9,7 @@ import { activeProjectIdAtom, projectsAtom } from "../../variables/NavbarVariabl
 import InvoiceBill from "../../components/invoiceBill/InvoiceBill";
 import SelectedExistingProject from "../../components/setectedExistingProject/SelectedExistingProject";
 import SelectMaterialPage from "../../components/selectMaterialPage/SelectMaterialPage";
+import EditAddAttributePopUp from "../../components/editAddAttribute/EditAddAttribute";
 // import InvoiceInfo from "../pages/InvoiceInfo";
 // import ClientDetails from "../pages/ClientDetails";
 // import ItemSelectionScreen from "../pages/ItemSelection";
@@ -25,6 +26,7 @@ const AppRouter = () => {
           <Route path="/project/bill" element={<InvoiceBill />} />
           <Route path="/project/selection" element={<InvoiceSelection />} />
           <Route path="/project/selectMaterial" element={<SelectMaterialPage/>} />
+          <Route path="/project/EditAddAttribute" element={<EditAddAttributePopUp/>} />
           <Route path="/project/existingPtoject" element={<SelectedExistingProject />} />
           {/* Initially open the first project */}
           {projects.map((project, ) => (

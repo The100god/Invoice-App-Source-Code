@@ -3,23 +3,35 @@
 <head>
   <style>
     body {
-      margin: 0;
-      background: url('../asserts/loading-screen.png') no-repeat center center/contain fixed;
-      background-size: contain;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      width: 100vw; 
       height: 100vh;
-      font-family: Arial, sans-serif;
-      color: white;
+      position: relative;
+      margin: 0;
+      padding: 0;
     }
-    h1 {
-      margin: auto;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+    body img{
+      width: 100%; 
+      height: 100%;
+  }
+    
+
+    .loading-text {
+      bottom: 160px;
+        display: flex;
+        left: 400px;
+        color: white;
+        position: absolute;
+        width: fit-content;
+        height: fit-content;
     }
   </style>
 </head>
 <body>
-  <h1>Loading...</h1>
+  <img src="../asserts/loading-screen.png">
+  <div class="loading-text">
+    <h1>Loading...</h1>
+  </div>
 </body>
 </html>
