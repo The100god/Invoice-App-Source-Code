@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 
 export const activeTabIndexAtom = atom<number>(0);
 
@@ -55,3 +55,10 @@ export interface elctronicFormClickStates{
 export const homeClickAtom = atom<elctronicFormClickStates[]>([{
     elctronicHomeClick:true,
 }])
+
+
+// zoom in/out
+
+
+export const zoomInOutAtom = atom<number>(100); // Default zoom level is 100%
+  

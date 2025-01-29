@@ -32,8 +32,9 @@ import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
-import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom } from "../../variables/NavbarVariables";
+import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableTripChargeAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
 import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
+import { useEffect } from "react";
 
 const InvoiceSelection = () => {
   const divide = 100 / 9;
@@ -44,6 +45,11 @@ const InvoiceSelection = () => {
   const [progress, setProgress] = useAtom(progressAtom);
   const [stepsData, setStepsData] = useAtom(stepsAtom);
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
+
+  const [zoomLevel, setZoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
+  const [disableTripCharge,] = useAtom(
+    disableTripChargeAtom
+  );
 
   //invoiceinfo
   const [formData] = useAtom(formDataAtom);
@@ -95,13 +101,22 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     if (activeSteps.electricalSteps === 1) {
       navigate(-1); // Navigate to the previous page
     } else {
-      updateSteps(activeTabIndex, {
-        electricalSteps: activeSteps.electricalSteps - 1,
-      });
+      if (disableTripCharge && activeSteps.electricalSteps===6){
+        updateSteps(activeTabIndex, {
+          electricalSteps: 4,
+        });
+      }else{
+        updateSteps(activeTabIndex, {
+          electricalSteps: activeSteps.electricalSteps - 1,
+        });
+      }
       setProgress((prevProgress) => {
         const updatedProgress = [...prevProgress];
+        const currentProgress = updatedProgress[activeTabIndex].progress;
         updatedProgress[activeTabIndex] = {
-          progress: updatedProgress[activeTabIndex].progress - Math.ceil(divide),
+          progress: disableTripCharge && activeSteps.electricalSteps === 6
+            ? currentProgress - 2 * Math.ceil(divide) // Adjust progress to skip Step 5
+            : currentProgress - Math.ceil(divide),
         };
         return updatedProgress;
       });
@@ -279,6 +294,35 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     const currentStepConfig = stepConfigurations.find(
       (config) => config.step === activeSteps.electricalSteps
     );
+
+    if (disableTripCharge && activeSteps.electricalSteps === 4) {
+      // Skip Step 5 and move directly to Step 6
+      const nextStep = 6;
+      updateSteps(activeTabIndex, { electricalSteps: nextStep });
+      setProgress((prevProgress) => {
+        const updatedProgress = [...prevProgress];
+        updatedProgress[activeTabIndex] = {
+          progress: nextStep >= 9 ? 100 : nextStep * Math.ceil(divide),
+        };
+        return updatedProgress;
+      });
+      console.log("Skipping Step 5 and proceeding to Step 6...");
+      return;
+    }
+    // if (disableTripCharge) {
+    //   // Skip Step 5 and move directly to Step 6
+    //   const nextStep = 7;
+    //   updateSteps(activeTabIndex, { electricalSteps: nextStep });
+    //   setProgress((prevProgress) => {
+    //     const updatedProgress = [...prevProgress];
+    //     updatedProgress[activeTabIndex] = {
+    //       progress: nextStep >= 9 ? 100 : nextStep * Math.ceil(divide),
+    //     };
+    //     return updatedProgress;
+    //   });
+    //   console.log("Skipping to Step 7...");
+    //   return;
+    // }
   
     if (currentStepConfig?.validateFn()) {
       if (activeSteps.electricalSteps === 4){
@@ -337,8 +381,42 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     setActiveInnerDropdown(null);
   }
 
+  
+    const handleZoom = (increment: boolean) => {
+      setZoomLevel((prevZoom) => {
+        const newZoom = increment ? prevZoom + 10 : prevZoom - 10;
+        return Math.min(Math.max(newZoom, 50), 450); // Restrict zoom level to 50%-450%
+      });
+    };
+  
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        console.log("e", e)
+        if (e.ctrlKey && e.key === "+") {
+          e.preventDefault(); // Prevent default browser zoom behavior
+          handleZoom(true);
+        } else if (e.ctrlKey && e.key === "-") {
+          e.preventDefault();
+          handleZoom(false);
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+
+    }, []);
+
+    console.log("zoomLevel", zoomLevel)
+
   return (
-    <div onClick={handleOnClick} className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll ">
+    <div style={{
+      transform: `scale(${zoomLevel / 100})`,
+      transformOrigin: "center center", // Ensure scaling happens from the top-left corner
+      // width: "100%", // Prevent layout shifts during scaling
+      // height: "100%", // Prevent layout shifts during scaling
+    }} onClick={handleOnClick} className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll overflow-hidden">
       <div className=" m-auto relative h-[80%] w-[926px] flex flex-col items-center justify-between dark:bg-black shadow-[0_0px_12.2px_8px_rgba(0,0,0,0.2)] dark:shadow-[0_0px_12.2px_5px_rgba(256,256,256,0.2)] rounded-[25px]">
         <span className=" absolute flex flex-col justify-center items-center top-2 right-2 w-6 h-6 text-[18px] cursor-pointer bg-transparent">
           <IoClose />

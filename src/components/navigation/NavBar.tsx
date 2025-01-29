@@ -25,6 +25,7 @@ import {
   showLabelColorPickerAtom,
   showOutlineColorPickerAtom,
   showValueColorPickerAtom,
+  zoomInOutAtom,
 } from "../../variables/NavbarVariables";
 import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
@@ -78,6 +79,9 @@ const Navbar: React.FC = () => {
   const [activeInnerDropdown, setActiveInnerDropdown] = useAtom(
     activeInnerDropdownAtom
   );
+
+    const [zoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
+  
 
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
@@ -773,6 +777,21 @@ const Navbar: React.FC = () => {
     console.log(op);
   };
 
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F2") {
+        toggleDropdown("File")
+        setIsRename(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <div
       id="titlebar"
@@ -992,6 +1011,8 @@ const Navbar: React.FC = () => {
                               // onClick={() => toggleInnerDropdown(option)}
                             >
                               <span>{option}</span>
+                              <span>{zoomLevel}%</span>
+
                               <span className="flex justify-center items-center">
                                 Ctrl + / -
                               </span>

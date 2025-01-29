@@ -114,6 +114,8 @@ const App = () => {
     localStorage.setItem("projects", JSON.stringify(projects));
   }, [projects]);
   
+  
+  
 
   return (
     <div onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center ">
