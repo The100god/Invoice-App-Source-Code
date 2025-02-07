@@ -20,3 +20,28 @@
   },
   "include": ["src/**/*"]
 }
+
+// {
+//   "compilerOptions": {
+//     "jsx": "react-jsx",
+//     "target": "ES6",
+//     "allowJs": true,
+//     "module": "ESNext",       // Use ESNext for ES modules
+//     "esModuleInterop": true,  // Allow mixing of import and require
+//     "forceConsistentCasingInFileNames": true,
+//     "skipLibCheck": true,
+//     "noImplicitAny": true,
+//     "sourceMap": true,
+//     "baseUrl": ".",
+//     "outDir": "dist",
+//     "strict": true,
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "paths": {
+//       "*": ["node_modules/*"],
+//       "@/*": ["./src/*"]
+//     }
+//   },
+//   "include": ["src/**/*.ts", "forge.config.ts", "src/backend/server.js"]
+// }
+

@@ -32,7 +32,7 @@ import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
-import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableTripChargeAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
+import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
 import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 import { useEffect } from "react";
 
@@ -50,7 +50,11 @@ const InvoiceSelection = () => {
   const [disableTripCharge,] = useAtom(
     disableTripChargeAtom
   );
-
+const [disableTax,] = useAtom(disableTaxAtom);
+  const [disableTermsCon,] = useAtom(disableTermsConAtom);
+  const [
+    disableContractorClientSignatures,
+  ] = useAtom(disableContractorClientSignaturesAtom);
   //invoiceinfo
   const [formData] = useAtom(formDataAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
@@ -97,138 +101,60 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     });
   };
 
+  
+
   const handleBack = () => {
     if (activeSteps.electricalSteps === 1) {
-      navigate(-1); // Navigate to the previous page
-    } else {
-      if (disableTripCharge && activeSteps.electricalSteps===6){
-        updateSteps(activeTabIndex, {
-          electricalSteps: 4,
-        });
-      }else{
-        updateSteps(activeTabIndex, {
-          electricalSteps: activeSteps.electricalSteps - 1,
-        });
-      }
-      setProgress((prevProgress) => {
-        const updatedProgress = [...prevProgress];
-        const currentProgress = updatedProgress[activeTabIndex].progress;
-        updatedProgress[activeTabIndex] = {
-          progress: disableTripCharge && activeSteps.electricalSteps === 6
-            ? currentProgress - 2 * Math.ceil(divide) // Adjust progress to skip Step 5
-            : currentProgress - Math.ceil(divide),
-        };
-        return updatedProgress;
-      });
+      navigate(-1);
+      return;
     }
+  
+    const stepsToSkip: number[] = [];
+  
+    if (disableTripCharge) stepsToSkip.push(5);
+    if (disableTax) stepsToSkip.push(6);
+    if (disableTermsCon) stepsToSkip.push(7);
+    if (disableContractorClientSignatures) stepsToSkip.push(8);
+  
+    const previousValidStep = (currentStep:number) => {
+      let step = currentStep - 1;
+      while (stepsToSkip.includes(step)) {
+        step--; // Skip disabled steps
+      }
+      return step;
+    };
+  
+    const prevStep = previousValidStep(activeSteps.electricalSteps);
+    updateSteps(activeTabIndex, { electricalSteps: prevStep });
+  
+    setProgress((prevProgress) => {
+      const updatedProgress = [...prevProgress];
+      updatedProgress[activeTabIndex] = {
+        progress: prevStep >= 9 ? 100 : prevStep * Math.ceil(divide),
+      };
+      return updatedProgress;
+    });
+  
+    console.log(`Going back to step ${prevStep}...`);
   };
+  
 
   const handleNext = () => {
-    // You can add your logic here if there's a 'next' page
-  //   if (
-  //     activeSteps.electricalSteps == 1 &&
-  //     validate({ formData, activeTabIndex, errors, setErrors })
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:2,
-  //     });
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (
-  //     activeSteps.electricalSteps == 2 &&
-  //     clientValidate({
-  //       clientFormData,
-  //       activeTabIndex,
-  //       clientErrors,
-  //       setClientErrors,
-  //     })
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:3,
-  //     });
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (
-  //     activeSteps.electricalSteps == 3 &&
-  //     itemValidate({
-  //       itemSelectionData,
-  //       activeTabIndex,
-  //       itemErrors,
-  //       setItemErrors,
-  //     })
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:4,
-  //     });
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (
-  //     activeSteps.electricalSteps == 4 &&
-  //     labourValidation({
-  //       labourStateVariable,
-  //       activeTabIndex,
-  //       labourErrors,
-  //       setLabourErrors,
-  //     })
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:5,
-  //     });
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (
-  //     activeSteps.electricalSteps == 5 &&
-  //     TripChargeValidation({
-  //       tripCharge,
-  //       activeTabIndex,
-  //       tripChargeError,
-  //       setTripChargeError,
-  //     })
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:6,
-  //     });
-  //     // console.log(steps)
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (activeSteps.electricalSteps == 6) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:7,
-  //     });
-  //     // console.log(steps)
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (activeSteps.electricalSteps == 7) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:8,
-  //     });
-  //     // console.log(steps)
-  //     setProgress(activeSteps.electricalSteps * Math.ceil(divide));
-  //   }
-  //   if (
-  //     clientContractorData[activeTabIndex].sign === "Yes"
-  //       ? activeSteps.electricalSteps == 8 &&
-  //         ClientContractorSignValidation({
-  //           clientContractorData, activeTabIndex,clientContractorErrors, 
-  //           setClientContractorErrors,
-  //         })
-  //       : activeSteps.electricalSteps == 8
-  //   ) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:9,
-  //     });
-  //     // console.log(steps)
-  //     setProgress(100);
-  //   }
-  //   if (activeSteps.electricalSteps == 9) {
-  //     updateSteps(activeTabIndex, {
-  //       electricalSteps:10,
-  //     });
-  //     // console.log(steps)
-  //     setProgress(100);
-  //   } else {
-  //     console.log("Form has errors:", errors);
-  //   }
+
+    const stepsToSkip: number[] = [];
+
+    if (disableTripCharge) stepsToSkip.push(5);
+    if (disableTax) stepsToSkip.push(6);
+    if (disableTermsCon) stepsToSkip.push(7);
+    if (disableContractorClientSignatures) stepsToSkip.push(8);
+
+    const nextValidStep = (currentStep:number) => {
+      let step = currentStep +1;
+      while (stepsToSkip.includes(step)){
+        step++
+      }
+      return step
+    }
 
   //   console.log("Proceeding to the next step...");
     const stepConfigurations = [
@@ -295,34 +221,6 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       (config) => config.step === activeSteps.electricalSteps
     );
 
-    if (disableTripCharge && activeSteps.electricalSteps === 4) {
-      // Skip Step 5 and move directly to Step 6
-      const nextStep = 6;
-      updateSteps(activeTabIndex, { electricalSteps: nextStep });
-      setProgress((prevProgress) => {
-        const updatedProgress = [...prevProgress];
-        updatedProgress[activeTabIndex] = {
-          progress: nextStep >= 9 ? 100 : nextStep * Math.ceil(divide),
-        };
-        return updatedProgress;
-      });
-      console.log("Skipping Step 5 and proceeding to Step 6...");
-      return;
-    }
-    // if (disableTripCharge) {
-    //   // Skip Step 5 and move directly to Step 6
-    //   const nextStep = 7;
-    //   updateSteps(activeTabIndex, { electricalSteps: nextStep });
-    //   setProgress((prevProgress) => {
-    //     const updatedProgress = [...prevProgress];
-    //     updatedProgress[activeTabIndex] = {
-    //       progress: nextStep >= 9 ? 100 : nextStep * Math.ceil(divide),
-    //     };
-    //     return updatedProgress;
-    //   });
-    //   console.log("Skipping to Step 7...");
-    //   return;
-    // }
   
     if (currentStepConfig?.validateFn()) {
       if (activeSteps.electricalSteps === 4){
@@ -335,7 +233,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         });
       }
       
-      const nextStep = activeSteps.electricalSteps + 1;
+      const nextStep = nextValidStep(activeSteps.electricalSteps);
       updateSteps(activeTabIndex, { electricalSteps: nextStep });
   
       setProgress((prevProgress) => {
@@ -391,7 +289,6 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
   
     useEffect(() => {
       const handleKeyDown = (e: KeyboardEvent) => {
-        console.log("e", e)
         if (e.ctrlKey && e.key === "+") {
           e.preventDefault(); // Prevent default browser zoom behavior
           handleZoom(true);
@@ -407,8 +304,6 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       };
 
     }, []);
-
-    console.log("zoomLevel", zoomLevel)
 
   return (
     <div style={{

@@ -1,10 +1,12 @@
 import { atom, useAtom } from "jotai";
 
+export const isEnterInvoiceAtom = atom<boolean>(false)
+
 export const activeTabIndexAtom = atom<number>(0);
 
 // Atom to store the list of projects
 export const projectsAtom = atom<{ name: string; id: number }[]>([
-    { name: "Untitled - Project 1", id: 0 },
+    // { name: "Untitled - Project 1", id: 0 },
 ]);
 
 // Atom to store the active project ID

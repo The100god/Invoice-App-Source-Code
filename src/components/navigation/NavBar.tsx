@@ -17,6 +17,7 @@ import {
   disableTermsConAtom,
   disableTripChargeAtom,
   homeClickAtom,
+  isEnterInvoiceAtom,
   projectMaterialDetailsAtom,
   projectsAtom,
   searchTermAtom,
@@ -73,6 +74,7 @@ declare global {
 
 const Navbar: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
+  const [isEnterInvoice, setISEnterInvoice] = useAtom(isEnterInvoiceAtom)
   const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
   const [activeDropdown, setActiveDropdown] = useAtom(activeDropdownAtom);
@@ -792,6 +794,14 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
+  const handleGoToHome = (e: React.MouseEvent<HTMLDivElement>)=>{
+    e.stopPropagation()
+    console.log("goto home")
+    navigate("/")
+    setISEnterInvoice(false)
+    setProjects([])
+  }
+
   return (
     <div
       id="titlebar"
@@ -801,7 +811,8 @@ const Navbar: React.FC = () => {
       <div className="flex justify-between w-full h-[44px] items-center px-4 py-2 ">
         {/* Left Side: Logo and Buttons */}
         <div className="flex items-center space-x-4 relative">
-          <div className="font-bold text-2xl">S</div>
+          <div id="title" onClick={handleGoToHome} className="font-bold text-2xl cursor-pointer">S</div>
+
           {["File", "Edit", "View", "Tools", "Share", "Help"].map((item) => (
             <div key={item} className="relative">
               <button
@@ -1328,8 +1339,9 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Second Row */}
+{/* Second Row */}
+      {isEnterInvoice &&
+      <>
       <div className="flex items-center justify-between w-full h-[44px] px-4 py-2 bg-[#1E1E1E] dark:bg-[#000000E5]">
         <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
           <div className="relative flex flex-row gap-3 justify-center items-center">
@@ -1528,6 +1540,7 @@ const Navbar: React.FC = () => {
           Add Panel
         </button>
       </div> */}
+      </>}
     </div>
   );
 };

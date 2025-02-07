@@ -10,6 +10,7 @@ import InvoiceBill from "../../components/invoiceBill/InvoiceBill";
 import SelectedExistingProject from "../../components/setectedExistingProject/SelectedExistingProject";
 import SelectMaterialPage from "../../components/selectMaterialPage/SelectMaterialPage";
 import EditAddAttributePopUp from "../../components/editAddAttribute/EditAddAttribute";
+import HomePage from "../pages/HomePage";
 // import InvoiceInfo from "../pages/InvoiceInfo";
 // import ClientDetails from "../pages/ClientDetails";
 // import ItemSelectionScreen from "../pages/ItemSelection";
@@ -22,7 +23,8 @@ const AppRouter = () => {
     <HashRouter>
       <Routes>
         <Route path="/" element={<App />} >
-          <Route index element={<Home />} />
+          {/* <Route index element={<Home />} /> */}
+          <Route index element={<HomePage />} />
           <Route path="/project/bill" element={<InvoiceBill />} />
           <Route path="/project/selection" element={<InvoiceSelection />} />
           <Route path="/project/selectMaterial" element={<SelectMaterialPage/>} />

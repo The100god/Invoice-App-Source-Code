@@ -9,7 +9,8 @@ import { newMaterialVariableAtom, openAddNewMaterialAtom } from "../variables/el
 import AddNewMaterialPopUp from "../components/addMaterialPopUp/AddNewMaterialPopUp";
 import { ToastContainer } from "react-toastify";
 const App = () => {
-  const [activeProjectId, ] = useAtom(activeProjectIdAtom);
+  // const navigate = useNavigate()
+  const [activeProjectId,] = useAtom(activeProjectIdAtom);
   const [projects, setProjects] = useAtom(projectsAtom);
   const [isDragging, setIsDragging] = useState<number | null>(null);
   const [isProjectDragging, setIsProjectDragging] = useState<number | null>(null);
@@ -38,6 +39,7 @@ const App = () => {
   const [openAddNewMaterial,] = useAtom(openAddNewMaterialAtom)
   const [activeTabIndex] = useAtom(activeTabIndexAtom)
 
+  
 
   useEffect(() => {
     const stopDragging = () => {
@@ -115,10 +117,12 @@ const App = () => {
   }, [projects]);
   
   
+
+  
   
 
   return (
-    <div onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center ">
+    <div onMouseMove={handlePanelMouseMove} className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center overflow-hidden">
       <NavBar />
       {openAddNewMaterial[activeTabIndex].openAddNewMaterialPopUp && newMaterial[activeTabIndex].length>0?<AddNewMaterialPopUp/>:
       
@@ -154,6 +158,8 @@ const App = () => {
         
       )}
       <ToastContainer/>
+
+      
     </div>
   );
 };

@@ -12,7 +12,7 @@ body #titlebar {
     user-select: none;
   }
   
-  body #titlebar button, svg {
+  body #titlebar button,body #title, svg {
     -webkit-app-region: no-drag;
   }
   body #titlebar #search, .icon {
