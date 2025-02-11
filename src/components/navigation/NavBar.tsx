@@ -74,7 +74,7 @@ declare global {
 
 const Navbar: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
-  const [isEnterInvoice, setISEnterInvoice] = useAtom(isEnterInvoiceAtom)
+  const [isEnterInvoice, setISEnterInvoice] = useAtom(isEnterInvoiceAtom);
   const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
   const [activeDropdown, setActiveDropdown] = useAtom(activeDropdownAtom);
@@ -82,8 +82,7 @@ const Navbar: React.FC = () => {
     activeInnerDropdownAtom
   );
 
-    const [zoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
-  
+  const [zoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
 
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
@@ -276,6 +275,8 @@ const Navbar: React.FC = () => {
         style: "",
         quantity: 1,
         color: "",
+        pole: "",
+        amp: "",
         commissionType: "",
         commissionValue: "",
         linkPoductType: "",
@@ -295,6 +296,8 @@ const Navbar: React.FC = () => {
         style: "",
         quantity: "",
         color: "",
+        pole: "",
+        amp: "",
         commissionType: "",
         commissionValue: "",
       },
@@ -663,17 +666,17 @@ const Navbar: React.FC = () => {
     });
   };
 
-  const handleSelectMaterialClick = (index1:number, index2:number)=>{
-    console.log(index1, index2)
+  const handleSelectMaterialClick = (index1: number, index2: number) => {
+    console.log(index1, index2);
     navigate(`/project/selectMaterial?index1=${index1}&index2=${index2}`);
     setActiveDropdown(null);
-  }
+  };
 
-  const handleEditAddAttributeClick = (index1:number, index2:number)=>{
-    console.log(index1, index2)
+  const handleEditAddAttributeClick = (index1: number, index2: number) => {
+    console.log(index1, index2);
     navigate(`/project/EditAddAttribute?index1=${index1}&index2=${index2}`);
     setActiveDropdown(null);
-  }
+  };
 
   const handleAddNewMaterial = () => {
     const newMaterialObject = {
@@ -682,6 +685,8 @@ const Navbar: React.FC = () => {
       style: "",
       quantity: 0,
       color: "",
+      pole: "",
+      amp: "",
       commissionType: "",
       commissionValue: "",
       linkProductType: "",
@@ -704,6 +709,8 @@ const Navbar: React.FC = () => {
             style: "",
             quantity: 1,
             color: "",
+            pole: "",
+            amp: "",
             commissionType: "",
             commissionValue: "",
             linkProductType: "",
@@ -728,6 +735,8 @@ const Navbar: React.FC = () => {
       style: "",
       quantity: "",
       color: "",
+      pole: "",
+      amp: "",
       commissionType: "",
       commissionValue: "",
     };
@@ -779,11 +788,10 @@ const Navbar: React.FC = () => {
     console.log(op);
   };
 
-
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "F2") {
-        toggleDropdown("File")
+        toggleDropdown("File");
         setIsRename(true);
       }
     };
@@ -794,13 +802,13 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  const handleGoToHome = (e: React.MouseEvent<HTMLDivElement>)=>{
-    e.stopPropagation()
-    console.log("goto home")
-    navigate("/")
-    setISEnterInvoice(false)
-    setProjects([])
-  }
+  const handleGoToHome = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    console.log("goto home");
+    navigate("/");
+    setISEnterInvoice(false);
+    setProjects([]);
+  };
 
   return (
     <div
@@ -811,7 +819,13 @@ const Navbar: React.FC = () => {
       <div className="flex justify-between w-full h-[44px] items-center px-4 py-2 ">
         {/* Left Side: Logo and Buttons */}
         <div className="flex items-center space-x-4 relative">
-          <div id="title" onClick={handleGoToHome} className="font-bold text-2xl cursor-pointer">S</div>
+          <div
+            id="title"
+            onClick={handleGoToHome}
+            className="font-bold text-2xl cursor-pointer"
+          >
+            S
+          </div>
 
           {["File", "Edit", "View", "Tools", "Share", "Help"].map((item) => (
             <div key={item} className="relative">
@@ -870,7 +884,8 @@ const Navbar: React.FC = () => {
                         "Add New Material",
                         "Select Existing Project",
                         "Select Material",
-                        "Edit/Add Attribute",``
+                        "Edit/Add Attribute",
+                        ``,
                       ].map((option) => (
                         <li
                           key={option}
@@ -893,7 +908,7 @@ const Navbar: React.FC = () => {
                                 <div className="absolute left-[100%] top-0 mt-2 ml-6 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
                                   {
                                     <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                      {projects.map((mat, index) => (
+                                      {projects?.map((mat, index) => (
                                         <li
                                           key={index}
                                           onClick={() => {
@@ -944,23 +959,32 @@ const Navbar: React.FC = () => {
                               </span>
                               {activeInnerDropdown === option && (
                                 <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
-                                  {
-                                    projects.map((project, ind)=>(
-                                    <ul key={ind} className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                  {projects?.map((project, ind) => (
+                                    <ul
+                                      key={ind}
+                                      className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
+                                    >
                                       <li className="flex w-full p-2">
-                                       {project.name}
+                                        {project.name}
                                       </li>
-                                      {newMaterial[project.id].map((mat, index) => (
-                                        <li
-                                          key={index}
-                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          onClick={()=>handleSelectMaterialClick(ind, index)}
-                                        >
-                                          <span>- Material {index+1}</span>
-                                        </li>
-                                      ))}
-                                    </ul>))
-                                  }
+                                      {newMaterial[project.id]?.map(
+                                        (mat, index) => (
+                                          <li
+                                            key={index}
+                                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                            onClick={() =>
+                                              handleSelectMaterialClick(
+                                                ind,
+                                                index
+                                              )
+                                            }
+                                          >
+                                            <span>- Material {index + 1}</span>
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -976,23 +1000,32 @@ const Navbar: React.FC = () => {
                               </span>
                               {activeInnerDropdown === option && (
                                 <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
-                                  {
-                                    projects.map((project, ind)=>(
-                                    <ul key={ind} className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                  {projects?.map((project, ind) => (
+                                    <ul
+                                      key={ind}
+                                      className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
+                                    >
                                       <li className="flex w-full p-2">
-                                       {project.name}
+                                        {project.name}
                                       </li>
-                                      {newMaterial[project.id].map((mat, index) => (
-                                        <li
-                                          key={index}
-                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          onClick={()=>handleEditAddAttributeClick(ind, index)}
-                                        >
-                                          <span>- Material {index+1}</span>
-                                        </li>
-                                      ))}
-                                    </ul>))
-                                  }
+                                      {newMaterial[project.id]?.map(
+                                        (mat, index) => (
+                                          <li
+                                            key={index}
+                                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                            onClick={() =>
+                                              handleEditAddAttributeClick(
+                                                ind,
+                                                index
+                                              )
+                                            }
+                                          >
+                                            <span>- Material {index + 1}</span>
+                                          </li>
+                                        )
+                                      )}
+                                    </ul>
+                                  ))}
                                 </div>
                               )}
                             </div>
@@ -1164,7 +1197,7 @@ const Navbar: React.FC = () => {
                                 <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
                                   {
                                     <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                      {projects.map((mat, index) => (
+                                      {projects?.map((mat, index) => (
                                         <li
                                           key={index}
                                           className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
@@ -1339,192 +1372,197 @@ const Navbar: React.FC = () => {
           </div>
         </div>
       </div>
-{/* Second Row */}
-      {isEnterInvoice &&
-      <>
-      <div className="flex items-center justify-between w-full h-[44px] px-4 py-2 bg-[#1E1E1E] dark:bg-[#000000E5]">
-        <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
-          <div className="relative flex flex-row gap-3 justify-center items-center">
-            <span
-              style={{
-                backgroundColor: colorChange[activeTabIndex].outlineColor,
-              }}
-              className="flex w-[11px] h-[11px]"
-            ></span>
-            <button
-              onClick={() => {
-                setShowOutlineColorPicker(!showOutlineColorPicker);
-                setShowDescriptionsColorPicker(false);
-                setShowValueColorPicker(false);
-                setShowLabalColorPicker(false);
-              }}
-              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-            >
-              Outline
-            </button>
-            {showOutlineColorPicker && (
-              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                <ColorPicker
-                  onColorChange={(color) =>
-                    handelColorPickerAction("outlineColor", color)
-                  }
-                  initialColor={colorChange[activeTabIndex].outlineColor}
-                />
+      {/* Second Row */}
+      {isEnterInvoice && (
+        <>
+          <div className="flex items-center justify-between w-full h-[44px] px-4 py-2 bg-[#1E1E1E] dark:bg-[#000000E5]">
+            <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
+              <div className="relative flex flex-row gap-3 justify-center items-center">
+                <span
+                  style={{
+                    backgroundColor: colorChange[activeTabIndex].outlineColor,
+                  }}
+                  className="flex w-[11px] h-[11px]"
+                ></span>
+                <button
+                  onClick={() => {
+                    setShowOutlineColorPicker(!showOutlineColorPicker);
+                    setShowDescriptionsColorPicker(false);
+                    setShowValueColorPicker(false);
+                    setShowLabalColorPicker(false);
+                  }}
+                  className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+                >
+                  Outline
+                </button>
+                {showOutlineColorPicker && (
+                  <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                    <ColorPicker
+                      onColorChange={(color) =>
+                        handelColorPickerAction("outlineColor", color)
+                      }
+                      initialColor={colorChange[activeTabIndex].outlineColor}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="relative flex flex-row gap-3 justify-center items-center">
-            <span
-              style={{
-                backgroundColor: colorChange[activeTabIndex].labelColor,
-              }}
-              className="flex w-[11px] h-[11px]"
-            ></span>
-            <button
-              onClick={() => {
-                setShowLabalColorPicker(!showLabalColorPicker);
-                setShowDescriptionsColorPicker(false);
-                setShowValueColorPicker(false);
-                setShowOutlineColorPicker(false);
-              }}
-              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-            >
-              Labels
-            </button>
-            {showLabalColorPicker && (
-              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                <ColorPicker
-                  onColorChange={(color) =>
-                    handelColorPickerAction("labelColor", color)
-                  }
-                  initialColor={colorChange[activeTabIndex].labelColor}
-                />
+              <div className="relative flex flex-row gap-3 justify-center items-center">
+                <span
+                  style={{
+                    backgroundColor: colorChange[activeTabIndex].labelColor,
+                  }}
+                  className="flex w-[11px] h-[11px]"
+                ></span>
+                <button
+                  onClick={() => {
+                    setShowLabalColorPicker(!showLabalColorPicker);
+                    setShowDescriptionsColorPicker(false);
+                    setShowValueColorPicker(false);
+                    setShowOutlineColorPicker(false);
+                  }}
+                  className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+                >
+                  Labels
+                </button>
+                {showLabalColorPicker && (
+                  <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                    <ColorPicker
+                      onColorChange={(color) =>
+                        handelColorPickerAction("labelColor", color)
+                      }
+                      initialColor={colorChange[activeTabIndex].labelColor}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="relative flex flex-row gap-3 justify-center items-center">
-            <span
-              style={{
-                backgroundColor: colorChange[activeTabIndex].valuesColor,
-              }}
-              className="flex w-[11px] h-[11px]"
-            ></span>
-            <button
-              onClick={() => {
-                setShowValueColorPicker(!showValueColorPicker);
-                setShowDescriptionsColorPicker(false);
-                setShowLabalColorPicker(false);
-                setShowOutlineColorPicker(false);
-              }}
-              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-            >
-              Values
-            </button>
-            {showValueColorPicker && (
-              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                <ColorPicker
-                  onColorChange={(color) =>
-                    handelColorPickerAction("valuesColor", color)
-                  }
-                  initialColor={colorChange[activeTabIndex].valuesColor}
-                />
+              <div className="relative flex flex-row gap-3 justify-center items-center">
+                <span
+                  style={{
+                    backgroundColor: colorChange[activeTabIndex].valuesColor,
+                  }}
+                  className="flex w-[11px] h-[11px]"
+                ></span>
+                <button
+                  onClick={() => {
+                    setShowValueColorPicker(!showValueColorPicker);
+                    setShowDescriptionsColorPicker(false);
+                    setShowLabalColorPicker(false);
+                    setShowOutlineColorPicker(false);
+                  }}
+                  className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+                >
+                  Values
+                </button>
+                {showValueColorPicker && (
+                  <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                    <ColorPicker
+                      onColorChange={(color) =>
+                        handelColorPickerAction("valuesColor", color)
+                      }
+                      initialColor={colorChange[activeTabIndex].valuesColor}
+                    />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="relative flex flex-row gap-3 justify-center items-center">
-            <span
-              style={{
-                backgroundColor: colorChange[activeTabIndex].descriptionsColor,
-              }}
-              className="flex w-[11px] h-[11px]"
-            ></span>
-            <button
-              onClick={() => {
-                setShowDescriptionsColorPicker(!showDescriptionsColorPicker);
-                setShowValueColorPicker(false);
-                setShowLabalColorPicker(false);
-                setShowOutlineColorPicker(false);
-              }}
-              className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
-            >
-              Descriptions
-            </button>
-            {showDescriptionsColorPicker && (
-              <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
-                <ColorPicker
-                  onColorChange={(color) =>
-                    handelColorPickerAction("descriptionsColor", color)
-                  }
-                  initialColor={colorChange[activeTabIndex].descriptionsColor}
-                />
+              <div className="relative flex flex-row gap-3 justify-center items-center">
+                <span
+                  style={{
+                    backgroundColor:
+                      colorChange[activeTabIndex].descriptionsColor,
+                  }}
+                  className="flex w-[11px] h-[11px]"
+                ></span>
+                <button
+                  onClick={() => {
+                    setShowDescriptionsColorPicker(
+                      !showDescriptionsColorPicker
+                    );
+                    setShowValueColorPicker(false);
+                    setShowLabalColorPicker(false);
+                    setShowOutlineColorPicker(false);
+                  }}
+                  className="hover:underline focus:outline-none font-[400] text-[14px] leading-[13.93px]"
+                >
+                  Descriptions
+                </button>
+                {showDescriptionsColorPicker && (
+                  <div className="absolute top-6 left-2 bg-primary dark:bg-transparent text-sm p-1 rounded shadow-lg z-50">
+                    <ColorPicker
+                      onColorChange={(color) =>
+                        handelColorPickerAction("descriptionsColor", color)
+                      }
+                      initialColor={
+                        colorChange[activeTabIndex].descriptionsColor
+                      }
+                    />
+                  </div>
+                )}
               </div>
-            )}
+
+              <div className="icon flex flex-row gap-1 justify-center items-center ">
+                <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+                  <LuAlignLeft width={17} height={17} />
+                </div>
+                <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+                  <LuAlignCenter width={17} height={17} />
+                </div>
+                <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+                  <LuAlignRight width={17} height={17} />
+                </div>
+              </div>
+
+              <div className="icon flex flex-row gap-1 justify-center items-center ">
+                <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+                  <HiListBullet width={17} height={17} />
+                </div>
+                <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
+                  <MdFormatListNumbered width={17} height={17} />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
+              <BreakDownSwitch title={"Labour"} />
+              <BreakDownSwitch title={"Material"} />
+              <BreakDownSwitch title={"Trip Charge"} />
+            </div>
           </div>
 
-          <div className="icon flex flex-row gap-1 justify-center items-center ">
-            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-              <LuAlignLeft width={17} height={17} />
-            </div>
-            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-              <LuAlignCenter width={17} height={17} />
-            </div>
-            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-              <LuAlignRight width={17} height={17} />
-            </div>
-          </div>
+          {/* Third Row: Panel */}
 
-          <div className="icon flex flex-row gap-1 justify-center items-center ">
-            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-              <HiListBullet width={17} height={17} />
-            </div>
-            <div className="flex justify-center text-[17px] items-center cursor-pointer p-1">
-              <MdFormatListNumbered width={17} height={17} />
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center w-fit h-full space-x-6 bg-transparent">
-          <BreakDownSwitch title={"Labour"} />
-          <BreakDownSwitch title={"Material"} />
-          <BreakDownSwitch title={"Trip Charge"} />
-        </div>
-      </div>
-
-      {/* Third Row: Panel */}
-
-      <div className="flex p-1 items-center justify-start h-[34px] w-full">
-        {projects.map((project) => (
-          <div
-            key={project.id}
-            className={`relative flex p-1 rounded-sm items-center justify-between w-[182px] h-full space-x-2  ${
-              activeProjectId === project.id
-                ? "bg-[#262626] text-white"
-                : "bg-[#1E1E1E80] text-[#585656]"
-            }`}
-          >
+          <div className="flex p-1 items-center justify-start h-[34px] w-full">
+            {projects?.map((project) => (
+              <div
+                key={project.id}
+                className={`relative flex p-1 rounded-sm items-center justify-between w-[182px] h-full space-x-2  ${
+                  activeProjectId === project.id
+                    ? "bg-[#262626] text-white"
+                    : "bg-[#1E1E1E80] text-[#585656]"
+                }`}
+              >
+                <button
+                  onClick={() => {
+                    selectProject(project.id);
+                    navigate(`/project/${project.id}`);
+                    if (homeClick[project.id].elctronicHomeClick) {
+                      navigate("/project/selection");
+                    }
+                  }}
+                  className="w-full h-full"
+                >
+                  {project.name}
+                </button>
+                {/* Remove Button */}
+                <button onClick={() => removeProject(project.id)}>✖</button>
+              </div>
+            ))}
             <button
-              onClick={() => {
-                selectProject(project.id);
-                navigate(`/project/${project.id}`);
-                if (homeClick[project.id].elctronicHomeClick) {
-                  navigate("/project/selection");
-                }
-              }}
-              className="w-full h-full"
+              onClick={addNewProject}
+              className="px-4 py-2 text-white bg-transparent"
             >
-              {project.name}
+              +
             </button>
-            {/* Remove Button */}
-            <button onClick={() => removeProject(project.id)}>✖</button>
           </div>
-        ))}
-        <button
-          onClick={addNewProject}
-          className="px-4 py-2 text-white bg-transparent"
-        >
-          +
-        </button>
-      </div>
-      {/* <div
+          {/* <div
         ref={panelRef}
         className="absolute bg-blue-700 text-white p-4 rounded"
         style={{ left: panelPosition.x, top: panelPosition.y }}
@@ -1540,7 +1578,8 @@ const Navbar: React.FC = () => {
           Add Panel
         </button>
       </div> */}
-      </>}
+        </>
+      )}
     </div>
   );
 };

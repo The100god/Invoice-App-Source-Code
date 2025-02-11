@@ -6,6 +6,8 @@ interface NewMeterialValidateData {
     style: string;
     quantity: number;
     color: string;
+    pole:string;
+  amp:string;
     commissionType: string;
     commissionValue: string;
     isCommission: boolean;
@@ -17,6 +19,8 @@ interface NewMeterialValidateData {
     style: string;
     quantity: string;
     color: string;
+    pole:string;
+  amp:string;
     commissionType: string;
     commissionValue: string;
   }
@@ -44,6 +48,8 @@ interface NewMeterialValidateData {
       style: "",
       quantity: "",
       color: "",
+      pole:"",
+  amp:"",
       commissionType: "",
       commissionValue: "",
     };

@@ -31,7 +31,7 @@ const HomePage: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
-  const [homeClick, setHomeClick] = useAtom(homeClickAtom);
+  const [, setHomeClick] = useAtom(homeClickAtom);
 
   const parseRelativeDate = (relativeDate: string): Date => {
     const [value] = relativeDate.split(" ");

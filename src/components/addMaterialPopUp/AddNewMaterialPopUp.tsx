@@ -12,6 +12,7 @@ import { IoClose } from "react-icons/io5";
 import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
 import { addNewMaterialValidate } from "../formValidation/electricalFormValidatin/AddNewMeterialValidation";
 import { toast } from "react-toastify";
+import MaterialSearchBar from "../form/MaterialSearchBar";
 
 const AddNewMaterialPopUp = () => {
   const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
@@ -27,8 +28,8 @@ const AddNewMaterialPopUp = () => {
   const activeNewMaterialError =
     newMaterialError[activeTabIndex][activeNewMaterialIndex];
 
-      const [,setOpenAddNewMaterial] = useAtom(openAddNewMaterialAtom)
-    
+  const [, setOpenAddNewMaterial] = useAtom(openAddNewMaterialAtom);
+
   let grandTot: number;
 
   const computeTotal = (): string => {
@@ -102,14 +103,14 @@ const AddNewMaterialPopUp = () => {
   };
 
   const handleCancel = () => {
-    setOpenAddNewMaterial((prev)=>{
-      const updated = [...prev]
+    setOpenAddNewMaterial((prev) => {
+      const updated = [...prev];
       updated[activeTabIndex] = {
         // openAddNewMaterialPopUp:!updated[activeTabIndex].openAddNewMaterialPopUp
-        openAddNewMaterialPopUp:false
-      }
-      return updated
-    })
+        openAddNewMaterialPopUp: false,
+      };
+      return updated;
+    });
 
     const updatedAddNewMaterial = newMaterial.map((tab, tabIndex) => {
       if (tabIndex === activeTabIndex) {
@@ -117,33 +118,43 @@ const AddNewMaterialPopUp = () => {
       }
       return tab;
     });
-    
+
     setNewMaterial(updatedAddNewMaterial);
-    setNewMaterialIndex((prev)=>{
-      const updated = [...prev]
+    setNewMaterialIndex((prev) => {
+      const updated = [...prev];
       updated[activeTabIndex] = {
-        activeNewMaterialIndex:updated[activeTabIndex].activeNewMaterialIndex === 0? 0 : updated[activeTabIndex].activeNewMaterialIndex -1
-      }
-      return updated
-    })
+        activeNewMaterialIndex:
+          updated[activeTabIndex].activeNewMaterialIndex === 0
+            ? 0
+            : updated[activeTabIndex].activeNewMaterialIndex - 1,
+      };
+      return updated;
+    });
     // console.log(newMaterial)
   };
   const handleSave = () => {
-    if(addNewMaterialValidate({newMaterial, activeTabIndex, activeNewMaterialIndex, newMaterialError, setNewMaterialError})){
-      
-      setOpenAddNewMaterial((prev)=>{
-        const updated = [...prev]
+    if (
+      addNewMaterialValidate({
+        newMaterial,
+        activeTabIndex,
+        activeNewMaterialIndex,
+        newMaterialError,
+        setNewMaterialError,
+      })
+    ) {
+      setOpenAddNewMaterial((prev) => {
+        const updated = [...prev];
         updated[activeTabIndex] = {
           // openAddNewMaterialPopUp:!updated[activeTabIndex].openAddNewMaterialPopUp
-          openAddNewMaterialPopUp:false
-        }
-        return updated
-      })
+          openAddNewMaterialPopUp: false,
+        };
+        return updated;
+      });
       // console.log("add new material is saved")
-      toast.success("Material Added succesfully")
-    }else{
-      console.log("Please add new material")
-      toast.info("Material not added!")
+      toast.success("Material Added succesfully");
+    } else {
+      console.log("Please add new material");
+      toast.info("Material not added!");
     }
   };
 
@@ -163,9 +174,7 @@ const AddNewMaterialPopUp = () => {
             </div>
           </div>
         </div>
-        <div className="flex w-full h-[10px] bg-[#00C5FF29] dark:bg-[#B0EDFF54]">
-      
-    </div>
+        <div className="flex w-full h-[10px] bg-[#00C5FF29] dark:bg-[#B0EDFF54]"></div>
 
         <div
           className={`flex flex-col w-full h-[506px] bg-transparent p-4 overflow-y-scroll`}
@@ -176,38 +185,8 @@ const AddNewMaterialPopUp = () => {
                 {/* Other form fields such as quantity, color, etc. remain the same */}
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
-                  <Dropdown
-                    label="Select Item Type*"
-                    options={[
-                      { value: "outlet", label: "Outlet" },
-                      { value: "Breakers", label: "Breakers" },
-                      { value: "Cover Plates", label: "Cover Plates" },
-                      { value: "Exterior Boxes", label: "Exterior Boxes" },
-                      { value: "Boxes", label: "Boxes" },
-                      { value: "Panels", label: "Panels" },
-                      { value: "Conduit", label: "Conduit" },
-                      { value: "Wire", label: "Wire" },
-                      { value: "Romex", label: "romex" },
-                      {
-                        value: "Miscellaneous Material",
-                        label: "Miscellaneous Material",
-                      },
-                      { value: "Wirenuts", label: "Wirenuts" },
-                      { value: "switches", label: "Switches" },
-                      {
-                        value: "three-way-switches",
-                        label: "Three-Way Switches",
-                      },
-                      {
-                        value: "four-way-switches",
-                        label: "Four-Way Switches",
-                      },
-                      { value: "15amp Breaker", label: "15amp Breaker" },
-                      { value: "20amp Breaker", label: "20amp Breaker" },
-                      { value: "30amp Breaker", label: "30amp Breaker" },
-                      { value: "40amp Breaker", label: "40amp Breaker" },
-                      { value: "50amp Breaker", label: "50amp Breaker" },
-                    ]}
+
+                  <MaterialSearchBar
                     selectedValue={activeNewMaterialData.selectedItem}
                     onChange={(value) => updateItemData("selectedItem", value)}
                     error={activeNewMaterialError.selectedItem}
@@ -217,7 +196,7 @@ const AddNewMaterialPopUp = () => {
                   />
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-                    {activeNewMaterialData.selectedItem === "outlet" && (
+                    {activeNewMaterialData.selectedItem.toLowerCase() === "outlet" && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection using RadioGroup */}
                         <Dropdown
@@ -236,19 +215,21 @@ const AddNewMaterialPopUp = () => {
                         />
 
                         {/* Bar 3: Style selection using RadioGroup */}
-                        <Dropdown
-                          label="Select Style*"
-                          options={[
-                            { value: "Decora", label: "Decora" },
-                            { value: "Duplex", label: "Duplex" },
-                          ]}
-                          selectedValue={activeNewMaterialData.style}
-                          onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError.style}
-                          activeTabIndex={activeTabIndex}
-                          width={158}
-                          height={55}
-                        />
+                        {activeNewMaterialData.brand && (
+                          <Dropdown
+                            label="Select Style*"
+                            options={[
+                              { value: "Decora", label: "Decora" },
+                              { value: "Duplex", label: "Duplex" },
+                            ]}
+                            selectedValue={activeNewMaterialData.style}
+                            onChange={(value) => updateItemData("style", value)}
+                            error={activeNewMaterialError.style}
+                            activeTabIndex={activeTabIndex}
+                            width={158}
+                            height={55}
+                          />
+                        )}
                       </div>
                     )}
 
@@ -276,36 +257,44 @@ const AddNewMaterialPopUp = () => {
                           width={336}
                           height={55}
                         />
-                        <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                          <Dropdown
-                            label="Select Pole*"
-                            options={[
-                              { value: "Single Pole", label: "Single Pole" },
-                              { value: "2-Pole", label: "2-Pole" },
-                              { value: "3-Pole", label: "3-Pole" },
-                            ]}
-                            selectedValue={activeNewMaterialData.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError.style}
-                            activeTabIndex={activeTabIndex}
-                            width={255}
-                            height={55}
-                          />
-                          <Dropdown
-                            label="D/General Electric*"
-                            options={[
-                              { value: " Standard", label: " Standard" },
-                              { value: "GFCI", label: "GFCI" },
-                              { value: "AFCI", label: "AFCI" },
-                            ]}
-                            selectedValue={activeNewMaterialData.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError.style}
-                            activeTabIndex={activeTabIndex}
-                            width={255}
-                            height={55}
-                          />
-                        </div>
+                        {activeNewMaterialData.brand && (
+                          <div className=" flex flex-row justify-between items-center w-full bg-transparent">
+                            <Dropdown
+                              label="Select Pole*"
+                              options={[
+                                { value: "Single Pole", label: "Single Pole" },
+                                { value: "2-Pole", label: "2-Pole" },
+                                { value: "3-Pole", label: "3-Pole" },
+                              ]}
+                              selectedValue={activeNewMaterialData.pole}
+                              onChange={(value) =>
+                                updateItemData("pole", value)
+                              }
+                              error={activeNewMaterialError.pole}
+                              activeTabIndex={activeTabIndex}
+                              width={255}
+                              height={55}
+                            />
+                            {activeNewMaterialData.pole && (
+                              <Dropdown
+                                label="D/General Electric*"
+                                options={[
+                                  { value: " Standard", label: " Standard" },
+                                  { value: "GFCI", label: "GFCI" },
+                                  { value: "AFCI", label: "AFCI" },
+                                ]}
+                                selectedValue={activeNewMaterialData.amp}
+                                onChange={(value) =>
+                                  updateItemData("amp", value)
+                                }
+                                error={activeNewMaterialError.amp}
+                                activeTabIndex={activeTabIndex}
+                                width={255}
+                                height={55}
+                              />
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -313,7 +302,7 @@ const AddNewMaterialPopUp = () => {
                       "switches",
                       "three-way-switches",
                       "four-way-switches",
-                    ].includes(activeNewMaterialData.selectedItem) && (
+                    ].includes(activeNewMaterialData.selectedItem.toLowerCase()) && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
@@ -332,19 +321,21 @@ const AddNewMaterialPopUp = () => {
                         />
 
                         {/* Bar 3: Style selection for switches using RadioGroup */}
-                        <Dropdown
-                          label="Select Style*"
-                          options={[
-                            { value: "Toggle", label: "Toggle" },
-                            { value: "Rocker", label: "Rocker" },
-                          ]}
-                          selectedValue={activeNewMaterialData.style}
-                          onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError.style}
-                          activeTabIndex={activeTabIndex}
-                          width={158}
-                          height={55}
-                        />
+                        {activeNewMaterialData.brand && (
+                          <Dropdown
+                            label="Select Style*"
+                            options={[
+                              { value: "Toggle", label: "Toggle" },
+                              { value: "Rocker", label: "Rocker" },
+                            ]}
+                            selectedValue={activeNewMaterialData.style}
+                            onChange={(value) => updateItemData("style", value)}
+                            error={activeNewMaterialError.style}
+                            activeTabIndex={activeTabIndex}
+                            width={158}
+                            height={55}
+                          />
+                        )}
                       </div>
                     )}
                   </div>

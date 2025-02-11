@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { activeTabIndexAtom } from "../../variables/NavbarVariables";
+import MaterialSearchBar from "../form/MaterialSearchBar";
 
 const EditAddAttributePopUp = () => {
   const location = useLocation();
@@ -29,7 +30,13 @@ const EditAddAttributePopUp = () => {
 
   const [countAttribute, setCountAttribute] = useState(-1);
   const [addAttributeVariable, setAddAttributeVariable] = useState<
-    { selectedItem: string; brand: string; style: string }[]
+    {
+      selectedItem: string;
+      brand: string;
+      style: string;
+      pole: string;
+      amp: string;
+    }[]
   >([]);
 
   const [, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
@@ -56,10 +63,15 @@ const EditAddAttributePopUp = () => {
     });
   };
   const updateAddAttributeData = (
-    key: keyof { selectedItem: string; brand: string; style: string },
+    key: keyof {
+      selectedItem: string;
+      brand: string;
+      style: string;
+      pole: string;
+      amp: string;
+    },
     value: any,
-    index:number
-
+    index: number
   ) => {
     setAddAttributeVariable((prev) => {
       const updated = [...prev];
@@ -101,7 +113,6 @@ const EditAddAttributePopUp = () => {
     });
     // console.log(newMaterial)
   };
-  
 
   const handleSave = () => {
     setOpenAddNewMaterial((prev) => {
@@ -124,6 +135,8 @@ const EditAddAttributePopUp = () => {
           style: element.style,
           quantity: 1,
           color: "",
+          pole: "",
+          amp: "",
           commissionType: "",
           commissionValue: "",
           linkProductType: "",
@@ -142,6 +155,8 @@ const EditAddAttributePopUp = () => {
         style: "",
         quantity: "",
         color: "",
+        pole: "",
+        amp: "",
         commissionType: "",
         commissionValue: "",
       };
@@ -183,7 +198,13 @@ const EditAddAttributePopUp = () => {
     setCountAttribute(newAttributeCount);
     setAddAttributeVariable((prev) => {
       const updated = [...prev];
-      updated.push({ selectedItem: "", brand: "", style: "" });
+      updated.push({
+        selectedItem: "",
+        brand: "",
+        style: "",
+        pole: "",
+        amp: "",
+      });
       return updated;
     });
   };
@@ -192,8 +213,8 @@ const EditAddAttributePopUp = () => {
     const newAttributeCount = countAttribute - 1;
     setCountAttribute(newAttributeCount);
   };
-//   console.log("countAttribute", countAttribute);
-//   console.log("addAttribute", addAttributeVariable);
+  //   console.log("countAttribute", countAttribute);
+  //   console.log("addAttribute", addAttributeVariable);
 
   //   console.log(itemSelectionData)
   return (
@@ -225,38 +246,8 @@ const EditAddAttributePopUp = () => {
                 {/* Other form fields such as quantity, color, etc. remain the same */}
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
-                  <Dropdown
-                    label="Select Item Type*"
-                    options={[
-                      { value: "outlet", label: "Outlet" },
-                      { value: "Breakers", label: "Breakers" },
-                      { value: "Cover Plates", label: "Cover Plates" },
-                      { value: "Exterior Boxes", label: "Exterior Boxes" },
-                      { value: "Boxes", label: "Boxes" },
-                      { value: "Panels", label: "Panels" },
-                      { value: "Conduit", label: "Conduit" },
-                      { value: "Wire", label: "Wire" },
-                      { value: "Romex", label: "romex" },
-                      {
-                        value: "Miscellaneous Material",
-                        label: "Miscellaneous Material",
-                      },
-                      { value: "Wirenuts", label: "Wirenuts" },
-                      { value: "switches", label: "Switches" },
-                      {
-                        value: "three-way-switches",
-                        label: "Three-Way Switches",
-                      },
-                      {
-                        value: "four-way-switches",
-                        label: "Four-Way Switches",
-                      },
-                      { value: "15amp Breaker", label: "15amp Breaker" },
-                      { value: "20amp Breaker", label: "20amp Breaker" },
-                      { value: "30amp Breaker", label: "30amp Breaker" },
-                      { value: "40amp Breaker", label: "40amp Breaker" },
-                      { value: "50amp Breaker", label: "50amp Breaker" },
-                    ]}
+
+                  <MaterialSearchBar
                     selectedValue={activeNewMaterialData?.selectedItem}
                     onChange={(value) => updateItemData("selectedItem", value)}
                     error={activeNewMaterialError?.selectedItem}
@@ -285,19 +276,21 @@ const EditAddAttributePopUp = () => {
                         />
 
                         {/* Bar 3: Style selection using RadioGroup */}
-                        <Dropdown
-                          label="Select Style*"
-                          options={[
-                            { value: "Decora", label: "Decora" },
-                            { value: "Duplex", label: "Duplex" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.style}
-                          onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError?.style}
-                          activeTabIndex={index1}
-                          width={158}
-                          height={55}
-                        />
+                        {activeNewMaterialData?.brand && (
+                          <Dropdown
+                            label="Select Style*"
+                            options={[
+                              { value: "Decora", label: "Decora" },
+                              { value: "Duplex", label: "Duplex" },
+                            ]}
+                            selectedValue={activeNewMaterialData?.style}
+                            onChange={(value) => updateItemData("style", value)}
+                            error={activeNewMaterialError?.style}
+                            activeTabIndex={index1}
+                            width={158}
+                            height={55}
+                          />
+                        )}
                       </div>
                     )}
 
@@ -325,36 +318,44 @@ const EditAddAttributePopUp = () => {
                           width={336}
                           height={55}
                         />
-                        <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                          <Dropdown
-                            label="Select Pole*"
-                            options={[
-                              { value: "Single Pole", label: "Single Pole" },
-                              { value: "2-Pole", label: "2-Pole" },
-                              { value: "3-Pole", label: "3-Pole" },
-                            ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
-                            activeTabIndex={index1}
-                            width={255}
-                            height={55}
-                          />
-                          <Dropdown
-                            label="D/General Electric*"
-                            options={[
-                              { value: " Standard", label: " Standard" },
-                              { value: "GFCI", label: "GFCI" },
-                              { value: "AFCI", label: "AFCI" },
-                            ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
-                            activeTabIndex={index1}
-                            width={255}
-                            height={55}
-                          />
-                        </div>
+                        {activeNewMaterialData?.brand && (
+                          <div className=" flex flex-row justify-between items-center w-full bg-transparent">
+                            <Dropdown
+                              label="Select Pole*"
+                              options={[
+                                { value: "Single Pole", label: "Single Pole" },
+                                { value: "2-Pole", label: "2-Pole" },
+                                { value: "3-Pole", label: "3-Pole" },
+                              ]}
+                              selectedValue={activeNewMaterialData?.pole}
+                              onChange={(value) =>
+                                updateItemData("pole", value)
+                              }
+                              error={activeNewMaterialError?.pole}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+                            {activeNewMaterialData?.pole && (
+                              <Dropdown
+                                label="D/General Electric*"
+                                options={[
+                                  { value: " Standard", label: " Standard" },
+                                  { value: "GFCI", label: "GFCI" },
+                                  { value: "AFCI", label: "AFCI" },
+                                ]}
+                                selectedValue={activeNewMaterialData?.amp}
+                                onChange={(value) =>
+                                  updateItemData("amp", value)
+                                }
+                                error={activeNewMaterialError?.amp}
+                                activeTabIndex={index1}
+                                width={255}
+                                height={55}
+                              />
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -381,19 +382,21 @@ const EditAddAttributePopUp = () => {
                         />
 
                         {/* Bar 3: Style selection for switches using RadioGroup */}
-                        <Dropdown
-                          label="Select Style*"
-                          options={[
-                            { value: "Toggle", label: "Toggle" },
-                            { value: "Rocker", label: "Rocker" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.style}
-                          onChange={(value) => updateItemData("style", value)}
-                          error={activeNewMaterialError?.style}
-                          activeTabIndex={index1}
-                          width={158}
-                          height={55}
-                        />
+                        {activeNewMaterialData?.brand && (
+                          <Dropdown
+                            label="Select Style*"
+                            options={[
+                              { value: "Toggle", label: "Toggle" },
+                              { value: "Rocker", label: "Rocker" },
+                            ]}
+                            selectedValue={activeNewMaterialData?.style}
+                            onChange={(value) => updateItemData("style", value)}
+                            error={activeNewMaterialError?.style}
+                            activeTabIndex={index1}
+                            width={158}
+                            height={55}
+                          />
+                        )}
                       </div>
                     )}
                   </div>
@@ -406,38 +409,8 @@ const EditAddAttributePopUp = () => {
                   >
                     <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                       {/* Bar 1: Dropdown for item selection */}
-                      <Dropdown
-                        label="Select Item Type*"
-                        options={[
-                          { value: "outlet", label: "Outlet" },
-                          { value: "Breakers", label: "Breakers" },
-                          { value: "Cover Plates", label: "Cover Plates" },
-                          { value: "Exterior Boxes", label: "Exterior Boxes" },
-                          { value: "Boxes", label: "Boxes" },
-                          { value: "Panels", label: "Panels" },
-                          { value: "Conduit", label: "Conduit" },
-                          { value: "Wire", label: "Wire" },
-                          { value: "Romex", label: "romex" },
-                          {
-                            value: "Miscellaneous Material",
-                            label: "Miscellaneous Material",
-                          },
-                          { value: "Wirenuts", label: "Wirenuts" },
-                          { value: "switches", label: "Switches" },
-                          {
-                            value: "three-way-switches",
-                            label: "Three-Way Switches",
-                          },
-                          {
-                            value: "four-way-switches",
-                            label: "Four-Way Switches",
-                          },
-                          { value: "15amp Breaker", label: "15amp Breaker" },
-                          { value: "20amp Breaker", label: "20amp Breaker" },
-                          { value: "30amp Breaker", label: "30amp Breaker" },
-                          { value: "40amp Breaker", label: "40amp Breaker" },
-                          { value: "50amp Breaker", label: "50amp Breaker" },
-                        ]}
+
+                      <MaterialSearchBar
                         selectedValue={addAttri?.selectedItem}
                         onChange={(value) =>
                           updateAddAttributeData("selectedItem", value, index)
@@ -449,7 +422,7 @@ const EditAddAttributePopUp = () => {
                       />
 
                       <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-                        {addAttri?.selectedItem === "outlet" && (
+                        {addAttri?.selectedItem.toLowerCase() === "outlet" && (
                           <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                             {/* Bar 2: Brand selection using RadioGroup */}
                             <Dropdown
@@ -470,21 +443,23 @@ const EditAddAttributePopUp = () => {
                             />
 
                             {/* Bar 3: Style selection using RadioGroup */}
-                            <Dropdown
-                              label="Select Style*"
-                              options={[
-                                { value: "Decora", label: "Decora" },
-                                { value: "Duplex", label: "Duplex" },
-                              ]}
-                              selectedValue={addAttri?.style}
-                              onChange={(value) =>
-                                updateAddAttributeData("style", value, index)
-                              }
-                              error={""}
-                              activeTabIndex={index1}
-                              width={158}
-                              height={55}
-                            />
+                            {addAttri?.brand && (
+                              <Dropdown
+                                label="Select Style*"
+                                options={[
+                                  { value: "Decora", label: "Decora" },
+                                  { value: "Duplex", label: "Duplex" },
+                                ]}
+                                selectedValue={addAttri?.style}
+                                onChange={(value) =>
+                                  updateAddAttributeData("style", value, index)
+                                }
+                                error={""}
+                                activeTabIndex={index1}
+                                width={158}
+                                height={55}
+                              />
+                            )}
                           </div>
                         )}
 
@@ -514,43 +489,54 @@ const EditAddAttributePopUp = () => {
                               width={336}
                               height={55}
                             />
-                            <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                              <Dropdown
-                                label="Select Pole*"
-                                options={[
-                                  {
-                                    value: "Single Pole",
-                                    label: "Single Pole",
-                                  },
-                                  { value: "2-Pole", label: "2-Pole" },
-                                  { value: "3-Pole", label: "3-Pole" },
-                                ]}
-                                selectedValue={addAttri?.style}
-                                onChange={(value) =>
-                                  updateAddAttributeData("style", value, index)
-                                }
-                                error={""}
-                                activeTabIndex={index1}
-                                width={255}
-                                height={55}
-                              />
-                              <Dropdown
-                                label="D/General Electric*"
-                                options={[
-                                  { value: " Standard", label: " Standard" },
-                                  { value: "GFCI", label: "GFCI" },
-                                  { value: "AFCI", label: "AFCI" },
-                                ]}
-                                selectedValue={addAttri?.style}
-                                onChange={(value) =>
-                                  updateAddAttributeData("style", value, index)
-                                }
-                                error={""}
-                                activeTabIndex={index1}
-                                width={255}
-                                height={55}
-                              />
-                            </div>
+                            {addAttri?.brand && (
+                              <div className=" flex flex-row justify-between items-center w-full bg-transparent">
+                                <Dropdown
+                                  label="Select Pole*"
+                                  options={[
+                                    {
+                                      value: "Single Pole",
+                                      label: "Single Pole",
+                                    },
+                                    { value: "2-Pole", label: "2-Pole" },
+                                    { value: "3-Pole", label: "3-Pole" },
+                                  ]}
+                                  selectedValue={addAttri?.pole}
+                                  onChange={(value) =>
+                                    updateAddAttributeData("pole", value, index)
+                                  }
+                                  error={""}
+                                  activeTabIndex={index1}
+                                  width={255}
+                                  height={55}
+                                />
+                                {addAttri?.pole && (
+                                  <Dropdown
+                                    label="D/General Electric*"
+                                    options={[
+                                      {
+                                        value: " Standard",
+                                        label: " Standard",
+                                      },
+                                      { value: "GFCI", label: "GFCI" },
+                                      { value: "AFCI", label: "AFCI" },
+                                    ]}
+                                    selectedValue={addAttri?.amp}
+                                    onChange={(value) =>
+                                      updateAddAttributeData(
+                                        "amp",
+                                        value,
+                                        index
+                                      )
+                                    }
+                                    error={""}
+                                    activeTabIndex={index1}
+                                    width={255}
+                                    height={55}
+                                  />
+                                )}
+                              </div>
+                            )}
                           </div>
                         )}
 
@@ -558,7 +544,7 @@ const EditAddAttributePopUp = () => {
                           "switches",
                           "three-way-switches",
                           "four-way-switches",
-                        ].includes(addAttri?.selectedItem) && (
+                        ].includes(addAttri?.selectedItem.toLowerCase()) && (
                           <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                             {/* Bar 2: Brand selection for switches using RadioGroup */}
                             <Dropdown
@@ -579,21 +565,23 @@ const EditAddAttributePopUp = () => {
                             />
 
                             {/* Bar 3: Style selection for switches using RadioGroup */}
-                            <Dropdown
-                              label="Select Style*"
-                              options={[
-                                { value: "Toggle", label: "Toggle" },
-                                { value: "Rocker", label: "Rocker" },
-                              ]}
-                              selectedValue={addAttri?.style}
-                              onChange={(value) =>
-                                updateAddAttributeData("style", value, index)
-                              }
-                              error={""}
-                              activeTabIndex={index1}
-                              width={158}
-                              height={55}
-                            />
+                            {addAttri?.brand && (
+                              <Dropdown
+                                label="Select Style*"
+                                options={[
+                                  { value: "Toggle", label: "Toggle" },
+                                  { value: "Rocker", label: "Rocker" },
+                                ]}
+                                selectedValue={addAttri?.style}
+                                onChange={(value) =>
+                                  updateAddAttributeData("style", value, index)
+                                }
+                                error={""}
+                                activeTabIndex={index1}
+                                width={158}
+                                height={55}
+                              />
+                            )}
                           </div>
                         )}
                       </div>

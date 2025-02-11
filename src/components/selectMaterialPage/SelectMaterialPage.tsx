@@ -13,6 +13,7 @@ import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
 import { selectMaterialValidate } from "../formValidation/electricalFormValidatin/SelectMaterialPageValidation";
 import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
+import MaterialSearchBar from "../form/MaterialSearchBar";
 
 const SelectMaterialPage = () => {
     const location = useLocation();
@@ -189,45 +190,15 @@ const SelectMaterialPage = () => {
                 {/* Other form fields such as quantity, color, etc. remain the same */}
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
-                  <Dropdown
-                    label="Select Item Type*"
-                    options={[
-                      { value: "outlet", label: "Outlet" },
-                      { value: "Breakers", label: "Breakers" },
-                      { value: "Cover Plates", label: "Cover Plates" },
-                      { value: "Exterior Boxes", label: "Exterior Boxes" },
-                      { value: "Boxes", label: "Boxes" },
-                      { value: "Panels", label: "Panels" },
-                      { value: "Conduit", label: "Conduit" },
-                      { value: "Wire", label: "Wire" },
-                      { value: "Romex", label: "romex" },
-                      {
-                        value: "Miscellaneous Material",
-                        label: "Miscellaneous Material",
-                      },
-                      { value: "Wirenuts", label: "Wirenuts" },
-                      { value: "switches", label: "Switches" },
-                      {
-                        value: "three-way-switches",
-                        label: "Three-Way Switches",
-                      },
-                      {
-                        value: "four-way-switches",
-                        label: "Four-Way Switches",
-                      },
-                      { value: "15amp Breaker", label: "15amp Breaker" },
-                      { value: "20amp Breaker", label: "20amp Breaker" },
-                      { value: "30amp Breaker", label: "30amp Breaker" },
-                      { value: "40amp Breaker", label: "40amp Breaker" },
-                      { value: "50amp Breaker", label: "50amp Breaker" },
-                    ]}
-                    selectedValue={activeNewMaterialData?.selectedItem}
-                    onChange={(value) => updateItemData("selectedItem", value)}
-                    error={activeNewMaterialError?.selectedItem}
-                    activeTabIndex={index1}
-                    width={577}
-                    height={55}
-                  />
+
+<MaterialSearchBar
+  selectedValue={activeNewMaterialData?.selectedItem}
+  onChange={(value) => updateItemData("selectedItem", value)}
+  error={activeNewMaterialError?.selectedItem}
+  activeTabIndex={index1}
+  width={577}
+  height={55}
+/>
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                     {activeNewMaterialData?.selectedItem === "outlet" && (
@@ -249,7 +220,7 @@ const SelectMaterialPage = () => {
                         />
 
                         {/* Bar 3: Style selection using RadioGroup */}
-                        <Dropdown
+                        {activeNewMaterialData?.brand && <Dropdown
                           label="Select Style*"
                           options={[
                             { value: "Decora", label: "Decora" },
@@ -261,7 +232,7 @@ const SelectMaterialPage = () => {
                           activeTabIndex={index1}
                           width={158}
                           height={55}
-                        />
+                        />}
                       </div>
                     )}
 
@@ -297,27 +268,27 @@ const SelectMaterialPage = () => {
                               { value: "2-Pole", label: "2-Pole" },
                               { value: "3-Pole", label: "3-Pole" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.pole}
+                            onChange={(value) => updateItemData("pole", value)}
+                            error={activeNewMaterialError?.pole}
                             activeTabIndex={index1}
                             width={255}
                             height={55}
                           />
-                          <Dropdown
+                          {activeNewMaterialData?.pole && <Dropdown
                             label="D/General Electric*"
                             options={[
                               { value: " Standard", label: " Standard" },
                               { value: "GFCI", label: "GFCI" },
                               { value: "AFCI", label: "AFCI" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.amp}
+                            onChange={(value) => updateItemData("amp", value)}
+                            error={activeNewMaterialError?.amp}
                             activeTabIndex={index1}
                             width={255}
                             height={55}
-                          />
+                          />}
                         </div>
                       </div>
                     )}
@@ -345,7 +316,7 @@ const SelectMaterialPage = () => {
                         />
 
                         {/* Bar 3: Style selection for switches using RadioGroup */}
-                        <Dropdown
+                        {activeNewMaterialData?.brand && <Dropdown
                           label="Select Style*"
                           options={[
                             { value: "Toggle", label: "Toggle" },
@@ -357,7 +328,7 @@ const SelectMaterialPage = () => {
                           activeTabIndex={index1}
                           width={158}
                           height={55}
-                        />
+                        />}
                       </div>
                     )}
                   </div>

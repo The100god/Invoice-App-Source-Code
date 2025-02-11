@@ -7,6 +7,7 @@ import {
 } from "../../../variables/electricalInvoiceVariable";
 import ProductDetailsFetcher from "../../../components/form/FatchDetailsByLink";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
+import MaterialSearchBar from "../../../components/form/MaterialSearchBar";
 
 const ItemSelectionScreen = () => {
   const [itemSelectionData, setItemSelectionData] = useAtom(itemSelectionDataAtom)
@@ -82,7 +83,7 @@ const handleCommissionvalueChange = (value: string) => {
         {/* Other form fields such as quantity, color, etc. remain the same */}
         <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
           {/* Bar 1: Dropdown for item selection */}
-          <Dropdown
+          {/* <Dropdown
             label="Select Item Type*"
             options={[
               { value: "outlet", label: "Outlet" },
@@ -111,10 +112,18 @@ const handleCommissionvalueChange = (value: string) => {
             activeTabIndex={activeTabIndex}
             width={577}
             height={55}
-          />
+          /> */}
+<MaterialSearchBar
+  selectedValue={activeItemData.selectedItem}
+  onChange={(value) => updateItemData("selectedItem", value)}
+  error={activeErrors.selectedItem}
+  activeTabIndex={activeTabIndex}
+  width={577}
+  height={55}
+/>
 
           <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-            {activeItemData.selectedItem === "outlet" && (
+            {activeItemData.selectedItem === "Outlet" && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection using RadioGroup */}
                 <Dropdown
@@ -134,7 +143,7 @@ const handleCommissionvalueChange = (value: string) => {
                 />
 
                 {/* Bar 3: Style selection using RadioGroup */}
-                <Dropdown
+                {activeItemData.brand && <Dropdown
                  
                   label="Select Style*"
                   options={[
@@ -147,7 +156,7 @@ const handleCommissionvalueChange = (value: string) => {
                   activeTabIndex={activeTabIndex}
                   width={158}
                   height={55}
-                />
+                />}
               </div>
             )}
 
@@ -176,8 +185,8 @@ const handleCommissionvalueChange = (value: string) => {
                   width={336}
                   height={55}
                 />
-                <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                  <Dropdown
+                {activeItemData.brand && <div className=" flex flex-row justify-between items-center w-full bg-transparent">
+                   <Dropdown
                     label="Select Pole*"
                     options={[
                       { value: "Single Pole", label: "Single Pole" },
@@ -185,13 +194,13 @@ const handleCommissionvalueChange = (value: string) => {
                       { value: "3-Pole", label: "3-Pole" },
                     ]}
                     selectedValue={activeItemData.style}
-                    onChange={(value) => updateItemData("style",value)}
+                    onChange={(value) => updateItemData("pole",value)}
                     error={activeErrors.style}
                     activeTabIndex={activeTabIndex}
                     width={255}
                     height={55}
                   />
-                  <Dropdown
+                  {activeItemData.pole && <Dropdown
                     label="D/General Electric*"
                     options={[
                       { value: " Standard", label: " Standard" },
@@ -199,18 +208,18 @@ const handleCommissionvalueChange = (value: string) => {
                       { value: "AFCI", label: "AFCI" },
                     ]}
                     selectedValue={activeItemData.style}
-                    onChange={(value) => updateItemData("style",value)}
+                    onChange={(value) => updateItemData("amp",value)}
                     error={activeErrors.style}
                     activeTabIndex={activeTabIndex}
                     width={255}
                     height={55}
-                  />
-                </div>
+                  />}
+                </div>}
               </div>
             )}
 
             {["switches", "three-way-switches", "four-way-switches"].includes(
-              activeItemData.selectedItem
+              activeItemData.selectedItem.toLowerCase()
             ) && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection for switches using RadioGroup */}
@@ -230,7 +239,7 @@ const handleCommissionvalueChange = (value: string) => {
                 />
 
                 {/* Bar 3: Style selection for switches using RadioGroup */}
-                <Dropdown
+                {activeItemData.brand && <Dropdown
                   label="Select Style*"
                   options={[
                     { value: "Toggle", label: "Toggle" },
@@ -242,7 +251,7 @@ const handleCommissionvalueChange = (value: string) => {
                   activeTabIndex={activeTabIndex}
                   width={158}
                   height={55}
-                />
+                />}
               </div>
             )}
           </div>

@@ -6,6 +6,8 @@ interface ItemValidateData {
   style: string;
   quantity: number;
   color: string;
+  pole:string;
+  amp:string;
   commissionType: string;
   commissionValue: string;
   isCommission: boolean;
@@ -17,6 +19,8 @@ interface ItemValidateErrors {
   style: string;
   quantity: string;
   color: string;
+  pole:string;
+  amp:string;
   commissionType: string;
   commissionValue: string;
 }
@@ -42,7 +46,8 @@ export const itemValidate = ({
     brand: "",
     style: "",
     quantity: "",
-    color: "",
+    color: "",pole:"",
+    amp:"",
     commissionType: "",
     commissionValue: "",
   };
