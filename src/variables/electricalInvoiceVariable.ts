@@ -92,6 +92,8 @@ export interface ItemSelectionData {
   color: string;
   pole:string;
   amp:string;
+  note:string;
+  materialLink:string,
   commissionType: string;
   linkPoductType: string;
   productLinkAmount: string;
@@ -107,6 +109,7 @@ export interface ItemErrors {
   style: string;
   quantity: string;
   color: string;
+  materialLink:string,
   pole:string;
   amp:string;
   commissionType: string;
@@ -122,6 +125,8 @@ export const itemSelectionDataAtom = atom<ItemSelectionData[]>([
     color: "",
     pole:"",
   amp:"",
+  note:"",
+  materialLink:"",
     commissionType: "",
     commissionValue: "",
     linkPoductType: "",
@@ -143,6 +148,7 @@ export const itemErrorsAtom = atom<ItemErrors[]>([
     color: "",
     pole:"",
   amp:"",
+  materialLink:"",
     commissionType: "",
     commissionValue: "",
   },
@@ -347,6 +353,8 @@ export interface newMaterialVariableStates {
   color: string;
   pole:string;
   amp:string;
+  note:string;
+  materialLink:string;
   commissionType: string;
   linkProductType: string;
   productLinkAmount: string;
@@ -363,6 +371,7 @@ export interface newMaterialVariableError {
   quantity: string;
   color: string;
   pole:string;
+  materialLink:string,
   amp:string;
   commissionType: string;
   commissionValue: string;

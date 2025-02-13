@@ -12,7 +12,8 @@ import { IoClose } from "react-icons/io5";
 import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
 import { addNewMaterialValidate } from "../formValidation/electricalFormValidatin/AddNewMeterialValidation";
 import { toast } from "react-toastify";
-import MaterialSearchBar from "../form/MaterialSearchBar";
+import SearchLinkToggle from "../form/SearchLinkToggle";
+import NotesInput from "../form/NotesInput";
 
 const AddNewMaterialPopUp = () => {
   const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
@@ -186,17 +187,23 @@ const AddNewMaterialPopUp = () => {
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
 
-                  <MaterialSearchBar
+                  <SearchLinkToggle
                     selectedValue={activeNewMaterialData.selectedItem}
-                    onChange={(value) => updateItemData("selectedItem", value)}
+                    onSearchChange={(value) =>
+                      updateItemData("selectedItem", value)
+                    }
                     error={activeNewMaterialError.selectedItem}
                     activeTabIndex={activeTabIndex}
-                    width={577}
-                    height={55}
+                  />
+
+                  <NotesInput
+                    value={activeNewMaterialData.note}
+                    onChange={(value) => updateItemData("note", value)}
                   />
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
-                    {activeNewMaterialData.selectedItem.toLowerCase() === "outlet" && (
+                    {activeNewMaterialData.selectedItem.toLowerCase() ===
+                      "outlet" && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection using RadioGroup */}
                         <Dropdown
@@ -302,7 +309,9 @@ const AddNewMaterialPopUp = () => {
                       "switches",
                       "three-way-switches",
                       "four-way-switches",
-                    ].includes(activeNewMaterialData.selectedItem.toLowerCase()) && (
+                    ].includes(
+                      activeNewMaterialData.selectedItem.toLowerCase()
+                    ) && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
@@ -340,122 +349,134 @@ const AddNewMaterialPopUp = () => {
                     )}
                   </div>
 
-                  <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
-                    {/* Bar 4: Quantity input */}
-                    <div className="flex flex-col items-start w-[145px] bg-transparent">
-                      <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
-                        Quantity*
-                      </label>
-                      <input
-                        type="number"
-                        value={activeNewMaterialData.quantity}
-                        min="1"
-                        onChange={(e) => handleQuantityChange(e.target.value)}
-                        className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] rounded-[10px] focus:border-[#00C5FF] w-full bg-transparent"
-                      />
-                      {activeNewMaterialError.quantity && (
-                        <p className="text-red-500 bg-transparent">
-                          {activeNewMaterialError.quantity}
-                        </p>
-                      )}
-                    </div>
+                  {activeNewMaterialData.style && (
+                    <>
+                      <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
+                        {/* Bar 4: Quantity input */}
+                        <div className="flex flex-col items-start w-[145px] bg-transparent">
+                          <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
+                            Quantity*
+                          </label>
+                          <input
+                            type="number"
+                            value={activeNewMaterialData.quantity}
+                            min="1"
+                            onChange={(e) =>
+                              handleQuantityChange(e.target.value)
+                            }
+                            className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] rounded-[10px] focus:border-[#00C5FF] w-full bg-transparent"
+                          />
+                          {activeNewMaterialError.quantity && (
+                            <p className="text-red-500 bg-transparent">
+                              {activeNewMaterialError.quantity}
+                            </p>
+                          )}
+                        </div>
 
-                    {/* Bar 5: Preferred color */}
-                    <Dropdown
-                      label="Preferred Color*"
-                      options={[
-                        { value: "White", label: "White" },
-                        { value: "Black", label: "Black" },
-                      ]}
-                      selectedValue={activeNewMaterialData.color}
-                      onChange={(value) => updateItemData("color", value)}
-                      error={activeNewMaterialError.color}
-                      activeTabIndex={activeTabIndex}
-                      width={205}
-                      height={55}
-                    />
+                        {/* Bar 5: Preferred color */}
+                        <Dropdown
+                          label="Preferred Color*"
+                          options={[
+                            { value: "White", label: "White" },
+                            { value: "Black", label: "Black" },
+                          ]}
+                          selectedValue={activeNewMaterialData.color}
+                          onChange={(value) => updateItemData("color", value)}
+                          error={activeNewMaterialError.color}
+                          activeTabIndex={activeTabIndex}
+                          width={205}
+                          height={55}
+                        />
 
-                    <div className="flex flex-col items-start w-[156px] bg-transparent">
-                      <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
-                        Total Amount*
-                      </label>
-                      <div className="p-2 border-2 border-[#A9A5A5] rounded-[10px] w-full h-[55px] focus:border-[#00C5FF] bg-[#D9D9D980] text-lg ">
-                        ${computeTotal()}
+                        <div className="flex flex-col items-start w-[156px] bg-transparent">
+                          <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
+                            Total Amount*
+                          </label>
+                          <div className="p-2 border-2 border-[#A9A5A5] rounded-[10px] w-full h-[55px] focus:border-[#00C5FF] bg-[#D9D9D980] text-lg ">
+                            ${computeTotal()}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
-                    <ProductDetailsFetcher activeTabIndex={activeTabIndex} />
-                  </div>
-
+                      <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
+                        <ProductDetailsFetcher
+                          activeTabIndex={activeTabIndex}
+                        />
+                      </div>
+                    </>
+                  )}
                   {/* Commission Type */}
-
-                  <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
-                    <label htmlFor="commission" className="flex gap-2">
-                      <input
-                        type="checkbox"
-                        name="commission"
-                        className="text-[18px]"
-                        onChange={() => {
-                          updateItemData(
-                            "isCommission",
-                            !activeNewMaterialData.isCommission
-                          );
-                        }}
-                      />
-                      Comission*
-                    </label>
-                  </div>
-
-                  <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
-                    {/* Bar 7: Commission Selection */}
-                    <Dropdown
-                      label="Commission Type*"
-                      options={[
-                        { value: "%", label: "%" },
-                        { value: "$", label: "$" },
-                      ]}
-                      selectedValue={activeNewMaterialData.commissionType}
-                      onChange={(value) =>
-                        updateItemData("commissionType", value)
-                      }
-                      error={activeNewMaterialError.commissionType}
-                      activeTabIndex={activeTabIndex}
-                      // width={commissionType ? 150 : 205}
-                      width={180}
-                      height={55}
-                    />
-
-                    {/* Bar 4: commission value input */}
-                    <div className="flex flex-col items-start w-[145px] bg-transparent mt-[37px]">
-                      {/* <label className="text-primary mb-1 bg-transparent">Quantity*</label> */}
-                      <input
-                        type="number"
-                        value={activeNewMaterialData.commissionValue}
-                        min="1"
-                        onChange={(e) =>
-                          handleCommissionvalueChange(e.target.value)
-                        }
-                        disabled={!activeNewMaterialData.isCommission}
-                        className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-full"
-                      />
-                      {activeNewMaterialError.commissionValue && (
-                        <p className="text-red-500 bg-transparent">
-                          {activeNewMaterialError.commissionValue}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col items-start w-[164px] bg-transparent">
-                      <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
-                        Grand Total*
-                      </label>
-                      <div className="p-2 border-2 border-[#A9A5A5] rounded-[10px] w-full h-[55px] focus:border-[#00C5FF] bg-[#D9D9D980] text-lg ">
-                        ${computeGrandTotal()}
+                  {(activeNewMaterialData.productLinkAmount !== "0" ||
+                    (activeNewMaterialData.color &&
+                      activeNewMaterialData.quantity)) && (
+                    <>
+                      <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
+                        <label htmlFor="commission" className="flex gap-2">
+                          <input
+                            type="checkbox"
+                            name="commission"
+                            className="text-[18px]"
+                            onChange={() => {
+                              updateItemData(
+                                "isCommission",
+                                !activeNewMaterialData.isCommission
+                              );
+                            }}
+                          />
+                          Comission*
+                        </label>
                       </div>
-                    </div>
-                  </div>
+
+                      <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
+                        {/* Bar 7: Commission Selection */}
+                        <Dropdown
+                          label="Commission Type*"
+                          options={[
+                            { value: "%", label: "%" },
+                            { value: "$", label: "$" },
+                          ]}
+                          selectedValue={activeNewMaterialData.commissionType}
+                          onChange={(value) =>
+                            updateItemData("commissionType", value)
+                          }
+                          error={activeNewMaterialError.commissionType}
+                          activeTabIndex={activeTabIndex}
+                          // width={commissionType ? 150 : 205}
+                          width={180}
+                          height={55}
+                        />
+
+                        {/* Bar 4: commission value input */}
+                        <div className="flex flex-col items-start w-[145px] bg-transparent mt-[37px]">
+                          {/* <label className="text-primary mb-1 bg-transparent">Quantity*</label> */}
+                          <input
+                            type="number"
+                            value={activeNewMaterialData.commissionValue}
+                            min="1"
+                            onChange={(e) =>
+                              handleCommissionvalueChange(e.target.value)
+                            }
+                            disabled={!activeNewMaterialData.isCommission}
+                            className="p-2 outline-none border-2 border-[#A9A5A5] h-[55px] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-full"
+                          />
+                          {activeNewMaterialError.commissionValue && (
+                            <p className="text-red-500 bg-transparent">
+                              {activeNewMaterialError.commissionValue}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex flex-col items-start w-[164px] bg-transparent">
+                          <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
+                            Grand Total*
+                          </label>
+                          <div className="p-2 border-2 border-[#A9A5A5] rounded-[10px] w-full h-[55px] focus:border-[#00C5FF] bg-[#D9D9D980] text-lg ">
+                            ${computeGrandTotal()}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

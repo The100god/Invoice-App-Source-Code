@@ -7,7 +7,8 @@ import {
 } from "../../../variables/electricalInvoiceVariable";
 import ProductDetailsFetcher from "../../../components/form/FatchDetailsByLink";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
-import MaterialSearchBar from "../../../components/form/MaterialSearchBar";
+import SearchLinkToggle from "../../../components/form/SearchLinkToggle";
+import NotesInput from "../../../components/form/NotesInput";
 
 const ItemSelectionScreen = () => {
   const [itemSelectionData, setItemSelectionData] = useAtom(itemSelectionDataAtom)
@@ -83,44 +84,18 @@ const handleCommissionvalueChange = (value: string) => {
         {/* Other form fields such as quantity, color, etc. remain the same */}
         <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
           {/* Bar 1: Dropdown for item selection */}
-          {/* <Dropdown
-            label="Select Item Type*"
-            options={[
-              { value: "outlet", label: "Outlet" },
-              { value: "Breakers", label: "Breakers" },
-              { value: "Cover Plates", label: "Cover Plates" },
-              { value: "Exterior Boxes", label: "Exterior Boxes" },
-              { value: "Boxes", label: "Boxes" },
-              { value: "Panels", label: "Panels" },
-              { value: "Conduit", label: "Conduit" },
-              { value: "Wire", label: "Wire" },
-              { value: "Romex", label: "romex" },
-              { value: "Miscellaneous Material", label: "Miscellaneous Material" },
-              { value: "Wirenuts", label: "Wirenuts" },
-              { value: "switches", label: "Switches" },
-              { value: "three-way-switches", label: "Three-Way Switches" },
-              { value: "four-way-switches", label: "Four-Way Switches" },
-              { value: "15amp Breaker", label: "15amp Breaker" },
-              { value: "20amp Breaker", label: "20amp Breaker" },
-              { value: "30amp Breaker", label: "30amp Breaker" },
-              { value: "40amp Breaker", label: "40amp Breaker" },
-              { value: "50amp Breaker", label: "50amp Breaker" },
-            ]}
-            selectedValue={activeItemData.selectedItem}
-            onChange={(value) => updateItemData("selectedItem",value)}
-            error={activeErrors.selectedItem}
-            activeTabIndex={activeTabIndex}
-            width={577}
-            height={55}
-          /> */}
-<MaterialSearchBar
+          
+
+<SearchLinkToggle
   selectedValue={activeItemData.selectedItem}
-  onChange={(value) => updateItemData("selectedItem", value)}
+  onSearchChange={(value) => updateItemData("selectedItem", value)}
   error={activeErrors.selectedItem}
   activeTabIndex={activeTabIndex}
-  width={577}
-  height={55}
 />
+
+<NotesInput value={activeItemData.note} onChange={(value) => updateItemData("note", value)} />
+
+
 
           <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
             {activeItemData.selectedItem === "Outlet" && (
@@ -204,7 +179,7 @@ const handleCommissionvalueChange = (value: string) => {
                     label="D/General Electric*"
                     options={[
                       { value: " Standard", label: " Standard" },
-                      { value: "GFCI", label: "GFCI" },
+                      { value: "Arch Fault GFCI", label: "Arch Fault GFCI" },
                       { value: "AFCI", label: "AFCI" },
                     ]}
                     selectedValue={activeItemData.style}
@@ -256,6 +231,7 @@ const handleCommissionvalueChange = (value: string) => {
             )}
           </div>
 
+          {(activeItemData.style) && <>
           <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
             {/* Bar 4: Quantity input */}
             <div className="flex flex-col items-start w-[145px] bg-transparent">
@@ -302,10 +278,13 @@ const handleCommissionvalueChange = (value: string) => {
           <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
             <ProductDetailsFetcher activeTabIndex={activeTabIndex}/>
           </div>
+          </>}
 
           {/* Commission Type */}
 
-          <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
+          { (activeItemData.productLinkAmount !=="0" || (activeItemData.color && activeItemData.quantity)) &&
+            <>
+            <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
             <label htmlFor="commission" className="flex gap-2">
               <input
                 type="checkbox"
@@ -359,7 +338,10 @@ const handleCommissionvalueChange = (value: string) => {
                 ${computeGrandTotal()}
               </div>
             </div>
-          </div>
+          </div> 
+          </>
+          }
+
         </div>
       </div>
     </div>

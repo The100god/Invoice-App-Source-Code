@@ -14,7 +14,8 @@ import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { activeTabIndexAtom } from "../../variables/NavbarVariables";
-import MaterialSearchBar from "../form/MaterialSearchBar";
+import SearchLinkToggle from "../form/SearchLinkToggle";
+import NotesInput from "../form/NotesInput";
 
 const EditAddAttributePopUp = () => {
   const location = useLocation();
@@ -36,6 +37,7 @@ const EditAddAttributePopUp = () => {
       style: string;
       pole: string;
       amp: string;
+      note: string;
     }[]
   >([]);
 
@@ -69,6 +71,7 @@ const EditAddAttributePopUp = () => {
       style: string;
       pole: string;
       amp: string;
+      note: string;
     },
     value: any,
     index: number
@@ -137,6 +140,8 @@ const EditAddAttributePopUp = () => {
           color: "",
           pole: "",
           amp: "",
+          note:"", 
+          materialLink:"",
           commissionType: "",
           commissionValue: "",
           linkProductType: "",
@@ -157,6 +162,7 @@ const EditAddAttributePopUp = () => {
         color: "",
         pole: "",
         amp: "",
+        materialLink:"",
         commissionType: "",
         commissionValue: "",
       };
@@ -204,6 +210,7 @@ const EditAddAttributePopUp = () => {
         style: "",
         pole: "",
         amp: "",
+        note: "",
       });
       return updated;
     });
@@ -247,14 +254,16 @@ const EditAddAttributePopUp = () => {
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
 
-                  <MaterialSearchBar
-                    selectedValue={activeNewMaterialData?.selectedItem}
-                    onChange={(value) => updateItemData("selectedItem", value)}
-                    error={activeNewMaterialError?.selectedItem}
-                    activeTabIndex={index1}
-                    width={577}
-                    height={55}
-                  />
+<SearchLinkToggle
+  selectedValue={activeNewMaterialData?.selectedItem}
+  onSearchChange={(value) => updateItemData("selectedItem", value)}
+  error={activeNewMaterialError?.selectedItem}
+  activeTabIndex={index1}
+/>
+
+<NotesInput value={activeNewMaterialData?.note} onChange={(value) => updateItemData("note", value)} />
+
+
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                     {activeNewMaterialData?.selectedItem === "outlet" && (
@@ -410,16 +419,16 @@ const EditAddAttributePopUp = () => {
                     <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                       {/* Bar 1: Dropdown for item selection */}
 
-                      <MaterialSearchBar
-                        selectedValue={addAttri?.selectedItem}
-                        onChange={(value) =>
-                          updateAddAttributeData("selectedItem", value, index)
-                        }
-                        error={""}
-                        activeTabIndex={index1}
-                        width={577}
-                        height={55}
-                      />
+<SearchLinkToggle
+  selectedValue={addAttri?.selectedItem}
+  onSearchChange={(value) => updateAddAttributeData("selectedItem", value, index)}
+  error={""}
+  activeTabIndex={index1}
+/>
+
+<NotesInput value={addAttri?.note} onChange={(value) => updateAddAttributeData("note", value, index)} />
+
+
 
                       <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                         {addAttri?.selectedItem.toLowerCase() === "outlet" && (

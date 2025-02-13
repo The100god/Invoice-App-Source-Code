@@ -14,6 +14,8 @@ import { selectMaterialValidate } from "../formValidation/electricalFormValidati
 import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
 import MaterialSearchBar from "../form/MaterialSearchBar";
+import SearchLinkToggle from "../form/SearchLinkToggle";
+import NotesInput from "../form/NotesInput";
 
 const SelectMaterialPage = () => {
     const location = useLocation();
@@ -191,14 +193,15 @@ const SelectMaterialPage = () => {
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
 
-<MaterialSearchBar
+<SearchLinkToggle
   selectedValue={activeNewMaterialData?.selectedItem}
-  onChange={(value) => updateItemData("selectedItem", value)}
+  onSearchChange={(value) => updateItemData("selectedItem", value)}
   error={activeNewMaterialError?.selectedItem}
   activeTabIndex={index1}
-  width={577}
-  height={55}
 />
+
+<NotesInput value={activeNewMaterialData?.note} onChange={(value) => updateItemData("note", value)} />
+
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                     {activeNewMaterialData?.selectedItem === "outlet" && (
@@ -333,6 +336,7 @@ const SelectMaterialPage = () => {
                     )}
                   </div>
 
+                  {(activeNewMaterialData?.style) && <>
                   <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                     {/* Bar 4: Quantity input */}
                     <div className="flex flex-col items-start w-[145px] bg-transparent">
@@ -381,9 +385,10 @@ const SelectMaterialPage = () => {
                   <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                     <ProductDetailsFetcher activeTabIndex={index1} />
                   </div>
-
+                  </>}
                   {/* Commission Type */}
-
+                  { (activeNewMaterialData?.productLinkAmount !=="0" || (activeNewMaterialData?.color && activeNewMaterialData?.quantity)) &&
+            <>
                   <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
                     <label htmlFor="commission" className="flex gap-2">
                       <input
@@ -449,6 +454,8 @@ const SelectMaterialPage = () => {
                       </div>
                     </div>
                   </div>
+                  </>
+          }
                 </div>
               </div>
             </div>

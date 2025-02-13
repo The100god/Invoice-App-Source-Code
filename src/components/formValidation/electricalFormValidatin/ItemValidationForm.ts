@@ -8,6 +8,7 @@ interface ItemValidateData {
   color: string;
   pole:string;
   amp:string;
+  materialLink:string;
   commissionType: string;
   commissionValue: string;
   isCommission: boolean;
@@ -21,6 +22,7 @@ interface ItemValidateErrors {
   color: string;
   pole:string;
   amp:string;
+  materialLink:string;
   commissionType: string;
   commissionValue: string;
 }
@@ -48,6 +50,7 @@ export const itemValidate = ({
     quantity: "",
     color: "",pole:"",
     amp:"",
+    materialLink:"",
     commissionType: "",
     commissionValue: "",
   };
@@ -55,10 +58,10 @@ export const itemValidate = ({
   const activeFormData = itemSelectionData[activeTabIndex];
 
   // Validation logic
-  if (!activeFormData.selectedItem.trim()) {
-    newErrors.selectedItem = "Item selection is required.";
+  if (!activeFormData.selectedItem.trim() || !activeFormData.materialLink) {
+    newErrors.selectedItem = "Selecting a item or adding link of material is required.";
     isValid = false;
-  } else {
+  }  else {
     if (
       [
         "outlet",
