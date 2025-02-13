@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAtom } from "jotai";
 import Dropdown from "../form/Dropdown";
 import {

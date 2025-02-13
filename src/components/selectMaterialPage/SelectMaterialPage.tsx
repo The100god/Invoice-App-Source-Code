@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useAtom } from "jotai";
 import Dropdown from "../form/Dropdown";
 import ProductDetailsFetcher from "../form/FatchDetailsByLink";
@@ -13,7 +15,6 @@ import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
 import { selectMaterialValidate } from "../formValidation/electricalFormValidatin/SelectMaterialPageValidation";
 import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
-import MaterialSearchBar from "../form/MaterialSearchBar";
 import SearchLinkToggle from "../form/SearchLinkToggle";
 import NotesInput from "../form/NotesInput";
 

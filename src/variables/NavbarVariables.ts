@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai";
+import { atom } from "jotai";
 
 export const isEnterInvoiceAtom = atom<boolean>(false)
 
@@ -42,10 +42,6 @@ export const colorChangeAtom = atom<colorStates[]>([{
     valuesColor:"#FFEA00",
     descriptionsColor:"#00FF11",
 }])
-// export const labelColorAtom = atom("#00000099");
-// export const outlineColorAtom = atom("#000000E5");
-// export const valuesColorAtom = atom("#FFEA00");
-// export const descriptionsColorAtom = atom("#00FF11");
 
 // Search term atom
 export const searchTermAtom = atom("");
