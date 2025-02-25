@@ -1,25 +1,28 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "target": "ES6",
-    "allowJs": true,
-    "module": "commonjs",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "strict": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    "jsx": "react-jsx",                     // Correct JSX setting for React 17+
+    "target": "ES6",                        // Use ES6 target
+    "allowJs": true,                        // Allow JavaScript files in the project
+    "module": "commonjs",                   // CommonJS module system for Electron
+    "skipLibCheck": true,                   // Skip library type checks for faster build
+    "esModuleInterop": true,                // Enable ES module interop
+    "noImplicitAny": true,                  // Disallow the usage of 'any' type
+    "sourceMap": true,                      // Generate source maps
+    "baseUrl": ".",                         // Base directory for non-relative module imports
+    "outDir": "dist",                       // Output directory for compiled files
+    "strict": true,                         // Enable strict mode
+    "moduleResolution": "node",             // Resolve modules in Node.js style
+    "resolveJsonModule": true,              // Allow importing JSON files as modules
+    "lib": ["dom", "esnext"],             // Include DOM and ESNext libraries
+    // "typeRoots": ["./node_modules/@types", "./src/types"], // Custom types
     "paths": {
-      "*": ["node_modules/*"],
-      "@/*": ["./*"]
-    },
+      "*": ["node_modules/*"],              // Map all modules to node_modules
+      "@/*": ["./src/*"]                    // Map @/ to src/ directory
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "src/types/**/*.d.ts"], // Include all source files and custom types
 }
+
 
 // {
 //   "compilerOptions": {

@@ -94,9 +94,6 @@ const handleCommissionvalueChange = (value: string) => {
 />
 
 <NotesInput value={activeItemData.note} onChange={(value) => updateItemData("note", value)} />
-
-
-
           <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
             {activeItemData.selectedItem === "Outlet" && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
