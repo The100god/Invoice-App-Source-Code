@@ -27,7 +27,7 @@ const createWindow = (): void => {
       // preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
-      devTools: false,
+      devTools: true,
     },
   });
 
@@ -50,7 +50,7 @@ const createWindow = (): void => {
     mainWindow=null;
   });
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 };
 
 
