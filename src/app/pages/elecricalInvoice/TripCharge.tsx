@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import FormField from "../../../components/form/FormField";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 import {
@@ -78,7 +79,7 @@ const TripCharge = () =>
 
     // console.log(amountPerMiles)
     return (
-      <div className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
+      <div id="tripChargeTour" className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
         <div className="flex flex-col w-[450px] h-fit mt-6 gap-y-4 bg-transparent">
           <div className="flex flex-row justify-between items-start gap-2 w-full bg-transparent">
             <label

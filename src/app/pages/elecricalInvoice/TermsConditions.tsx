@@ -21,7 +21,7 @@ const TermsConditions = () => {
     const activeTAndCTabData = termsCondition[activeTabIndex]
     
     return (
-      <div className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
+      <div id="termsCondTour" className="w-full h-full px-4 pb-4 flex flex-col items-center justify-center bg-transparent">
         <div className="flex flex-col w-[410px] justify-center items-center h-fit mt-10 gap-y-4 bg-transparent">
         <div className="flex flex-col justify-between items-start gap-2 w-full bg-transparent">
             <label className=" px-2 pb-1 text-[#000000B2] dark:text-white text-[18px] font-[500] leading-[17.78px] mb-2 bg-transparent">

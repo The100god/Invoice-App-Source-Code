@@ -194,11 +194,11 @@ import FormField from "../../../components/form/FormField";
 import { formDataAtom, errorsAtom, InvoiceFormData } from "../../../variables/electricalInvoiceVariable";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 
-
 const InvoiceInfo = () => {
   const [formData, setFormData] = useAtom(formDataAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
+  
 
   const handleChange = (key: keyof InvoiceFormData, e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -257,7 +257,7 @@ const InvoiceInfo = () => {
   
 
   return (
-    <div className="h-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
+    <div id="invoiceInfoTour" className="h-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
       <div className="flex flex-col gap-y-4 bg-transparent">
         <div className="flex flex-row justify-between items-center w-full bg-transparent">
           <FormField

@@ -22,3 +22,11 @@ export interface progressStates{
 export const progressAtom = atom<progressStates[]>([{
     progress: Math.ceil(100 / 9)
 }])
+
+export const joyrideRunAtom = atom<boolean>(false)
+export const activeProjAtom = atom<boolean>(false)
+export const joyrideStepIndexAtom = atom<number>(0)
+
+  
+
+  

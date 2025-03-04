@@ -178,7 +178,7 @@ const ClientDetails = () => {
   // console.log("clientData", clientFormData)
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
+    <div id="clientDetailTour" className="h-full w-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
       <div className="flex flex-col gap-y-4 min-w-40 bg-transparent">
         {/* Client's Name */}
         <FormField

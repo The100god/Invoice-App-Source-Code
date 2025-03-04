@@ -58,14 +58,6 @@ import {
   stepsAtom,
 } from "../../variables/Home";
 import { toast } from "react-toastify";
-import Joyride, {
-  ACTIONS,
-  EVENTS,
-  ORIGIN,
-  STATUS,
-  CallBackProps,
-  Step,
-} from "react-joyride";
 
 interface ElectronAPI {
   minimizeWindow: () => void;
@@ -826,154 +818,7 @@ const Navbar: React.FC = () => {
     setProjects([]);
   };
 
-  const [run, setRun] = useState(true);
-  const [stepIndex, setStepIndex] = useState(0);
-
-  const steps: Step[] = [
-    {
-      target: "#navTopLeftBtn",
-      content:
-        "This is the main menu. Use these options to create, edit, or customize invoices.",
-      placement: "bottom",
-      spotlightPadding: 8, // Padding around the highlighted element
-      waitFor: "#navTopLeftBtn",
-    },
-    {
-      target: "#f-option-0",
-      content: 'Click here to File > New Invoice. Or Press "Ctrl + N"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-0",
-    },
-    {
-      target: "#f-option-1",
-      content: 'Click here to File > Save. Or Press "Ctrl + S"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-1",
-    },
-    {
-      target: "#f-option-2",
-      content: 'Click here to File > Save As. Or Press "Shift + Ctrl + S"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-2",
-    },
-    {
-      target: "#f-option-3",
-      content: 'Click here to File > Rename Invoice. Or Press "F2"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-3",
-    },
-    {
-      target: "#f-option-4",
-      content: 'Click here to File > Export. Or Press "Ctrl + E"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-4",
-    },
-    {
-      target: "#f-option-5",
-      content: 'Click here to File > Print. Or Press "Ctrl + P"',
-      placement: "right",
-      spotlightPadding: 8, // Padding around the highlighted element,
-      waitFor: "#f-option-5",
-    },
-  ];
-
-  const joyrideStyle = {
-    options: {
-      zIndex: 10000,
-      primaryColor: "#007bff", // Next button color
-      textColor: "#333",
-      backgroundColor: "#fff",
-      overlayColor: "rgba(0, 0, 0, 0.6)", // Dark overlay
-    },
-    buttonNext: {
-      background: "linear-gradient(90.02deg, #00C5FF 0.01%, #0054F0 204.21%)",
-      color: "#fff",
-      borderRadius: "8px",
-      padding: "8px 16px",
-      border: "none",
-      order: 2, // Place next button after skip
-    },
-    buttonBack: {
-      border: "1px solid transparent", // Transparent border to apply border image
-      borderImageSource: "linear-gradient(180deg, #00C5FF 0%, #0054F0 100%)",
-      borderImageSlice: 1,
-      borderRadius: "8px",
-      padding: "8px 16px",
-      color: "#00C5FF",
-      backgroundColor: "transparent",
-      order: -1, // Move back button to the far left
-      marginRight: "auto", // Push it to the far left
-    },
-    tooltip: {
-      borderRadius: "8px",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-      padding: "16px",
-    },
-    tooltipFooter: {
-      display: "flex",
-      justifyContent: "space-between", // Ensures back button is left, others right
-      alignItems: "center",
-    },
-    spotlight: {
-      borderRadius: "8px",
-      border: "1px solid transparent",
-      borderImageSource: "linear-gradient(180deg, #00C5FF 0%, #0054F0 100%)",
-      borderImageSlice: 1,
-    },
-    buttonSkip: {
-      color: "#00000080",
-      fontFamily: "Ubuntu",
-      fontWeight: 400,
-      fontSize: "12px",
-      textAlign: "center",
-      backgroundColor: "transparent",
-      order: 1, // Place skip button before next
-      marginRight: "8px", // Small spacing between Skip and Next
-      marginLeft: "55%",
-    },
-  };
   
-  const handleJoyrideCallback = (data: CallBackProps) => {
-    const { action, index, origin, lifecycle, status, type } = data;
-    // const temp = [EVENTS.STEP_AFTER, EVENTS.TARGET_NOT_FOUND]
-
-    // console.log(temp.includes(type))
-    console.log(index, stepIndex);
-
-    if (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) {
-      // do something
-    }
-
-    if (
-      index === 0 &&
-     ( type &&
-      ["step:after", "error:target_not_found"].includes(type)) &&
-      activeDropdown !== "File"
-    ) {
-      setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
-      toggleDropdown("File"); // Ensure dropdown is opened
-        
-    }
-    
-      else if (type && ["step:after", "error:target_not_found"].includes(type)) {
-        // Update state to advance the tour
-
-        setStepIndex(index + (action === ACTIONS.PREV ? -1 : 1));
-      } else if (status && ["finished", "skipped"].includes(status)) {
-        // You need to set our running state to false, so we can restart if we click start again.
-        setRun(false);
-      }
-
-    // console.groupCollapsed(type);
-    console.log("type", type); //eslint-disable-line no-console
-    console.log("data", data); //eslint-disable-line no-console
-    console.groupEnd();
-  };
   
 
 
@@ -982,21 +827,7 @@ const Navbar: React.FC = () => {
       id="titlebar"
       className="flex flex-col w-full bg-[#000000] dark:bg-custom-bgcl-gradient text-white "
     >
-      <Joyride
-        steps={steps}
-        run={run}
-        stepIndex={stepIndex}
-        continuous
-        showSkipButton
-        disableCloseOnEsc
-        spotlightClicks
-        disableOverlayClose={true}
-        callback={handleJoyrideCallback}
-        styles={joyrideStyle}
-        locale={{
-          skip: "Skip Tutorial", // Set skip button text for every step
-        }}
-      />
+      
       {/* First Row */}
       <div className="flex justify-between w-full h-[44px] items-center px-4 py-2 ">
         {/* Left Side: Logo and Buttons */}

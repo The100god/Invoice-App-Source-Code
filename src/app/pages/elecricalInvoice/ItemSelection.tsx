@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import RadioGroup from "../../../components/form/RadioGroup"; // Adjust the path as needed
 import Dropdown from "../../../components/form/Dropdown"; // New Dropdown Component
 import { useAtom } from "jotai";
@@ -79,7 +80,7 @@ const handleCommissionvalueChange = (value: string) => {
   // console.log( "isCommission",activeItemData.isCommission)
 
   return (
-    <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
+    <div id="itemSelectionTour" className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
       <div className="flex flex-row-reverse justify-between w-full gap-x-8 bg-transparent">
         {/* Other form fields such as quantity, color, etc. remain the same */}
         <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">

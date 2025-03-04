@@ -18,7 +18,7 @@ const FinalizeSection = () => {
   const [clientContractorData,] = useAtom(clientContractorAtom)
   const activeSelectedInvoice= invoiceSelect[activeTabIndex]
   return (
-    <div className="flex flex-col justify-center items-center w-full h-fit bg-transparent">
+    <div id='finalizeSectionTour' className="flex flex-col justify-center items-center w-full h-fit bg-transparent">
                 <div className="flex flex-col w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">
                     <button disabled className=" flex justify-center items-center w-[200px] h-[45px] hover:border-blue-200 hover:border-2 text-[20px] font-[500] rounded-[10px] text-secondary bg-invoice-btn-gradient border-2 border-[#069FDA]">

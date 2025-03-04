@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import RadioGroup from "../../../components/form/RadioGroup";
 import FormField from "../../../components/form/FormField";
 import React, { useEffect } from "react";
@@ -66,7 +67,7 @@ const ClientContractorSign: React.FC = () => {
   );
 
   return (
-    <div className="h-full flex flex-col items-center justify-center bg-transparent ">
+    <div id="clientContractorSignTour" className="h-full flex flex-col items-center justify-center bg-transparent ">
       <div className="flex flex-col justify-center items-center w-[600px] gap-y-8 bg-transparent">
         {/* Form Inputs */}
         <div className="flex w-full justify-center items-center bg-transparent">

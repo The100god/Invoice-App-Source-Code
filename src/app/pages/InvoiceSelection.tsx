@@ -34,7 +34,9 @@ import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
 import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
 import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+
 
 const InvoiceSelection = () => {
   const divide = 100 / 9;
@@ -45,6 +47,8 @@ const InvoiceSelection = () => {
   const [progress, setProgress] = useAtom(progressAtom);
   const [stepsData, setStepsData] = useAtom(stepsAtom);
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
+
+  const [, setRun] = useState(false)
 
   const [zoomLevel, setZoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
   const [disableTripCharge,] = useAtom(
@@ -85,6 +89,8 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
   const activeSelectedInvoice = invoiceSelect[activeTabIndex]
   const activeSteps = stepsData[activeTabIndex]
   const activeProgress = progress[activeTabIndex]
+
+  
 
   const handlePreview = () => {
     //
@@ -156,7 +162,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       return step
     }
 
-  //   console.log("Proceeding to the next step...");
+    //   console.log("Proceeding to the next step...");
     const stepConfigurations = [
       {
         step: 1,
@@ -305,6 +311,10 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
 
     }, []);
 
+    useEffect(()=>{
+      setRun(true)
+    })
+
   return (
     <div style={{
       transform: `scale(${zoomLevel / 100})`,
@@ -327,11 +337,11 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
 
         <div
           className={`flex flex-col w-full h-[506px] bg-transparent p-4 ${
-            activeSteps.electricalSteps == 7 ? " overflow-y-hidden" : "overflow-y-scroll"
+            (activeSteps.electricalSteps == 7) ? " overflow-y-hidden" : "overflow-y-scroll"
           }`}
         >
           {activeSteps.electricalSteps == 1 && (
-            <div className="flex flex-row justify-around items-center bg-transparent">
+            <div id="selectInvoiceType" className="flex flex-row justify-around items-center bg-transparent">
               <Link to="/info/rough-in">
                 <button
                   disabled
@@ -385,6 +395,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
           </div>
         )}
       </div>
+      
     </div>
   );
 };

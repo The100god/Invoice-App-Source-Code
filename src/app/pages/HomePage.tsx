@@ -8,9 +8,14 @@ import {
 } from "../../variables/NavbarVariables";
 import { useNavigate } from "react-router";
 import { IoClose } from "react-icons/io5";
+import { activeProjAtom } from "../../variables/Home";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+
+    const [, setActiveProj] = useAtom(activeProjAtom)
+  
+
   const [filterText, setFilterText] = useState("");
   const [recentFiles, setRecentFiles] = useState<
     {
@@ -32,6 +37,9 @@ const HomePage: React.FC = () => {
   const [, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
   const [, setHomeClick] = useAtom(homeClickAtom);
+
+
+  const hasSeenTour = localStorage.getItem("hasSeenTour"); // variable for chacking if tour run for once or not
 
   const parseRelativeDate = (relativeDate: string): Date => {
     const [value] = relativeDate.split(" ");
@@ -100,10 +108,14 @@ const HomePage: React.FC = () => {
       );
       return updatedRecentFiles; // Return the new state
     });
-
+    
+    
     setTimeout(() => {
       console.log("Updated recent files:", recentFiles); // Debugging
       navigate(`/project/${newProject.id}`);
+      if (!hasSeenTour) {
+        setActiveProj(true)
+      }
     }, 100);
   };
 
@@ -190,7 +202,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* File Cards */}
-        <div className="grid grid-cols-3 gap-8 p-3 pl-6 overflow-y-auto ">
+        <div className="grid grid-cols-3 mb-4 gap-8 p-3 pl-6 overflow-y-auto ">
           <div
             onClick={() => setIsModalOpen(!isModalOpen)}
             className="relative w-fit h-fit rounded-lg bg-gradient-to-tr from-[rgb(0,197,255)] to-[#0054F0] p-[1px] cursor-pointer"

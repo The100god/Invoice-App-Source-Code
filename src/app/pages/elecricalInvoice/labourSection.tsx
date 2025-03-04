@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import FormField from "../../../components/form/FormField";
 import React, { useEffect } from "react";
 import { useAtom } from "jotai";
@@ -116,11 +117,11 @@ const labourSection = () => {
   console.log("data", activeLabourData.variableAddEmployees);
   console.log("Rendered JSX:", activeLabourData.variableAddEmployees.map((employee) => <div>{employee.name}</div>));
   return (
-    <div className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
+    <div id="labourSelectionDetailTour" className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
       <div className="flex flex-col w-[390px] gap-y-6 justify-center items-center bg-transparent">
         {/* labour selection page */}
         {!activeLabourData.labourSelectedVal && (
-          <div className="flex flex-col gap-4 w-fit h-fit justify-center items-center bg-transparent mt-12">
+          <div id="labourSelectionMathodTour" className="flex flex-col gap-4 w-fit h-fit justify-center items-center bg-transparent mt-12">
             <button
               className={`flex justify-center items-center text-[32px] font-[500] rounded-[20px] dark:text-white text-center w-[306px] h-[81px] ${
                 activeLabourData.labourSelectedVal === "Hourly Rate"
