@@ -66,6 +66,7 @@ export const materialOptions: { value: string; label: string }[] = [
   { value: "Switches", label: "Switches" },
   { value: "Three-Way Switches", label: "Three-Way Switches" },
   { value: "Four-Way Switches", label: "Four-Way Switches" },
+  { value: "Breaker", label: "Breaker" },
   { value: "15amp Breaker", label: "15amp Breaker" },
   { value: "20amp Breaker", label: "20amp Breaker" },
   { value: "30amp Breaker", label: "30amp Breaker" },
@@ -158,7 +159,7 @@ export const stepTour: Step[] = [
   {
     target: "#invoiceInfoTour",
     content: " Fill in Company Details.",
-    placement: "bottom",
+    placement: "top",
     spotlightPadding: 8, // Padding around the highlighted element
     disableBeacon:true
   },

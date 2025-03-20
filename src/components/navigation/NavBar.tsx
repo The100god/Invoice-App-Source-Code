@@ -53,6 +53,7 @@ import {
   tripChargeErrorAtom,
 } from "../../variables/electricalInvoiceVariable";
 import {
+  breakDownAtom,
   invoiceSelectAtom,
   progressAtom,
   stepsAtom,
@@ -64,13 +65,6 @@ interface ElectronAPI {
   toggleMaximizeWindow: () => void;
   closeWindow: () => void;
 }
-
-// Update the 'window' object to use the ElectronAPI type
-// declare global {
-//   interface Window {
-//     electron: ElectronAPI;
-//   }
-// }
 
 const Navbar: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
@@ -122,6 +116,9 @@ const Navbar: React.FC = () => {
   >([]);
   const [activeTabIndex, setActiveTabIndex] = useAtom(activeTabIndexAtom);
   const [, SetSelectedProjectName] = useAtom(SelectedProjectNameAtom);
+
+  //breakdown variable
+  const [breakDown, setBreakDown] = useAtom(breakDownAtom);
 
   const [formData, setFormData] = useAtom(formDataAtom);
   const [errors, setErrors] = useAtom(errorsAtom);
@@ -219,6 +216,17 @@ const Navbar: React.FC = () => {
         progress: Math.ceil(100 / 9),
       },
     ]);
+
+    // break down
+    setBreakDown([
+      ...breakDown,
+      {
+        labourBreakDown: false,
+        materialBreakDown: false,
+        tripChargeBreakDown: false,
+      },
+    ]);
+
     //form data
     setFormData([
       ...formData,
@@ -276,6 +284,10 @@ const Navbar: React.FC = () => {
         quantity: 1,
         color: "",
         pole: "",
+        use: "",
+        version: "",
+        neutral: "",
+        type: "",
         amp: "",
         note: "",
         materialLink: "",
@@ -299,6 +311,10 @@ const Navbar: React.FC = () => {
         quantity: "",
         color: "",
         pole: "",
+        use: "",
+        version: "",
+        neutral: "",
+        type: "",
         materialLink: "",
         amp: "",
         commissionType: "",
@@ -438,6 +454,7 @@ const Navbar: React.FC = () => {
       (data, index) => index != id
     );
     const updatedFromData = formData.filter((data, index) => index != id);
+    const updatedBreakDown = breakDown.filter((data, index) => index != id);
     const updatedClientFromData = clientFormData.filter(
       (data, index) => index != id
     );
@@ -475,6 +492,7 @@ const Navbar: React.FC = () => {
     const updatedProgress = progress.filter((data, index) => index != id);
     const updatedHomeClick = homeClick.filter((data, index) => index != id);
     setHomeClick(updatedHomeClick); //homeClick data
+    setBreakDown(updatedBreakDown); //breakdown data
     setColorChange(updatedColorPickerData); //homeClick data
     setInvoiceSelect(updatedSelectedInvoice); //invoice selction data
     setProgress(updatedProgress); //progress data
@@ -690,6 +708,10 @@ const Navbar: React.FC = () => {
       color: "",
       pole: "",
       amp: "",
+      use: "",
+      version: "",
+      neutral: "",
+      type: "",
       note: "",
       materialLink: "",
       commissionType: "",
@@ -716,6 +738,10 @@ const Navbar: React.FC = () => {
             color: "",
             pole: "",
             amp: "",
+            use: "",
+            version: "",
+            neutral: "",
+            type: "",
             note: "",
             materialLink: "",
             commissionType: "",
@@ -743,6 +769,10 @@ const Navbar: React.FC = () => {
       quantity: "",
       color: "",
       pole: "",
+      use: "",
+      version: "",
+      neutral: "",
+      type: "",
       amp: "",
       materialLink: "",
       commissionType: "",
@@ -818,16 +848,11 @@ const Navbar: React.FC = () => {
     setProjects([]);
   };
 
-  
-  
-
-
   return (
     <div
       id="titlebar"
       className="flex flex-col w-full bg-[#000000] dark:bg-custom-bgcl-gradient text-white "
     >
-      
       {/* First Row */}
       <div className="flex justify-between w-full h-[44px] items-center px-4 py-2 ">
         {/* Left Side: Logo and Buttons */}
@@ -836,13 +861,13 @@ const Navbar: React.FC = () => {
             id="navTopLeftBtn"
             className="flex flex-row items-center w-fit space-x-4 rounded-lg"
           >
-          <div
-            id="title"
-            onClick={handleGoToHome}
-            className="font-bold text-2xl cursor-pointer"
-          >
-            S
-          </div>
+            <div
+              id="title"
+              onClick={handleGoToHome}
+              className="font-bold text-2xl cursor-pointer"
+            >
+              S
+            </div>
             {["File", "Edit", "View", "Tools", "Share", "Help"].map((item) => (
               <div id={item} key={item} className="relative">
                 <button
@@ -851,458 +876,463 @@ const Navbar: React.FC = () => {
                 >
                   {item}
                 </button>
-               
               </div>
             ))}
 
-              <div className="absolute left-0">
-                
-                {/* {activeDropdown === item && ( */}
-                <div
-                  className={`absolute mt-2 left-2 top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "File" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {(item === "File") && ( */}
-                  <ul className="py-2 px-2 w-[246px] gap-2 text-primary rounded-[10px] bg-transparent">
-                    {[
-                      ["New Invoice", "Ctrl+N"],
-                      ["Save", "Ctrl+S"],
-                      ["Save As", "Shift+Ctrl+S"],
-                      ["Rename Invoice", "F2"],
-                      ["Export", "Ctrl+E"],
-                      ["Print", "Ctrl+P"],
-                    ].map((option, index) => (
-                      <div
-                        id={`f-option-${index}`}
-                        key={index}
-                        className=" relative"
-                      >
-                        <li
-                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                          onClick={() =>
-                            handleFileDropdownAction(option[0], option[1])
-                          }
-                        >
-                          <span>{option[0]}</span>
-                          <span>{option[1]}</span>
-                        </li>
-
-                        {isRename && option[0] === "Rename Invoice" && (
-                          <div className="flex justify-center items-center mt-1 m-auto rounded-[5px] w-fit border-[2px] border-black">
-                            <input
-                              type="text"
-                              className=" outline-none p-1 border-1 rounded-[5px] border-black"
-                              onChange={(e) => setNewName(e.target.value)}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  handleRename();
-                                  setIsRename(false);
-                                }
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </ul>
-                  {/* )} */}
-                </div>
-                <div
-                  className={`absolute mt-2 left-14 top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "Edit" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {item === "Edit" && ( */}
-                  <ul className="py-2 px-2 w-[240px] gap-2 text-primary rounded-[10px] bg-transparent">
-                    {[
-                      "Add New Material",
-                      "Select Existing Project",
-                      "Select Material",
-                      "Edit/Add Attribute",
-                      ``,
-                    ].map((option) => (
+            <div className="absolute left-0">
+              {/* {activeDropdown === item && ( */}
+              <div
+                className={`absolute mt-2 left-2 top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "File"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {(item === "File") && ( */}
+                <ul className="py-2 px-2 w-[246px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {[
+                    ["New Invoice", "Ctrl+N"],
+                    ["Save", "Ctrl+S"],
+                    ["Save As", "Shift+Ctrl+S"],
+                    ["Rename Invoice", "F2"],
+                    ["Export", "Ctrl+E"],
+                    ["Print", "Ctrl+P"],
+                  ].map((option, index) => (
+                    <div
+                      id={`f-option-${index}`}
+                      key={index}
+                      className=" relative"
+                    >
                       <li
-                        key={option}
-                        className="flex flex-row relative justify-between items-center text-primary px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                        onClick={() => handleEditDropdownAction(option)}
+                        className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                        onClick={() =>
+                          handleFileDropdownAction(option[0], option[1])
+                        }
                       >
-                        {option === "Add New Material" && <span>{option}</span>}
-                        {option === "Select Existing Project" && (
-                          <div
-                            className=" relative flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
-                            onClick={() => toggleInnerDropdown(option)}
-                          >
-                            <span>{option}</span>
-                            <span>
-                              <MdArrowRight />
-                            </span>
-                            {activeInnerDropdown === option && (
-                              <div className="absolute left-[100%] top-0 mt-2 ml-6 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                {
-                                  <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                    {projects?.map((mat, index) => (
-                                      <li
-                                        key={index}
-                                        onClick={() => {
-                                          if (
-                                            isExistingProjectVariable[
-                                              activeTabIndex
-                                            ].isExistingProject
-                                          ) {
-                                            selectProject(mat.id);
-                                            navigate(`/project/${mat.id}`);
-                                            if (
-                                              homeClick[mat.id]
-                                                .elctronicHomeClick
-                                            ) {
-                                              navigate(
-                                                "/project/existingPtoject"
-                                              );
-                                            }
-                                          } else {
-                                            toast.warning(
-                                              "There is no existing project. Please select one.",
-                                              {
-                                                position: "bottom-right",
-                                              }
-                                            );
-                                          }
-                                          setActiveDropdown(null);
-                                        }}
-                                        className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                      >
-                                        <span>{mat.name}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                }
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {option === "Select Material" && (
-                          <div
-                            className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
-                            onClick={() => toggleInnerDropdown(option)}
-                          >
-                            <span>{option}</span>
-                            <span>
-                              <MdArrowRight />
-                            </span>
-                            {activeInnerDropdown === option && (
-                              <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
-                                {projects?.map((project, ind) => (
-                                  <ul
-                                    key={ind}
-                                    className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
-                                  >
-                                    <li className="flex w-full p-2">
-                                      {project.name}
-                                    </li>
-                                    {newMaterial[project.id]?.map(
-                                      (mat, index) => (
-                                        <li
-                                          key={index}
-                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          onClick={() =>
-                                            handleSelectMaterialClick(
-                                              ind,
-                                              index
-                                            )
-                                          }
-                                        >
-                                          <span>- Material {index + 1}</span>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        {option === "Edit/Add Attribute" && (
-                          <div
-                            className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
-                            onClick={() => toggleInnerDropdown(option)}
-                          >
-                            <span>{option}</span>
-                            <span>
-                              <MdArrowRight />
-                            </span>
-                            {activeInnerDropdown === option && (
-                              <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
-                                {projects?.map((project, ind) => (
-                                  <ul
-                                    key={ind}
-                                    className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
-                                  >
-                                    <li className="flex w-full p-2">
-                                      {project.name}
-                                    </li>
-                                    {newMaterial[project.id]?.map(
-                                      (mat, index) => (
-                                        <li
-                                          key={index}
-                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          onClick={() =>
-                                            handleEditAddAttributeClick(
-                                              ind,
-                                              index
-                                            )
-                                          }
-                                        >
-                                          <span>- Material {index + 1}</span>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )}
+                        <span>{option[0]}</span>
+                        <span>{option[1]}</span>
                       </li>
-                    ))}
-                  </ul>
-                  {/* )} */}
-                </div>
-                <div
-                  className={`absolute mt-2 left-[6.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "View" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {item === "View" && ( */}
-                    <ul className="py-2 px-2 w-[345px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                      {[
-                        "Zoom",
-                        "Layout",
-                        "Disable Trip Charge",
-                        "Disable Tax",
-                        "Disable Terms& Con...",
-                        "Disable Contractor/Client Signatures",
-                      ].map((option, index) => (
-                        <li
-                          key={index}
-                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                          onClick={() => handleViewDropdownAction(option)}
-                        >
-                          {option === "Zoom" && (
-                            <div
-                              className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              // onClick={() => toggleInnerDropdown(option)}
-                            >
-                              <span>{option}</span>
-                              <span>{zoomLevel}%</span>
 
-                              <span className="flex justify-center items-center">
-                                Ctrl + / -
-                              </span>
-                            </div>
-                          )}
-
-                          {option === "Layout" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              onClick={() => toggleInnerDropdown(option)}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center">
-                                <MdArrowRight />
-                              </span>
-                              {activeInnerDropdown === option && (
-                                <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                  {
-                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                      {["Layout 1", "Layout 2", "Layout 3"].map(
-                                        (mat, index) => (
-                                          <li
-                                            key={index}
-                                            className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          >
-                                            <span>{mat}</span>
-                                          </li>
-                                        )
-                                      )}
-                                    </ul>
-                                  }
-                                </div>
-                              )}
-                            </div>
-                          )}
-                          {option === "Disable Trip Charge" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              onClick={() => {
-                                setActiveInnerDropdown(null);
-                                setDisableTripCharge(!disableTripCharge);
-                              }}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center text-[24px]">
-                                {disableTripCharge && <IoIosCheckmark />}
-                              </span>
-                            </div>
-                          )}
-                          {option === "Disable Tax" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              onClick={() => {
-                                setActiveInnerDropdown(null);
-                                setDisableTax(!disableTax);
-                              }}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center text-[24px]">
-                                {disableTax && <IoIosCheckmark />}
-                              </span>
-                            </div>
-                          )}
-                          {option === "Disable Terms& Con..." && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              onClick={() => {
-                                setActiveInnerDropdown(null);
-                                setDisableTermsCon(!disableTermsCon);
-                              }}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center text-[24px]">
-                                {disableTermsCon && <IoIosCheckmark />}
-                              </span>
-                            </div>
-                          )}
-                          {option ===
-                            "Disable Contractor/Client Signatures" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              onClick={() => {
-                                setDisableContractorClientSignatures(
-                                  !disableContractorClientSignatures
-                                );
-                                setActiveInnerDropdown(null);
-                              }}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center text-[24px]">
-                                {disableContractorClientSignatures && (
-                                  <IoIosCheckmark />
-                                )}
-                              </span>
-                            </div>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  {/* )} */}
-                </div>
-                <div
-                  className={`absolute mt-2 left-[9.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "Tools" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {item === "Tools" && ( */}
-                    <ul className="py-2 px-2 w-[277px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                      {["Cost Calculator", "Project-Material"].map((option) => (
-                        <li
-                          key={option}
-                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                        >
-                          {option === "Cost Calculator" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] h-fit w-full bg-transparent cursor-pointer"
-                              onClick={() => {
-                                setCostCalculator(!costCalculator);
-                                setActiveInnerDropdown(null);
-                              }}
-                            >
-                              <span>{option}</span>
-                              <span className="flex justify-center items-center text-[24px]">
-                                {costCalculator && <IoIosCheckmark />}
-                              </span>
-                            </div>
-                          )}
-
-                          {option === "Project-Material" && (
-                            <div
-                              className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                              // onClick={() => toggleInnerDropdown(option)}
-                            >
-                              <div
-                                className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
-                                onClick={() => toggleInnerDropdown(option)}
-                              >
-                                <span>{option}</span>
-                                <span className="flex justify-center items-center">
-                                  <MdArrowRight />
-                                </span>
-                              </div>
-                              {activeInnerDropdown === option && (
-                                <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
-                                  {
-                                    <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
-                                      {projects?.map((mat, index) => (
-                                        <li
-                                          key={index}
-                                          className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                                          onClick={() => {
-                                            setProjectMaterialDetails(true);
-                                            SetSelectedProjectName(mat.name);
-                                          }}
-                                        >
-                                          <span>{mat.name}</span>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  }
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  {/* )} */}
-                </div>
-                <div
-                  className={`absolute mt-2 left-[13.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "Share" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {item === "Share" && ( */}
-                    <ul className="py-2 px-2 w-[136px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                      {["Send File", "Send as PDF"].map((option) => (
-                        <li
-                          key={option}
-                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                        >
-                          {option}
-                        </li>
-                      ))}
-                    </ul>
-                  {/* )} */}
-                </div>
-                <div
-                  className={`absolute mt-2 left-[17.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
-                    activeDropdown === "Help" ? "z-50 opacity-100" : "z-[-1] opacity-0"
-                  }`}
-                >
-                  {/* {item === "Help" && ( */}
-                    <ul className="py-2 px-2 w-[177px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
-                      {["Check for Updates", "Leave Feedback"].map((option) => (
-                        <li
-                          key={option}
-                          className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
-                        >
-                          {option}
-                        </li>
-                      ))}
-                    </ul>
-                  {/* )} */}
-                </div>
+                      {isRename && option[0] === "Rename Invoice" && (
+                        <div className="flex justify-center items-center mt-1 m-auto rounded-[5px] w-fit border-[2px] border-black">
+                          <input
+                            type="text"
+                            className=" outline-none p-1 border-1 rounded-[5px] border-black"
+                            onChange={(e) => setNewName(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleRename();
+                                setIsRename(false);
+                              }
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </ul>
                 {/* )} */}
               </div>
+              <div
+                className={`absolute mt-2 left-14 top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "Edit"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {item === "Edit" && ( */}
+                <ul className="py-2 px-2 w-[240px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {[
+                    "Add New Material",
+                    "Select Existing Project",
+                    "Select Material",
+                    "Edit/Add Attribute",
+                    ``,
+                  ].map((option) => (
+                    <li
+                      key={option}
+                      className="flex flex-row relative justify-between items-center text-primary px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                      onClick={() => handleEditDropdownAction(option)}
+                    >
+                      {option === "Add New Material" && <span>{option}</span>}
+                      {option === "Select Existing Project" && (
+                        <div
+                          className=" relative flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                          onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <span>{option}</span>
+                          <span>
+                            <MdArrowRight />
+                          </span>
+                          {activeInnerDropdown === option && (
+                            <div className="absolute left-[100%] top-0 mt-2 ml-6 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                              {
+                                <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                  {projects?.map((mat, index) => (
+                                    <li
+                                      key={index}
+                                      onClick={() => {
+                                        if (
+                                          isExistingProjectVariable[
+                                            activeTabIndex
+                                          ].isExistingProject
+                                        ) {
+                                          selectProject(mat.id);
+                                          navigate(`/project/${mat.id}`);
+                                          if (
+                                            homeClick[mat.id].elctronicHomeClick
+                                          ) {
+                                            navigate(
+                                              "/project/existingPtoject"
+                                            );
+                                          }
+                                        } else {
+                                          toast.warning(
+                                            "There is no existing project. Please select one.",
+                                            {
+                                              position: "bottom-right",
+                                            }
+                                          );
+                                        }
+                                        setActiveDropdown(null);
+                                      }}
+                                      className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                    >
+                                      <span>{mat.name}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              }
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {option === "Select Material" && (
+                        <div
+                          className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                          onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <span>{option}</span>
+                          <span>
+                            <MdArrowRight />
+                          </span>
+                          {activeInnerDropdown === option && (
+                            <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
+                              {projects?.map((project, ind) => (
+                                <ul
+                                  key={ind}
+                                  className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
+                                >
+                                  <li className="flex w-full p-2">
+                                    {project.name}
+                                  </li>
+                                  {newMaterial[project.id]?.map(
+                                    (mat, index) => (
+                                      <li
+                                        key={index}
+                                        className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                        onClick={() =>
+                                          handleSelectMaterialClick(ind, index)
+                                        }
+                                      >
+                                        <span>- Material {index + 1}</span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {option === "Edit/Add Attribute" && (
+                        <div
+                          className="flex flex-row justify-between items-center w-full bg-transparent cursor-pointer"
+                          onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <span>{option}</span>
+                          <span>
+                            <MdArrowRight />
+                          </span>
+                          {activeInnerDropdown === option && (
+                            <div className="absolute left-[100%] top-0 mt-2 ml-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50 max-h-80 overflow-y-scroll">
+                              {projects?.map((project, ind) => (
+                                <ul
+                                  key={ind}
+                                  className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent"
+                                >
+                                  <li className="flex w-full p-2">
+                                    {project.name}
+                                  </li>
+                                  {newMaterial[project.id]?.map(
+                                    (mat, index) => (
+                                      <li
+                                        key={index}
+                                        className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                        onClick={() =>
+                                          handleEditAddAttributeClick(
+                                            ind,
+                                            index
+                                          )
+                                        }
+                                      >
+                                        <span>- Material {index + 1}</span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {/* )} */}
+              </div>
+              <div
+                className={`absolute mt-2 left-[6.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "View"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {item === "View" && ( */}
+                <ul className="py-2 px-2 w-[345px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {[
+                    "Zoom",
+                    "Layout",
+                    "Disable Trip Charge",
+                    "Disable Tax",
+                    "Disable Terms& Con...",
+                    "Disable Contractor/Client Signatures",
+                  ].map((option, index) => (
+                    <li
+                      key={index}
+                      className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                      onClick={() => handleViewDropdownAction(option)}
+                    >
+                      {option === "Zoom" && (
+                        <div
+                          className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          // onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <span>{option}</span>
+                          <span>{zoomLevel}%</span>
+
+                          <span className="flex justify-center items-center">
+                            Ctrl + / -
+                          </span>
+                        </div>
+                      )}
+
+                      {option === "Layout" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center">
+                            <MdArrowRight />
+                          </span>
+                          {activeInnerDropdown === option && (
+                            <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                              {
+                                <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                  {["Layout 1", "Layout 2", "Layout 3"].map(
+                                    (mat, index) => (
+                                      <li
+                                        key={index}
+                                        className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                      >
+                                        <span>{mat}</span>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              }
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {option === "Disable Trip Charge" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          onClick={() => {
+                            setActiveInnerDropdown(null);
+                            setDisableTripCharge(!disableTripCharge);
+                          }}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center text-[24px]">
+                            {disableTripCharge && <IoIosCheckmark />}
+                          </span>
+                        </div>
+                      )}
+                      {option === "Disable Tax" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          onClick={() => {
+                            setActiveInnerDropdown(null);
+                            setDisableTax(!disableTax);
+                          }}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center text-[24px]">
+                            {disableTax && <IoIosCheckmark />}
+                          </span>
+                        </div>
+                      )}
+                      {option === "Disable Terms& Con..." && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          onClick={() => {
+                            setActiveInnerDropdown(null);
+                            setDisableTermsCon(!disableTermsCon);
+                          }}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center text-[24px]">
+                            {disableTermsCon && <IoIosCheckmark />}
+                          </span>
+                        </div>
+                      )}
+                      {option === "Disable Contractor/Client Signatures" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          onClick={() => {
+                            setDisableContractorClientSignatures(
+                              !disableContractorClientSignatures
+                            );
+                            setActiveInnerDropdown(null);
+                          }}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center text-[24px]">
+                            {disableContractorClientSignatures && (
+                              <IoIosCheckmark />
+                            )}
+                          </span>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {/* )} */}
+              </div>
+              <div
+                className={`absolute mt-2 left-[9.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "Tools"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {item === "Tools" && ( */}
+                <ul className="py-2 px-2 w-[277px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {["Cost Calculator", "Project-Material"].map((option) => (
+                    <li
+                      key={option}
+                      className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                    >
+                      {option === "Cost Calculator" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] h-fit w-full bg-transparent cursor-pointer"
+                          onClick={() => {
+                            setCostCalculator(!costCalculator);
+                            setActiveInnerDropdown(null);
+                          }}
+                        >
+                          <span>{option}</span>
+                          <span className="flex justify-center items-center text-[24px]">
+                            {costCalculator && <IoIosCheckmark />}
+                          </span>
+                        </div>
+                      )}
+
+                      {option === "Project-Material" && (
+                        <div
+                          className="flex flex-row relative justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                          // onClick={() => toggleInnerDropdown(option)}
+                        >
+                          <div
+                            className="flex flex-row justify-between items-center text-[16px] w-full bg-transparent cursor-pointer"
+                            onClick={() => toggleInnerDropdown(option)}
+                          >
+                            <span>{option}</span>
+                            <span className="flex justify-center items-center">
+                              <MdArrowRight />
+                            </span>
+                          </div>
+                          {activeInnerDropdown === option && (
+                            <div className="absolute left-[100%] top-0 ml-3 mt-2 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg z-50">
+                              {
+                                <ul className="py-2 px-2 w-[202px] gap-2 text-primary rounded-[10px] bg-transparent">
+                                  {projects?.map((mat, index) => (
+                                    <li
+                                      key={index}
+                                      className="flex flex-row justify-between items-center px-4 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                                      onClick={() => {
+                                        setProjectMaterialDetails(true);
+                                        SetSelectedProjectName(mat.name);
+                                      }}
+                                    >
+                                      <span>{mat.name}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              }
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {/* )} */}
+              </div>
+              <div
+                className={`absolute mt-2 left-[13.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "Share"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {item === "Share" && ( */}
+                <ul className="py-2 px-2 w-[136px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {["Send File", "Send as PDF"].map((option) => (
+                    <li
+                      key={option}
+                      className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+                {/* )} */}
+              </div>
+              <div
+                className={`absolute mt-2 left-[17.5rem] top-3 bg-[#F2F2F2] text-[16px] font-[400] rounded-[10px] border-[0.25px] border-solid border-[#000000] shadow-lg ${
+                  activeDropdown === "Help"
+                    ? "z-50 opacity-100"
+                    : "z-[-1] opacity-0"
+                }`}
+              >
+                {/* {item === "Help" && ( */}
+                <ul className="py-2 px-2 w-[177px] text-[16px] gap-2 text-primary rounded-[10px] bg-transparent">
+                  {["Check for Updates", "Leave Feedback"].map((option) => (
+                    <li
+                      key={option}
+                      className="flex flex-row justify-between items-center px-2 py-2 hover:bg-[#00C5FF] text-[16px] font-[400] rounded-[10px] cursor-pointer"
+                    >
+                      {option}
+                    </li>
+                  ))}
+                </ul>
+                {/* )} */}
+              </div>
+              {/* )} */}
+            </div>
           </div>
         </div>
 

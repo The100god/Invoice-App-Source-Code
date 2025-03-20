@@ -141,8 +141,12 @@ const EditAddAttributePopUp = () => {
           color: "",
           pole: "",
           amp: "",
-          note:"", 
-          materialLink:"",
+          use: "",
+          version: "",
+          neutral: "",
+          type: "",
+          note: "",
+          materialLink: "",
           commissionType: "",
           commissionValue: "",
           linkProductType: "",
@@ -162,8 +166,12 @@ const EditAddAttributePopUp = () => {
         quantity: "",
         color: "",
         pole: "",
+        use: "",
+        version: "",
+        neutral: "",
+        type: "",
         amp: "",
-        materialLink:"",
+        materialLink: "",
         commissionType: "",
         commissionValue: "",
       };
@@ -255,16 +263,19 @@ const EditAddAttributePopUp = () => {
                 <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                   {/* Bar 1: Dropdown for item selection */}
 
-<SearchLinkToggle
-  selectedValue={activeNewMaterialData?.selectedItem}
-  onSearchChange={(value) => updateItemData("selectedItem", value)}
-  error={activeNewMaterialError?.selectedItem}
-  activeTabIndex={index1}
-/>
+                  <SearchLinkToggle
+                    selectedValue={activeNewMaterialData?.selectedItem}
+                    onSearchChange={(value) =>
+                      updateItemData("selectedItem", value)
+                    }
+                    error={activeNewMaterialError?.selectedItem}
+                    activeTabIndex={index1}
+                  />
 
-<NotesInput value={activeNewMaterialData?.note} onChange={(value) => updateItemData("note", value)} />
-
-
+                  <NotesInput
+                    value={activeNewMaterialData?.note}
+                    onChange={(value) => updateItemData("note", value)}
+                  />
 
                   <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                     {activeNewMaterialData?.selectedItem === "outlet" && (
@@ -305,69 +316,205 @@ const EditAddAttributePopUp = () => {
                     )}
 
                     {[
-                      "15amp Breaker",
-                      "20amp Breaker",
-                      "30amp Breaker",
-                      "40amp Breaker",
-                      "50amp Breaker",
+                      // "15amp Breaker",
+                      // "20amp Breaker",
+                      // "30amp Breaker",
+                      // "40amp Breaker",
+                      // "50amp Breaker",
+                      "Breaker",
                     ].includes(activeNewMaterialData?.selectedItem) && (
-                      <div className=" flex flex-col justify-between items-start gap-4 w-[577px] bg-transparent">
+                      <div className=" flex flex-row flex-wrap justify-between items-start gap-4 w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
                           label="Select Brand*"
                           options={[
                             { value: "Siemens", label: "Siemens" },
                             { value: "Eaton", label: "Eaton" },
-                            { value: "Murray", label: "Murray" },
-                            { value: "Square", label: "Square" },
+                            {
+                              value: "General Electric",
+                              label: "General Electric",
+                            },
+                            { value: "Square D", label: "Square D" },
                           ]}
                           selectedValue={activeNewMaterialData?.brand}
                           onChange={(value) => updateItemData("brand", value)}
                           error={activeNewMaterialError?.brand}
                           activeTabIndex={index1}
-                          width={336}
+                          width={255}
                           height={55}
                         />
-                        {activeNewMaterialData?.brand && (
-                          <div className=" flex flex-row justify-between items-center w-full bg-transparent">
-                            <Dropdown
-                              label="Select Pole*"
-                              options={[
-                                { value: "Single Pole", label: "Single Pole" },
-                                { value: "2-Pole", label: "2-Pole" },
-                                { value: "3-Pole", label: "3-Pole" },
-                              ]}
-                              selectedValue={activeNewMaterialData?.pole}
-                              onChange={(value) =>
-                                updateItemData("pole", value)
-                              }
-                              error={activeNewMaterialError?.pole}
-                              activeTabIndex={index1}
-                              width={255}
-                              height={55}
-                            />
-                            {activeNewMaterialData?.pole && (
-                              <Dropdown
-                                label="D/General Electric*"
-                                options={[
-                                  { value: " Standard", label: " Standard" },
-                                  { value: "GFCI", label: "GFCI" },
-                                  { value: "AFCI", label: "AFCI" },
-                                ]}
-                                selectedValue={activeNewMaterialData?.amp}
-                                onChange={(value) =>
-                                  updateItemData("amp", value)
-                                }
-                                error={activeNewMaterialError?.amp}
-                                activeTabIndex={index1}
-                                width={255}
-                                height={55}
-                              />
-                            )}
-                          </div>
+
+                        {/* updating */}
+                        <Dropdown
+                          label="Select Use*"
+                          options={[
+                            { value: "Standard", label: "Standard" },
+                            { value: "Main Breaker", label: "Main Breaker" },
+                            { value: "AFCI", label: "AFCI" },
+                            { value: "GFCI", label: "GFCI" },
+                            { value: "AFCI/GFCI", label: "AFCI/GFCI" },
+                          ]}
+                          selectedValue={activeNewMaterialData?.use}
+                          onChange={(value) => updateItemData("use", value)}
+                          error={activeNewMaterialError?.use}
+                          activeTabIndex={index1}
+                          width={255}
+                          height={55}
+                        />
+                        <Dropdown
+                          label="Select Version*"
+                          options={[
+                            { value: "Homeline / QO", label: "Homeline / QO" },
+                            { value: "Homeline", label: "Homeline" },
+                            { value: "QO", label: "QO" },
+                            { value: "x", label: "x" },
+                          ]}
+                          selectedValue={activeNewMaterialData?.version}
+                          onChange={(value) => updateItemData("version", value)}
+                          error={activeNewMaterialError?.version}
+                          activeTabIndex={index1}
+                          width={255}
+                          height={55}
+                        />
+                        {/* {activeNewMaterialData?.brand && (
+                          <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
+                        <Dropdown
+                          label="Select Pole*"
+                          options={[
+                            { value: "Single Pole", label: "Single Pole" },
+                            { value: "2-Pole", label: "2-Pole" },
+                            { value: "3-Pole", label: "3-Pole" },
+                          ]}
+                          selectedValue={activeNewMaterialData?.pole}
+                          onChange={(value) => updateItemData("pole", value)}
+                          error={activeNewMaterialError?.pole}
+                          activeTabIndex={index1}
+                          width={255}
+                          height={55}
+                        />
+                        <Dropdown
+                          label="Select Neutral*"
+                          options={[
+                            { value: "Snap-On", label: "Snap-On" },
+                            { value: "Pig-Tail", label: "Pig-Tail" },
+                            { value: "x", label: "x" },
+                          ]}
+                          selectedValue={activeNewMaterialData?.neutral}
+                          onChange={(value) => updateItemData("neutral", value)}
+                          error={activeNewMaterialError?.neutral}
+                          activeTabIndex={index1}
+                          width={255}
+                          height={55}
+                        />
+                        <Dropdown
+                          label="Select Type*"
+                          options={[
+                            { value: "Single", label: "Single" },
+                            { value: "Single & Twin", label: "Single & Twin" },
+                            { value: "Twin", label: "Twin" },
+                            { value: "Threeplex", label: "Threeplex" },
+                            { value: "Quad", label: "Quad" },
+                          ]}
+                          selectedValue={activeNewMaterialData?.type}
+                          onChange={(value) => updateItemData("type", value)}
+                          error={activeNewMaterialError?.type}
+                          activeTabIndex={index1}
+                          width={255}
+                          height={55}
+                        />
+                        {activeNewMaterialData?.pole && (
+                          <Dropdown
+                            label="Select Amps*"
+                            options={[
+                              { value: "x", label: "x" },
+                              { value: "10", label: "10" },
+                              { value: "15", label: "15" },
+                              { value: "20", label: "20" },
+                              { value: "25", label: "25" },
+                              { value: "30", label: "30" },
+                              { value: "35", label: "35" },
+                              { value: "40", label: "40" },
+                              { value: "45", label: "45" },
+                              { value: "50", label: "50" },
+                              { value: "60", label: "60" },
+                              { value: "70", label: "70" },
+                              { value: "80", label: "80" },
+                              { value: "90", label: "90" },
+                              { value: "100", label: "100" },
+                              { value: "125", label: "125" },
+                              { value: "15/15", label: "15/15" },
+                              { value: "15/20", label: "15/20" },
+                              {
+                                value: "(15/20 - Homeline Only)",
+                                label: "(15/20 - Homeline Only)",
+                              },
+                              { value: "20/20", label: "20/20" },
+                              { value: "20/30", label: "20/30" },
+                              { value: "30/30", label: "30/30" },
+                              {
+                                value: "15/(20/20)/15",
+                                label: "15/(20/20)/15",
+                              },
+                              {
+                                value: "15/(25/25)/15",
+                                label: "15/(25/25)/15",
+                              },
+                              {
+                                value: "15/(30/30)/15",
+                                label: "15/(30/30)/15",
+                              },
+                              {
+                                value: "15/(40/40)/15",
+                                label: "15/(40/40)/15",
+                              },
+                              {
+                                value: "15/(50/50)/15",
+                                label: "15/(50/50)/15",
+                              },
+                              {
+                                value: "20/(20/20)/20",
+                                label: "20/(20/20)/20",
+                              },
+                              {
+                                value: "20/(25/25)/20",
+                                label: "20/(25/25)/20",
+                              },
+                              {
+                                value: "20/(30/30)/20",
+                                label: "20/(30/30)/20",
+                              },
+                              {
+                                value: "20/(40/40)/20",
+                                label: "20/(40/40)/20",
+                              },
+                              {
+                                value: "20/(50/50)/20",
+                                label: "20/(50/50)/20",
+                              },
+                              {
+                                value: "30/(30/30)/30",
+                                label: "30/(30/30)/30",
+                              },
+                              { value: "20/20/20/20", label: "20/20/20/20" },
+                              { value: "20/30/30/20", label: "20/30/30/20" },
+                              { value: "30/20/20/30", label: "30/20/20/30" },
+                              { value: "30/30/30/30", label: "30/30/30/30" },
+                              { value: "40/20/20/40", label: "40/20/20/40" },
+                              { value: "40/30/30/40", label: "40/30/30/40" },
+                              { value: "40/40/40/40", label: "40/40/40/40" },
+                            ]}
+                            selectedValue={activeNewMaterialData?.amp}
+                            onChange={(value) => updateItemData("amp", value)}
+                            error={activeNewMaterialError?.amp}
+                            activeTabIndex={index1}
+                            width={255}
+                            height={55}
+                          />
                         )}
                       </div>
                     )}
+                    {/* </div>
+                    )} */}
 
                     {[
                       "switches",
@@ -420,16 +567,21 @@ const EditAddAttributePopUp = () => {
                     <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
                       {/* Bar 1: Dropdown for item selection */}
 
-<SearchLinkToggle
-  selectedValue={addAttri?.selectedItem}
-  onSearchChange={(value) => updateAddAttributeData("selectedItem", value, index)}
-  error={""}
-  activeTabIndex={index1}
-/>
+                      <SearchLinkToggle
+                        selectedValue={addAttri?.selectedItem}
+                        onSearchChange={(value) =>
+                          updateAddAttributeData("selectedItem", value, index)
+                        }
+                        error={""}
+                        activeTabIndex={index1}
+                      />
 
-<NotesInput value={addAttri?.note} onChange={(value) => updateAddAttributeData("note", value, index)} />
-
-
+                      <NotesInput
+                        value={addAttri?.note}
+                        onChange={(value) =>
+                          updateAddAttributeData("note", value, index)
+                        }
+                      />
 
                       <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
                         {addAttri?.selectedItem.toLowerCase() === "outlet" && (

@@ -1,5 +1,7 @@
+import { activeTabIndexAtom } from "../../variables/NavbarVariables";
+import { breakDownAtom } from "../../variables/Home";
+import { useAtom } from "jotai";
 import React, { useState } from "react";
-
 
 // ToggleSwitch Component with a dynamic title
 interface BreakDownSwitchProps {
@@ -7,10 +9,32 @@ interface BreakDownSwitchProps {
 }
 
 const BreakDownSwitch: React.FC<BreakDownSwitchProps> = ({ title }) => {
-  const [isOn, setIsOn] = useState<boolean>(false);
+  const [breakDown, setBreakDown] = useAtom(breakDownAtom);
+  const [activeTabIndex] = useAtom(activeTabIndexAtom);
+  const [isOn, setIsOn] = useState(false);
+  const isBreakOn =
+    title === "Labour"
+      ? breakDown[activeTabIndex].labourBreakDown
+      : title === "Material"
+      ? breakDown[activeTabIndex].materialBreakDown
+      : breakDown[activeTabIndex].tripChargeBreakDown;
 
   // Handle toggle state
-  const toggleSwitch = () => setIsOn((prev) => !prev);
+  const toggleSwitch = () => {
+    setBreakDown((prevState) => ({
+      ...prevState,
+      [activeTabIndex]: {
+        ...prevState[activeTabIndex], // Keep other values unchanged
+        [title === "Labour"
+          ? "labourBreakDown"
+          : title === "Material"
+          ? "materialBreakDown"
+          : "tripChargeBreakDown"]: !isBreakOn,
+      },
+    }));
+    setIsOn(!isOn);
+  };
+  console.log("breakDown", breakDown);
 
   return (
     <div className="bg-[#3E3C3C] dark:bg-[#000000] rounded-sm w-[45px] h-[38px] flex flex-col justify-center items-center shadow-lg">
@@ -34,6 +58,5 @@ const BreakDownSwitch: React.FC<BreakDownSwitchProps> = ({ title }) => {
     </div>
   );
 };
-
 
 export default BreakDownSwitch;

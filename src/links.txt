@@ -1,3 +1,4 @@
 [
-  "https://www.flipkart.com/portronics-sounddrum-1-10w-tws-portable-type-c-charging-10-w-bluetooth-speaker/p/itmec32d68debb98?pid=ACCG3Y5YNHVGZDRE&lid=LSTACCG3Y5YNHVGZDRE4B36B2&marketplace=FLIPKART&store=0pm%2F0o7&srno=b_1_1&otracker=browse&fm=organic&iid=en_48RS_fxmPYRsNQqt_G_NAt2mFEDKoRiCRd1URZQZAHGWdh5N5-vCR99a6r43GYRG8EkZR_gr5LqaOtBVpZsjcPUFjCTyOHoHZs-Z5_PS_w0%3D&ppt=browse&ppn=browse&ssid=6o4g4ykgi80000001740470791805"
+  "https://www.flipkart.com/portronics-sounddrum-1-10w-tws-portable-type-c-charging-10-w-bluetooth-speaker/p/itmec32d68debb98?pid=ACCG3Y5YNHVGZDRE&lid=LSTACCG3Y5YNHVGZDRE4B36B2&marketplace=FLIPKART&store=0pm%2F0o7&srno=b_1_1&otracker=browse&fm=organic&iid=en_48RS_fxmPYRsNQqt_G_NAt2mFEDKoRiCRd1URZQZAHGWdh5N5-vCR99a6r43GYRG8EkZR_gr5LqaOtBVpZsjcPUFjCTyOHoHZs-Z5_PS_w0%3D&ppt=browse&ppn=browse&ssid=6o4g4ykgi80000001740470791805",
+  "https://a.co/d/4vsCGAU"
 ]

@@ -257,8 +257,8 @@ const InvoiceInfo = () => {
   
 
   return (
-    <div id="invoiceInfoTour" className="h-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
-      <div className="flex flex-col gap-y-4 bg-transparent">
+    <div  className="h-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
+      <div id="invoiceInfoTour" className="flex flex-col gap-y-4 bg-transparent">
         <div className="flex flex-row justify-between items-center w-full bg-transparent">
           <FormField
             title="Date of Issue*"

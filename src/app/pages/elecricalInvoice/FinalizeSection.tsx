@@ -1,5 +1,5 @@
 import { clientContractorAtom, labourStateAtom } from '../../../variables/electricalInvoiceVariable';
-import { invoiceSelectAtom } from '../../../variables/Home';
+import { breakDownAtom, invoiceSelectAtom } from '../../../variables/Home';
 import { useAtom } from 'jotai';
 import InvoiceInfo from './InvoiceInfo';
 import ClientDetails from './ClientDetails';
@@ -16,7 +16,9 @@ const FinalizeSection = () => {
   const [labourStateVariable,] = useAtom(labourStateAtom)
   const [activeTabIndex,] = useAtom(activeTabIndexAtom)
   const [clientContractorData,] = useAtom(clientContractorAtom)
+  const [breakDown,] = useAtom(breakDownAtom) 
   const activeSelectedInvoice= invoiceSelect[activeTabIndex]
+  const activeSelectedBreakDown= breakDown[activeTabIndex]
   return (
     <div id='finalizeSectionTour' className="flex flex-col justify-center items-center w-full h-fit bg-transparent">
                 <div className="flex flex-col w-full h-fit justify-center bg-transparent">
@@ -37,30 +39,30 @@ const FinalizeSection = () => {
                   <ClientDetails />
                 </div>
 
-                <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
+                {!activeSelectedBreakDown.materialBreakDown && <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">
                       Invoice Content
                     </h1>
                   </div>
                   <ItemSelectionScreen />
-                </div>
-                <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
+                </div>}
+                {!activeSelectedBreakDown.labourBreakDown && <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">
                       Labour {">"} {labourStateVariable[activeTabIndex].labourType} {">"} {labourStateVariable[activeTabIndex].labourSelectedVal}
                     </h1>
                   </div>
                   <LabourSection />
-                </div>
-                <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
+                </div>}
+                {!activeSelectedBreakDown.tripChargeBreakDown && <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">
                       Trip Charge
                     </h1>
                   </div>
                   <TripCharge />
-                </div>
+                </div>}
                 <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center bg-transparent">
                     <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">

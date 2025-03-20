@@ -50,7 +50,17 @@ const createWindow = (): void => {
     mainWindow=null;
   });
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  mainWindow.webContents.on("before-input-event", (event, input) => {
+    // console.log(input)
+    if ((input.control && input.shift && input.key.toLowerCase() === "i") || input.key === "F12") {
+      event.preventDefault(); // Prevent default behavior
+      if (mainWindow?.webContents.isDevToolsOpened()) {
+        mainWindow.webContents.closeDevTools();
+      } else {
+        mainWindow?.webContents.openDevTools();
+      }
+    }
+  });
 };
 
 

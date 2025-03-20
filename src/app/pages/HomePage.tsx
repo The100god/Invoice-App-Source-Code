@@ -2,13 +2,16 @@ import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import {
   activeProjectIdAtom,
+  activeTabIndexAtom,
+  colorChangeAtom,
   homeClickAtom,
   isEnterInvoiceAtom,
   projectsAtom,
 } from "../../variables/NavbarVariables";
 import { useNavigate } from "react-router";
 import { IoClose } from "react-icons/io5";
-import { activeProjAtom } from "../../variables/Home";
+import { activeProjAtom, breakDownAtom, invoiceSelectAtom, progressAtom, stepsAtom } from "../../variables/Home";
+import { clientContractorAtom, clientContractorErrorsAtom, clientErrorsAtom, clientFormDataAtom, errorsAtom, formDataAtom, isExistingProjectAtom, itemErrorsAtom, itemSelectionDataAtom, labourErrorsAtom, labourStateAtom, newMaterialIndexAtom, newMaterialVariableAtom, newMaterialVariableErrorAtom, openAddNewMaterialAtom, taxRateAtom, termConditionAtom, tripChargeAtom, tripChargeErrorAtom } from "../../variables/electricalInvoiceVariable";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +39,62 @@ const HomePage: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
-  const [, setHomeClick] = useAtom(homeClickAtom);
+  const [homeClick, setHomeClick] = useAtom(homeClickAtom);
+const [stepsData, setStepsData] = useAtom(stepsAtom);
+  const [progress, setProgress] = useAtom(progressAtom);
+  const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+
+  //breakdown variable
+    const [breakDown, setBreakDown] = useAtom(breakDownAtom)
+  
+    const [formData, setFormData] = useAtom(formDataAtom);
+    const [errors, setErrors] = useAtom(errorsAtom);
+  
+    const [clientFormData, setClientFormData] = useAtom(clientFormDataAtom);
+    const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
+  
+    const [itemSelectionData, setItemSelectionData] = useAtom(
+      itemSelectionDataAtom
+    );
+    const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
+  
+    const [labourStateVariable, setLabourStateVariable] =
+      useAtom(labourStateAtom);
+    const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
+    const [tripCharge, setTripCharge] = useAtom(tripChargeAtom);
+    const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
+    // const navigate = useNavigate();
+  
+    const [taxRate, setTaxRate] = useAtom(taxRateAtom);
+  
+    const [termsCondition, setTermsConditions] = useAtom(termConditionAtom);
+  
+    const [clientContractorData, setClientContractorData] =
+      useAtom(clientContractorAtom);
+    const [clientContractorErrors, setClientContractorErrors] = useAtom(
+      clientContractorErrorsAtom
+    );
+  
+    const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
+    const [newMaterialError, setNewMaterialError] = useAtom(
+      newMaterialVariableErrorAtom
+    );
+    const [newMaterialIndex, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
+  
+    // const [isRename, setIsRename] = useState(false);
+    // const [newName, setNewName] = useState("");
+  
+    const [openAddNewMaterial, setOpenAddNewMaterial] = useAtom(
+      openAddNewMaterialAtom
+    );
+  
+    const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(
+      isExistingProjectAtom
+    );
+
+      const [colorChange, setColorChange] = useAtom(colorChangeAtom);
+    
+  const [, setActiveTabIndex] = useAtom(activeTabIndexAtom);
 
 
   const hasSeenTour = localStorage.getItem("hasSeenTour"); // variable for chacking if tour run for once or not
@@ -73,6 +131,283 @@ const HomePage: React.FC = () => {
     file.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
+
+
+  const addNewProject = () => {
+    const newProjectId = projects.length;
+    // console.log(newProjectId)
+
+    // setProjects([
+    //   ...projects,
+    //   { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
+    // ]);
+
+    //invoice selction
+    setInvoiceSelect([
+      ...invoiceSelect,
+      { selectedInvoice: "Electrical Invoice" },
+    ]);
+
+    // navbar color picker
+    setColorChange([
+      ...colorChange,
+      {
+        labelColor: "#00000099",
+        outlineColor: "#000000E5",
+        valuesColor: "#FFEA00",
+        descriptionsColor: "#00FF11",
+      },
+    ]);
+
+    // homeClick
+    setHomeClick([
+      ...homeClick,
+      {
+        elctronicHomeClick: false,
+      },
+    ]);
+
+    //steps
+    setStepsData([
+      ...stepsData,
+      {
+        electricalSteps: 1,
+      },
+    ]);
+
+    //progress
+    setProgress([
+      ...progress,
+      {
+        progress: Math.ceil(100 / 9),
+      },
+    ]);
+
+    // break down
+    setBreakDown([
+      ...breakDown,
+      {
+        labourBreakDown:false,
+        materialBreakDown:false,
+        tripChargeBreakDown:false,
+      }
+    ])
+
+    //form data
+    setFormData([
+      ...formData,
+      {
+        dateOfIssue: "",
+        companyName: "",
+        phoneNumber: "",
+        countryCode: "+1",
+        email: "",
+        companyLogo: null,
+      },
+    ]);
+    setErrors([
+      ...errors,
+      {
+        dateOfIssue: "",
+        companyName: "",
+        phoneNumber: "",
+        email: "",
+        companyLogo: "",
+      },
+    ]);
+
+    //client details data
+    setClientFormData([
+      ...clientFormData,
+      {
+        clientName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+    ]);
+
+    setClientErrors([
+      ...clientErrors,
+      {
+        clientName: "",
+        address: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      },
+    ]);
+
+    //item selection data
+
+    setItemSelectionData([
+      ...itemSelectionData,
+      {
+        selectedItem: "",
+        brand: "",
+        style: "",
+        quantity: 1,
+        color: "",
+        pole: "",
+        amp: "",
+        use:"",
+  version:"",
+  neutral:"",
+  type:"",
+        note: "",
+        materialLink: "",
+        commissionType: "",
+        commissionValue: "",
+        linkPoductType: "",
+        productLinkAmount: "0",
+        isCommission: false,
+        productDetails: {
+          price: "",
+        },
+      },
+    ]);
+
+    setItemErrors([
+      ...itemErrors,
+      {
+        selectedItem: "",
+        brand: "",
+        style: "",
+        quantity: "",
+        color: "",
+        use:"",
+  version:"",
+  neutral:"",
+  type:"",
+        pole: "",
+        materialLink: "",
+        amp: "",
+        commissionType: "",
+        commissionValue: "",
+      },
+    ]);
+
+    // labour data
+    setLabourStateVariable([
+      ...labourStateVariable,
+      {
+        labourSelectedVal: "",
+        labourType: "Uniform",
+        labourHour: "0",
+        contContractorRate: "",
+        employeesNo: "0",
+        employeesRate: "",
+        uniformScopeWork: "",
+        hourlyRateScopeWork: "",
+        materialCostVal: "Yes",
+        uniformProjectAmount: "0",
+        variableContRatePerHour: "",
+        variableContTotHourRate: "",
+        projectAmountQuantityVal: "",
+        variableAddEmployees: [{ name: "", hours: 0, rate: 0 }],
+      },
+    ]);
+
+    setLabourErrors([
+      ...labourErrors,
+      {
+        labourType: "",
+        labourSelectedVal: "",
+        labourHour: "",
+        contContractorRate: "",
+        employeesNo: "",
+        employeesRate: "",
+        uniformScopeWork: "",
+        uniformProjectAmount: "",
+        variableContTotHourRate: "",
+        variableAddEmployees: "",
+        materialCostVal: "",
+        hourlyRateScopeWork: "",
+        variableContRatePerHour: "",
+        projectAmountQuantityVal: "",
+      },
+    ]);
+
+    // TripCharge data
+    setTripCharge([
+      ...tripCharge,
+      {
+        tripChargeVal: "",
+        isStandardCost: false,
+        isCalculateCost: false,
+        amountPerMiles: "",
+        traveledMiles: "",
+        totalMilesAmount: "00.00",
+      },
+    ]);
+
+    setTripChargeError([
+      ...tripChargeError,
+      {
+        tripChargeVal: "",
+        amountPerMiles: "",
+        traveledMiles: "",
+      },
+    ]);
+
+    //taxRate data
+    setTaxRate([...taxRate, { tax: "" }]);
+
+    //term and conditions data
+    setTermsConditions([...termsCondition, { termAndCondition: "" }]);
+
+    // Client Contractor Data
+    setClientContractorData([
+      ...clientContractorData,
+      {
+        contractorNameValue: "",
+        contractDateValue: "",
+        contractorSign: null,
+        clientNameValue: "",
+        clientDateValue: "",
+        clientSign: null,
+        sign: "No",
+      },
+    ]);
+
+    setClientContractorErrors([
+      ...clientContractorErrors,
+      {
+        contractorNameValue: "",
+        contractDateValue: "",
+        contractorSign: "",
+        clientNameValue: "",
+        clientDateValue: "",
+        clientSign: "",
+        sign: "",
+      },
+    ]);
+
+    // add new Material.
+    setNewMaterial([...newMaterial, []]);
+    setNewMaterialError([...newMaterialError, []]);
+    setNewMaterialIndex([...newMaterialIndex, { activeNewMaterialIndex: 0 }]);
+    setOpenAddNewMaterial([
+      ...openAddNewMaterial,
+      { openAddNewMaterialPopUp: false },
+    ]);
+    setIsExistingProjectVariable([
+      ...isExistingProjectVariable,
+      {
+        isExistingProject: false,
+      },
+    ]);
+
+    setActiveTabIndex(newProjectId); // New tab index
+
+    setActiveProjectId(newProjectId); // Make the new project active
+   
+  };
+
+
+
+
   const handleSaveProject = () => {
     if (newProjectName.trim() === "") return;
 
@@ -86,6 +421,7 @@ const HomePage: React.FC = () => {
       ...prev,
       { name: newProject.name, id: newProject.id },
     ]);
+    addNewProject();
     setActiveProjectId(newProject.id);
     setIsModalOpen(false);
     setNewProjectName("");
@@ -121,6 +457,7 @@ const HomePage: React.FC = () => {
 
   const handleGoToSelectedProject = (name: string, id: number) => {
     setProjects((prev) => [...prev, { name: name, id: id }]);
+    addNewProject()
     setActiveProjectId(id);
     setIsEnterInvoice(true);
     navigate(`/project/${id}`);
@@ -248,7 +585,7 @@ const HomePage: React.FC = () => {
               placeholder="Enter project name"
               value={newProjectName}
               onChange={(e) => setNewProjectName(e.target.value)}
-              className="w-full border p-2 rounded mb-4"
+              className="w-full border dark:text-black p-2 rounded mb-4"
             />
             <div className="flex justify-end gap-2">
               <button

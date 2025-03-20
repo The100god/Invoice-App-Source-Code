@@ -4,7 +4,7 @@ export interface stepsStates{
     electricalSteps:number
 }
 
-export const stepsAtom = atom<stepsStates[]>([{electricalSteps:1
+export const stepsAtom = atom<stepsStates[]>([{electricalSteps:3
 }]);
 
 // Atom for invoice selection (default: "Electrical Invoice")
@@ -26,6 +26,14 @@ export const progressAtom = atom<progressStates[]>([{
 export const joyrideRunAtom = atom<boolean>(false)
 export const activeProjAtom = atom<boolean>(false)
 export const joyrideStepIndexAtom = atom<number>(0)
+
+export interface breakDownStates{
+    labourBreakDown:boolean;
+    materialBreakDown:boolean;
+    tripChargeBreakDown:boolean;
+}
+export const breakDownAtom = atom<breakDownStates[]>([])
+
 
   
 

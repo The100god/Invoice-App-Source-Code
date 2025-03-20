@@ -7,6 +7,10 @@ interface ItemValidateData {
   quantity: number;
   color: string;
   pole:string;
+  use:string;
+  version:string;
+  neutral:string;
+  type:string;
   amp:string;
   materialLink:string;
   commissionType: string;
@@ -21,6 +25,10 @@ interface ItemValidateErrors {
   quantity: string;
   color: string;
   pole:string;
+  use:string;
+  version:string;
+  neutral:string;
+  type:string;
   amp:string;
   materialLink:string;
   commissionType: string;
@@ -49,6 +57,10 @@ export const itemValidate = ({
     style: "",
     quantity: "",
     color: "",pole:"",
+    use:"",
+  version:"",
+  neutral:"",
+  type:"",
     amp:"",
     materialLink:"",
     commissionType: "",
@@ -58,7 +70,7 @@ export const itemValidate = ({
   const activeFormData = itemSelectionData[activeTabIndex];
 
   // Validation logic
-  if (!activeFormData.selectedItem.trim() || !activeFormData.materialLink) {
+  if (!activeFormData.selectedItem.trim() && !activeFormData.materialLink) {
     newErrors.selectedItem = "Selecting a item or adding link of material is required.";
     isValid = false;
   }  else {
@@ -115,9 +127,9 @@ export const itemValidate = ({
   // Update the errors for the active tab
   // console.log("itemErrors", itemErrors)
   // const updatedErrors = [itemErrors];
-  itemErrors[activeTabIndex] = newErrors;
-
-  setItemErrors(itemErrors);
-
+  const updatedErrors = [...itemErrors];
+updatedErrors[activeTabIndex] = newErrors;
+setItemErrors(updatedErrors);
+console.log("isValid: ", isValid)
   return isValid;
 };

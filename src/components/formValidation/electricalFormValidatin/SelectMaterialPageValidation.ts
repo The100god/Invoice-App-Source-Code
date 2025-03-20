@@ -7,6 +7,10 @@ interface SelectMeterialValidateData {
     quantity: number;
     color: string;
     pole:string;
+    use:string;
+  version:string;
+  neutral:string;
+  type:string;
   amp:string;
   materialLink:string;
     commissionType: string;
@@ -21,6 +25,10 @@ interface SelectMeterialValidateData {
     quantity: string;
     color: string;
     pole:string;
+    use:string;
+  version:string;
+  neutral:string;
+  type:string;
   amp:string;
   materialLink:string;
     commissionType: string;
@@ -51,6 +59,10 @@ interface SelectMeterialValidateData {
       quantity: "",
       color: "",
       pole:"",
+      use:"",
+  version:"",
+  neutral:"",
+  type:"",
   amp:"",
   materialLink:"",
       commissionType: "",
@@ -60,7 +72,7 @@ interface SelectMeterialValidateData {
     const activeFormData = newMaterial[index1][activeNewMaterialIndex];
   
     // Validation logic
-    if (!activeFormData.selectedItem.trim() || !activeFormData.materialLink) {
+    if (!activeFormData.selectedItem.trim() && !activeFormData.materialLink) {
       newErrors.selectedItem = "Selecting a item or adding link of material is required.";
       isValid = false;
     } else {
