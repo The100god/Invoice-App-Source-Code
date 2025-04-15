@@ -113,9 +113,9 @@ const labourSection = () => {
     });
   };
   // activeLabourData.variableAddEmployees
-  console.log("active", activeLabourData)
-  console.log("data", activeLabourData.variableAddEmployees);
-  console.log("Rendered JSX:", activeLabourData.variableAddEmployees.map((employee) => <div>{employee.name}</div>));
+  // console.log("active", activeLabourData)
+  // console.log("data", activeLabourData.variableAddEmployees);
+  // console.log("Rendered JSX:", activeLabourData.variableAddEmployees.map((employee) => <div>{employee.name}</div>));
   return (
     <div id="labourSelectionDetailTour" className="w-full h-full px-4 pb-4 flex flex-col gap-y-4 items-center justify-center bg-transparent">
       <div className="flex flex-col w-[390px] gap-y-6 justify-center items-center bg-transparent">

@@ -40,7 +40,7 @@ const AppRouter = () => {
   const [activeProjectId] = useAtom(activeProjectIdAtom); // Active project ID
 
   return (
-    <HashRouter>
+    // <HashRouter>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<App />}>
@@ -51,6 +51,7 @@ const AppRouter = () => {
             {/* Redirect to the first project if no matching route */}
 
             <Route index element={<HomePage />} />
+            {/* <Route index element={<InvoiceBill />} /> */}
             <Route path="/project/bill" element={<InvoiceBill />} />
             <Route path="/project/selection" element={<InvoiceSelection />} />
             <Route
@@ -86,7 +87,7 @@ const AppRouter = () => {
           </Route>
         </Routes>
       </Suspense>
-    </HashRouter>
+    // </HashRouter>
   );
 };
 

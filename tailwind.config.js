@@ -36,4 +36,12 @@ module.exports = {
     },
   },
   plugins: [],
+  // corePlugins: {
+  //   preflight: false, // if using custom styles
+  // },
+  variants: {
+    extend: {
+      display: ['print'],
+    },
+  },
 };

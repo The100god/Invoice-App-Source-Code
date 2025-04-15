@@ -1,23 +1,57 @@
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import {
+  activeDropdownAtom,
+  activeInnerDropdownAtom,
   activeProjectIdAtom,
   activeTabIndexAtom,
   colorChangeAtom,
   homeClickAtom,
   isEnterInvoiceAtom,
+  printBillAtom,
   projectsAtom,
+  showDescriptionsColorPickerAtom,
+  showLabelColorPickerAtom,
+  showOutlineColorPickerAtom,
+  showValueColorPickerAtom,
+  zoomInOutAtom,
 } from "../../variables/NavbarVariables";
 import { useNavigate } from "react-router";
+import {
+  activeProjAtom,
+  breakDownAtom,
+  invoiceSelectAtom,
+  progressAtom,
+  stepsAtom,
+} from "../../variables/Home";
+import {
+  clientContractorAtom,
+  clientContractorErrorsAtom,
+  clientErrorsAtom,
+  clientFormDataAtom,
+  errorsAtom,
+  formDataAtom,
+  isExistingProjectAtom,
+  itemErrorsAtom,
+  itemSelectionDataAtom,
+  labourErrorsAtom,
+  labourStateAtom,
+  materialSectionStepsAtom,
+  newMaterialIndexAtom,
+  newMaterialVariableAtom,
+  newMaterialVariableErrorAtom,
+  openAddNewMaterialAtom,
+  taxRateAtom,
+  termConditionAtom,
+  tripChargeAtom,
+  tripChargeErrorAtom,
+} from "../../variables/electricalInvoiceVariable";
 import { IoClose } from "react-icons/io5";
-import { activeProjAtom, breakDownAtom, invoiceSelectAtom, progressAtom, stepsAtom } from "../../variables/Home";
-import { clientContractorAtom, clientContractorErrorsAtom, clientErrorsAtom, clientFormDataAtom, errorsAtom, formDataAtom, isExistingProjectAtom, itemErrorsAtom, itemSelectionDataAtom, labourErrorsAtom, labourStateAtom, newMaterialIndexAtom, newMaterialVariableAtom, newMaterialVariableErrorAtom, openAddNewMaterialAtom, taxRateAtom, termConditionAtom, tripChargeAtom, tripChargeErrorAtom } from "../../variables/electricalInvoiceVariable";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
-    const [, setActiveProj] = useAtom(activeProjAtom)
-  
+  const [, setActiveProj] = useAtom(activeProjAtom);
 
   const [filterText, setFilterText] = useState("");
   const [recentFiles, setRecentFiles] = useState<
@@ -39,64 +73,78 @@ const HomePage: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
-  const [homeClick, setHomeClick] = useAtom(homeClickAtom);
-const [stepsData, setStepsData] = useAtom(stepsAtom);
-  const [progress, setProgress] = useAtom(progressAtom);
-  const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+  const [, setHomeClick] = useAtom(homeClickAtom);
+  const [, setStepsData] = useAtom(stepsAtom);
+  const [, setProgress] = useAtom(progressAtom);
+  const [, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+
+  const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
+  const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
+  const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
+  const [, setShowDescriptionsColorPicker] = useAtom(
+    showDescriptionsColorPickerAtom
+  );
+
+  const [, setActiveDropdown] = useAtom(activeDropdownAtom);
+  const [, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom);
 
   //breakdown variable
-    const [breakDown, setBreakDown] = useAtom(breakDownAtom)
-  
-    const [formData, setFormData] = useAtom(formDataAtom);
-    const [errors, setErrors] = useAtom(errorsAtom);
-  
-    const [clientFormData, setClientFormData] = useAtom(clientFormDataAtom);
-    const [clientErrors, setClientErrors] = useAtom(clientErrorsAtom);
-  
-    const [itemSelectionData, setItemSelectionData] = useAtom(
-      itemSelectionDataAtom
-    );
-    const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
-  
-    const [labourStateVariable, setLabourStateVariable] =
-      useAtom(labourStateAtom);
-    const [labourErrors, setLabourErrors] = useAtom(labourErrorsAtom);
-    const [tripCharge, setTripCharge] = useAtom(tripChargeAtom);
-    const [tripChargeError, setTripChargeError] = useAtom(tripChargeErrorAtom);
-    // const navigate = useNavigate();
-  
-    const [taxRate, setTaxRate] = useAtom(taxRateAtom);
-  
-    const [termsCondition, setTermsConditions] = useAtom(termConditionAtom);
-  
-    const [clientContractorData, setClientContractorData] =
-      useAtom(clientContractorAtom);
-    const [clientContractorErrors, setClientContractorErrors] = useAtom(
-      clientContractorErrorsAtom
-    );
-  
-    const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
-    const [newMaterialError, setNewMaterialError] = useAtom(
-      newMaterialVariableErrorAtom
-    );
-    const [newMaterialIndex, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
-  
-    // const [isRename, setIsRename] = useState(false);
-    // const [newName, setNewName] = useState("");
-  
-    const [openAddNewMaterial, setOpenAddNewMaterial] = useAtom(
-      openAddNewMaterialAtom
-    );
-  
-    const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(
-      isExistingProjectAtom
-    );
+  const [, setBreakDown] = useAtom(breakDownAtom);
 
-      const [colorChange, setColorChange] = useAtom(colorChangeAtom);
-    
+  const [, setFormData] = useAtom(formDataAtom);
+  const [, setErrors] = useAtom(errorsAtom);
+
+  const [, setClientFormData] = useAtom(clientFormDataAtom);
+  const [, setClientErrors] = useAtom(clientErrorsAtom);
+
+  const [, setItemSelectionData] = useAtom(
+    itemSelectionDataAtom
+  );
+  const [, setItemErrors] = useAtom(itemErrorsAtom);
+
+  const [, setLabourStateVariable] =
+    useAtom(labourStateAtom);
+  const [, setLabourErrors] = useAtom(labourErrorsAtom);
+  const [, setTripCharge] = useAtom(tripChargeAtom);
+  const [, setTripChargeError] = useAtom(tripChargeErrorAtom);
+  // const navigate = useNavigate();
+
+  const [, setTaxRate] = useAtom(taxRateAtom);
+
+  const [, setTermsConditions] = useAtom(termConditionAtom);
+
+  const [, setClientContractorData] =
+    useAtom(clientContractorAtom);
+  const [, setClientContractorErrors] = useAtom(
+    clientContractorErrorsAtom
+  );
+
+  const [, setMaterialSectionSteps] = useAtom(
+    materialSectionStepsAtom
+  );
+  const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
+  const [newMaterialError, setNewMaterialError] = useAtom(
+    newMaterialVariableErrorAtom
+  );
+  const [, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
+
+  // const [isRename, setIsRename] = useState(false);
+  // const [newName, setNewName] = useState("");
+
+  const [, setOpenAddNewMaterial] = useAtom(
+    openAddNewMaterialAtom
+  );
+
+  const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(
+    isExistingProjectAtom
+  );
+
+  const [, setColorChange] = useAtom(colorChangeAtom);
+
   const [, setActiveTabIndex] = useAtom(activeTabIndexAtom);
 
-
+  const [zoomLevel, setZoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
+  const [printBill, setPrintBill] = useAtom(printBillAtom)
   const hasSeenTour = localStorage.getItem("hasSeenTour"); // variable for chacking if tour run for once or not
 
   const parseRelativeDate = (relativeDate: string): Date => {
@@ -131,8 +179,6 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     file.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-
-
   const addNewProject = () => {
     const newProjectId = projects.length;
     // console.log(newProjectId)
@@ -142,15 +188,21 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     //   { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
     // ]);
 
+    setPrintBill([
+      ...printBill, 
+      {
+        selectedPrintBill:false,
+      }
+    ])
     //invoice selction
     setInvoiceSelect([
-      ...invoiceSelect,
+      // ...invoiceSelect,
       { selectedInvoice: "Electrical Invoice" },
     ]);
 
     // navbar color picker
     setColorChange([
-      ...colorChange,
+      // ...colorChange,
       {
         labelColor: "#00000099",
         outlineColor: "#000000E5",
@@ -161,7 +213,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     // homeClick
     setHomeClick([
-      ...homeClick,
+      // ...homeClick,
       {
         elctronicHomeClick: false,
       },
@@ -169,7 +221,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     //steps
     setStepsData([
-      ...stepsData,
+      // ...stepsData,
       {
         electricalSteps: 1,
       },
@@ -177,7 +229,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     //progress
     setProgress([
-      ...progress,
+      // ...progress,
       {
         progress: Math.ceil(100 / 9),
       },
@@ -185,17 +237,17 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     // break down
     setBreakDown([
-      ...breakDown,
+      // ...breakDown,
       {
-        labourBreakDown:false,
-        materialBreakDown:false,
-        tripChargeBreakDown:false,
-      }
-    ])
+        labourBreakDown: false,
+        materialBreakDown: false,
+        tripChargeBreakDown: false,
+      },
+    ]);
 
     //form data
     setFormData([
-      ...formData,
+      // ...formData,
       {
         dateOfIssue: "",
         companyName: "",
@@ -206,7 +258,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
       },
     ]);
     setErrors([
-      ...errors,
+      // ...errors,
       {
         dateOfIssue: "",
         companyName: "",
@@ -218,7 +270,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     //client details data
     setClientFormData([
-      ...clientFormData,
+      // ...clientFormData,
       {
         clientName: "",
         address: "",
@@ -229,7 +281,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     setClientErrors([
-      ...clientErrors,
+      // ...clientErrors,
       {
         clientName: "",
         address: "",
@@ -242,7 +294,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     //item selection data
 
     setItemSelectionData([
-      ...itemSelectionData,
+      // ...itemSelectionData,
       {
         selectedItem: "",
         brand: "",
@@ -251,10 +303,10 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
         color: "",
         pole: "",
         amp: "",
-        use:"",
-  version:"",
-  neutral:"",
-  type:"",
+        use: "",
+        version: "",
+        neutral: "",
+        type: "",
         note: "",
         materialLink: "",
         commissionType: "",
@@ -269,17 +321,17 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     setItemErrors([
-      ...itemErrors,
+      // ...itemErrors,
       {
         selectedItem: "",
         brand: "",
         style: "",
         quantity: "",
         color: "",
-        use:"",
-  version:"",
-  neutral:"",
-  type:"",
+        use: "",
+        version: "",
+        neutral: "",
+        type: "",
         pole: "",
         materialLink: "",
         amp: "",
@@ -290,7 +342,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     // labour data
     setLabourStateVariable([
-      ...labourStateVariable,
+      // ...labourStateVariable,
       {
         labourSelectedVal: "",
         labourType: "Uniform",
@@ -310,7 +362,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     setLabourErrors([
-      ...labourErrors,
+      // ...labourErrors,
       {
         labourType: "",
         labourSelectedVal: "",
@@ -331,7 +383,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
 
     // TripCharge data
     setTripCharge([
-      ...tripCharge,
+      // ...tripCharge,
       {
         tripChargeVal: "",
         isStandardCost: false,
@@ -343,7 +395,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     setTripChargeError([
-      ...tripChargeError,
+      // ...tripChargeError,
       {
         tripChargeVal: "",
         amountPerMiles: "",
@@ -352,14 +404,20 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     //taxRate data
-    setTaxRate([...taxRate, { tax: "" }]);
+    setTaxRate([
+      // ...taxRate,
+      { tax: "" },
+    ]);
 
     //term and conditions data
-    setTermsConditions([...termsCondition, { termAndCondition: "" }]);
+    setTermsConditions([
+      // ...termsCondition, 
+      { termAndCondition: "" }
+    ]);
 
     // Client Contractor Data
     setClientContractorData([
-      ...clientContractorData,
+      // ...clientContractorData,
       {
         contractorNameValue: "",
         contractDateValue: "",
@@ -372,7 +430,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     ]);
 
     setClientContractorErrors([
-      ...clientContractorErrors,
+      // ...clientContractorErrors,
       {
         contractorNameValue: "",
         contractDateValue: "",
@@ -384,12 +442,21 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
       },
     ]);
 
+    setMaterialSectionSteps([
+      // ...materialSectionSteps,
+      {
+        materialSectionStepsCount: 0,
+      },
+    ]);
+
     // add new Material.
     setNewMaterial([...newMaterial, []]);
     setNewMaterialError([...newMaterialError, []]);
-    setNewMaterialIndex([...newMaterialIndex, { activeNewMaterialIndex: 0 }]);
+    setNewMaterialIndex([
+      // ...newMaterialIndex, 
+      { activeNewMaterialIndex: 0 }]);
     setOpenAddNewMaterial([
-      ...openAddNewMaterial,
+      // ...openAddNewMaterial,
       { openAddNewMaterialPopUp: false },
     ]);
     setIsExistingProjectVariable([
@@ -402,11 +469,7 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
     setActiveTabIndex(newProjectId); // New tab index
 
     setActiveProjectId(newProjectId); // Make the new project active
-   
   };
-
-
-
 
   const handleSaveProject = () => {
     if (newProjectName.trim() === "") return;
@@ -444,27 +507,65 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
       );
       return updatedRecentFiles; // Return the new state
     });
-    
-    
+
     setTimeout(() => {
-      console.log("Updated recent files:", recentFiles); // Debugging
+      // console.log("Updated recent files:", recentFiles); // Debugging
       navigate(`/project/${newProject.id}`);
       if (!hasSeenTour) {
-        setActiveProj(true)
+        setActiveProj(true);
       }
     }, 100);
   };
 
   const handleGoToSelectedProject = (name: string, id: number) => {
     setProjects((prev) => [...prev, { name: name, id: id }]);
-    addNewProject()
+    addNewProject();
     setActiveProjectId(id);
     setIsEnterInvoice(true);
     navigate(`/project/${id}`);
   };
 
+  const handleClick = () => {
+    setActiveDropdown(null);
+    setActiveInnerDropdown(null);
+    setShowDescriptionsColorPicker(false);
+    setShowValueColorPicker(false);
+    setShowLabalColorPicker(false);
+    setShowOutlineColorPicker(false);
+  };
+  const handleZoom = (increment: boolean) => {
+    setZoomLevel((prevZoom) => {
+      const newZoom = increment ? prevZoom + 10 : prevZoom - 10;
+      return Math.min(Math.max(newZoom, 50), 450); // Restrict zoom level to 50%-450%
+    });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "+") {
+        e.preventDefault(); // Prevent default browser zoom behavior
+        handleZoom(true);
+      } else if (e.ctrlKey && e.key === "-") {
+        e.preventDefault();
+        handleZoom(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div className="flex flex-row h-screen w-full bg-transparent">
+    <div
+      style={{
+        transform: `scale(${zoomLevel / 100})`,
+        transformOrigin: "center center", // Ensure scaling happens from the top-left corner
+      }}
+      onClick={handleClick}
+      className="flex flex-row h-screen w-full bg-transparent"
+    >
       {/* <div className="w-full fixed">
       <Navbar/>
       </div> */}
@@ -607,7 +708,12 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
       {isOpenModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white relative p-6 rounded-lg shadow-md w-96">
-            <span onClick={() => setIsOpenModalOpen(false)} className="absolute hover:bg-red-400 right-2 top-2 text-[20px] cursor-pointer p-1 rounded-sm"><IoClose/></span>
+            <span
+              onClick={() => setIsOpenModalOpen(false)}
+              className="absolute hover:bg-red-400 right-2 top-2 text-[20px] cursor-pointer p-1 rounded-sm"
+            >
+              <IoClose/>
+            </span>
             <h2 className="text-xl text-[#000000] font-bold mb-4 border-b-2">
               Open Existing Project
             </h2>
@@ -617,12 +723,14 @@ const [stepsData, setStepsData] = useAtom(stepsAtom);
             >
               {recentFiles.map((rfiles, index) => (
                 <li
-                onClick={() => handleGoToSelectedProject(rfiles.name, rfiles.id)}
+                  onClick={() =>
+                    handleGoToSelectedProject(rfiles.name, rfiles.id)
+                  }
                   key={index}
                   className="flex justify-between items-center p-2 border-b-2 cursor-pointer"
                 >
                   <span className="font-[400] text-[14px] text-[#000000]">
-                    {index+1 + "."}{" "}{rfiles.name}
+                    {index + 1 + "."} {rfiles.name}
                   </span>
                   <span className="font-[400] text-[12px] text-[#00000080]">
                     {new Date(rfiles.date).toLocaleDateString()}

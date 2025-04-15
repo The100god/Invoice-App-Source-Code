@@ -22,4 +22,61 @@ body #titlebar {
 
 
 
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
   
+  .animate-ripple {
+    animation: ripple 0.5s linear;
+  }
+
+
+  @media print {
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+  
+    .no-print {
+      display: none !important;
+    }
+  
+    .print-page {
+      /* overflow: visible !important;
+    height: auto !important;
+    max-height: none !important; */
+    break-inside: avoid;
+    page-break-inside: avoid;
+    overflow: visible !important;
+      /* page-break-after: auto; */
+    }
+    * {
+      box-shadow: none !important;
+    }
+    /* #invoice-container {
+      /* min-height: auto !important; */
+      /*height: auto !important;
+      overflow: visible !important;
+      display: block !important;
+    } */
+  
+    /* * {
+      -webkit-print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    } */
+  }
+  
+  
+  /* @page {
+    size: auto;
+    margin: 10mm;
+  } */

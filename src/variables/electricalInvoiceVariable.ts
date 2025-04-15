@@ -436,6 +436,15 @@ export const newMaterialVariableErrorAtom = atom<newMaterialVariableError[][]>([
 export interface newMaterialIndexState{
   activeNewMaterialIndex:number
 }
+export interface MaterialSectionStepsState{
+  materialSectionStepsCount:number
+}
+export interface SelectMaterialSectionStepsState{
+  selectMaterialSectionStepsCount:number
+}
+export interface AddNewMaterialSectionStepsState{
+  addNewMaterialSectionStepsCount:number
+}
 
 export interface openAddNewMaterialState{
   openAddNewMaterialPopUp:boolean,
@@ -446,6 +455,9 @@ export interface isExistingProjectState{
 
 export const openAddNewMaterialAtom = atom<openAddNewMaterialState[]>([{openAddNewMaterialPopUp:false}])
 export const newMaterialIndexAtom = atom<newMaterialIndexState[]>([{activeNewMaterialIndex:0}])
+export const materialSectionStepsAtom = atom<MaterialSectionStepsState[]>([{materialSectionStepsCount:0}])
+export const selectMaterialSectionStepsAtom = atom<SelectMaterialSectionStepsState[]>([{selectMaterialSectionStepsCount:0}])
+export const addNewMaterialSectionStepsAtom = atom<AddNewMaterialSectionStepsState[]>([{addNewMaterialSectionStepsCount:0}])
 export const isExistingProjectAtom = atom<isExistingProjectState[]>([{
   isExistingProject:false,
 }])

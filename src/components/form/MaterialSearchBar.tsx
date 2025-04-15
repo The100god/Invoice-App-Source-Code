@@ -9,6 +9,7 @@ interface MaterialSearchBarProps {
   selectedValue: string;
   onChange: (value: string) => void;
   error?: string;
+  prevVal?: string;
   width: number;
   height: number;
   activeTabIndex: number;
@@ -17,15 +18,16 @@ interface MaterialSearchBarProps {
 const MaterialSearchBar: React.FC<MaterialSearchBarProps> = ({
   selectedValue,
   onChange,
+  prevVal,
   width,
   height,
-  activeTabIndex
+  activeTabIndex,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(prevVal ? prevVal : "");
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [, setItemErrors] = useAtom(itemErrorsAtom)
-//   const [itemSelectionData] = useAtom(itemSelectionDataAtom);
+  const [, setItemErrors] = useAtom(itemErrorsAtom);
+  //   const [itemSelectionData] = useAtom(itemSelectionDataAtom);
   const [, setErr] = useState(false);
 
   useEffect(() => {
@@ -46,11 +48,14 @@ const MaterialSearchBar: React.FC<MaterialSearchBarProps> = ({
     setSearchTerm(value);
     setIsOpen(false);
     setErr(true);
-    setItemErrors((prev)=>{
-const updated = [...prev]
-updated[activeTabIndex] = {...updated[activeTabIndex], selectedItem:""}
-return updated
-    })
+    setItemErrors((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = {
+        ...updated[activeTabIndex],
+        selectedItem: "",
+      };
+      return updated;
+    });
   };
 
   const filteredOptions = materialOptions.filter((option) =>

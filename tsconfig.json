@@ -12,8 +12,10 @@
     "outDir": "dist",                       // Output directory for compiled files
     "strict": true,                         // Enable strict mode
     "moduleResolution": "node",             // Resolve modules in Node.js style
-    "resolveJsonModule": true,              // Allow importing JSON files as modules
-    "lib": ["dom", "esnext"],             // Include DOM and ESNext libraries
+    "resolveJsonModule": true, 
+    "allowSyntheticDefaultImports": true,             // Allow importing JSON files as modules
+    "lib": ["dom", "esnext"],  
+    "types": ["node", "electron","react"],           // Include DOM and ESNext libraries
     // "typeRoots": ["./node_modules/@types", "./src/types"], // Custom types
     "paths": {
       "*": ["node_modules/*"],              // Map all modules to node_modules

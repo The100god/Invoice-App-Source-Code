@@ -1,4 +1,4 @@
-import { app, BrowserWindow,ipcMain } from 'electron';
+import { app, BrowserWindow,dialog,ipcMain } from "electron";
 import path from 'path';
 import fs from 'fs';  // Import fs for file handling
 
@@ -50,7 +50,7 @@ const createWindow = (): void => {
     mainWindow=null;
   });
   // Open the DevTools.
-  mainWindow.webContents.on("before-input-event", (event, input) => {
+  mainWindow.webContents.on("before-input-event", (event:any, input:any) => {
     // console.log(input)
     if ((input.control && input.shift && input.key.toLowerCase() === "i") || input.key === "F12") {
       event.preventDefault(); // Prevent default behavior
@@ -105,6 +105,55 @@ const saveLinks = (updatedLinks: string[]): void => {
   }
 };
 
+// Print invoice handler
+
+ipcMain.handle("print-invoice", async (_event, projectName: string) => {
+
+const win = BrowserWindow.getFocusedWindow();
+  if (!win) return { success: false, message: 'No active window' };
+
+  try {
+    const pdfBuffer = await win.webContents.printToPDF({
+      printBackground: true,
+      pageSize: 'A4',
+    });
+
+    const filePath = path.join(app.getPath('documents'), `${projectName}.pdf`);
+    fs.writeFileSync(filePath, pdfBuffer);
+
+    return { success: true, filePath };
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    return { success: false, message: 'Failed to generate PDF', error };
+  }
+});
+
+// ipcMain.handle("print-invoice-by-name", async (event, { htmlContent, projectName }) => {
+//   const tempWin = BrowserWindow.getFocusedWindow();
+//   if (!tempWin) return { success: false, message: 'No active window' };
+//   try {
+
+//     await tempWin.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
+
+//     const pdfBuffer = await tempWin.webContents.printToPDF({
+//       printBackground: true,
+//       pageSize: 'A4',
+//     });
+
+//     const filePath = path.join(app.getPath('documents'), `${projectName}.pdf`);
+//     fs.writeFileSync(filePath, pdfBuffer);
+
+//     // tempWin.close();
+
+//     return { success: true, filePath };
+//   } catch (error) {
+//     console.error("❌ Error printing named invoice:", error);
+//     return { success: false, message: "Failed to generate PDF", error };
+//   }
+// });
+
+
+
 let maximizeToggle=false;
 ipcMain.on('manualMinimize', () => {
   if (mainWindow){
@@ -128,7 +177,7 @@ ipcMain.handle('load-links', async () => {
   return loadLinks();
 });
 
-ipcMain.handle('save-links', async (_event, updatedLinks: string[]) => {
+ipcMain.handle('save-links', async (_event:any, updatedLinks: string[]) => {
   console.log('✅ Received save-links event with data:', updatedLinks);
   saveLinks(updatedLinks);
 });

@@ -255,7 +255,7 @@ const InvoiceInfo = () => {
   const activeFormData = formData[activeTabIndex];
   const activeErrors = errors[activeTabIndex];
   
-
+console.log("formdata", formData)
   return (
     <div  className="h-full flex flex-col items-center justify-center gap-y-8 bg-transparent">
       <div id="invoiceInfoTour" className="flex flex-col gap-y-4 bg-transparent">

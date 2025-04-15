@@ -5,11 +5,13 @@ import { useAtom } from "jotai";
 import {
   itemErrorsAtom,
   itemSelectionDataAtom,
+  materialSectionStepsAtom,
 } from "../../../variables/electricalInvoiceVariable";
 import ProductDetailsFetcher from "../../../components/form/FatchDetailsByLink";
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 import SearchLinkToggle from "../../../components/form/SearchLinkToggle";
 import NotesInput from "../../../components/form/NotesInput";
+import NavigateMaterialSectionStepsBtn from "../../../components/navigation/NavigateMaterialSectionSteps";
 
 const ItemSelectionScreen = () => {
   const [itemSelectionData, setItemSelectionData] = useAtom(
@@ -17,6 +19,7 @@ const ItemSelectionScreen = () => {
   );
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
   const [itemErrors, setItemErrors] = useAtom(itemErrorsAtom);
+  const [materialSectionSteps, setMaterialSectionSteps] = useAtom(materialSectionStepsAtom)
   // console.log("isCommission:", isCommission)
   // Function to compute the total amount
   let grandTot: number;
@@ -81,7 +84,51 @@ const ItemSelectionScreen = () => {
     }));
   };
 
-  console.log("itemSelectionData", itemSelectionData);
+
+  const handleMaterialNextFun = ()=>{
+    const activeMaterialStep = materialSectionSteps[activeTabIndex].materialSectionStepsCount
+    if (activeMaterialStep < 3) {
+      let stepValue = activeMaterialStep; // Start with the current step count
+  
+      // Check conditions to increment the step value
+      if (stepValue === 0 && (activeItemData.selectedItem !== "" || activeItemData.materialLink !== "")) {
+        stepValue = 1; // Move to step 1 if first condition is met
+      }
+      if (stepValue === 1 && ((activeItemData.brand !== "" && activeItemData.style !== "") || 
+                              (activeItemData.brand !== "" && activeItemData.amp !== ""))) {
+        stepValue = 2; // Move to step 2 if second condition is met
+      }
+      if (stepValue === 2 && (activeItemData.color !== "" && activeItemData.quantity > 0)) {
+        stepValue = 3; // Move to step 3 if third condition is met
+      }
+      setMaterialSectionSteps((prev)=>{
+        const updated = [...prev]
+        updated[activeTabIndex] = {
+          ...updated[activeTabIndex],
+          materialSectionStepsCount: stepValue-activeMaterialStep>1?activeMaterialStep+1: stepValue, // Increment the step count
+        };
+  
+        return updated;
+      })
+    }
+  }
+  const handleMaterialPrevFun = ()=>{
+    //
+    const activeMaterialStep = materialSectionSteps[activeTabIndex].materialSectionStepsCount
+    if(activeMaterialStep>0){
+      setMaterialSectionSteps((prev)=>{
+        const updated = [...prev]
+        updated[activeTabIndex] = {
+          ...updated[activeTabIndex],
+          materialSectionStepsCount: activeMaterialStep - 1, // Increment the step count
+        };
+  
+        return updated;
+      })
+    }
+  }
+
+  // console.log("itemSelectionData", itemSelectionData);
   // console.log( "isCommission",activeItemData.isCommission)
 
   return (
@@ -94,18 +141,22 @@ const ItemSelectionScreen = () => {
         <div className="flex flex-col justify-between items-center w-full  gap-y-8 bg-transparent">
           {/* Bar 1: Dropdown for item selection */}
 
-          <SearchLinkToggle
+          {materialSectionSteps[activeTabIndex].materialSectionStepsCount === 0 && <>
+            <SearchLinkToggle
             selectedValue={activeItemData.selectedItem}
             onSearchChange={(value) => updateItemData("selectedItem", value)}
+            prevVal={activeItemData.selectedItem}
             error={activeErrors.selectedItem}
             activeTabIndex={activeTabIndex}
-          />
+            />
 
           <NotesInput
             value={activeItemData.note}
             onChange={(value) => updateItemData("note", value)}
-          />
-          <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
+            />
+            </>
+          }
+          {materialSectionSteps[activeTabIndex].materialSectionStepsCount === 1 && <div className="flex flex-row justify-center items-center w-full gap-y-4 bg-transparent">
             {activeItemData.selectedItem === "Outlet" && (
               <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                 {/* Bar 2: Brand selection using RadioGroup */}
@@ -342,9 +393,11 @@ const ItemSelectionScreen = () => {
                 )}
               </div>
             )}
-          </div>
+          </div>}
 
-          {(activeItemData.style || activeItemData.amp) && (
+          {/* Quantity section */}
+
+          {materialSectionSteps[activeTabIndex].materialSectionStepsCount === 2 && (
             <>
               <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                 {/* Bar 4: Quantity input */}
@@ -399,8 +452,7 @@ const ItemSelectionScreen = () => {
 
           {/* Commission Type */}
 
-          {(activeItemData.productLinkAmount !== "0" ||
-            (activeItemData.color && activeItemData.quantity)) && (
+          {materialSectionSteps[activeTabIndex].materialSectionStepsCount === 3 &&  (
             <>
               <div className="flex flex-row justify-between items-start bg-transparent gap-2 w-[577px]">
                 <label htmlFor="commission" className="flex gap-2">
@@ -468,7 +520,16 @@ const ItemSelectionScreen = () => {
             </>
           )}
         </div>
+
       </div>
+        <div className=" flex justify-center items-center mt-5">
+        <NavigateMaterialSectionStepsBtn 
+         activeSteps = {materialSectionSteps[activeTabIndex]
+        .materialSectionStepsCount}
+        handleBack={handleMaterialPrevFun}
+        handleNext={handleMaterialNextFun}
+      />
+        </div>
     </div>
   );
 };

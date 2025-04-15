@@ -1,5 +1,6 @@
 import {
   activeDropdownAtom,
+  activeInnerDropdownAtom,
   activeProjectIdAtom,
   activeTabIndexAtom,
   homeClickAtom,
@@ -15,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 
 const Home = ({ projectId }: { projectId?: number }) => {
   const [, setActiveDropdown] = useAtom(activeDropdownAtom);
+  const [, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom)
+
   const [, setShowDescriptionsColorPicker] = useAtom(
     showDescriptionsColorPickerAtom
   );
@@ -33,6 +36,7 @@ const [, setHomeClick] = useAtom(homeClickAtom)
 
   const handleClick = () => {
     setActiveDropdown(null);
+    setActiveInnerDropdown(null);
     setShowDescriptionsColorPicker(false);
     setShowValueColorPicker(false);
     setShowLabalColorPicker(false);

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import NavigateButtons from "../../components/navigation/NavigateButtons"; // Adjust the path as needed
-import { IoClose } from "react-icons/io5";
 import ProgrssBar from "../../components/progressbar/ProgrssBar";
 
 import CostCalculator from "../../components/costCalculator/CostCalculator";
@@ -32,9 +31,10 @@ import ElecricalInvoiceHero from "./elecricalInvoice/ElecricalInvoiceHero";
 import ElectricalInvoiceHeading from "./elecricalInvoice/ElectricalInvoiceHeading";
 import NavigatePreview from "../../components/navigation/NavigatePreviewBtn";
 import { ClientContractorSignValidation } from "../../components/formValidation/electricalFormValidatin/ClientContractorSignValidation";
-import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
+import { activeDropdownAtom, activeInnerDropdownAtom, activeTabIndexAtom, disableContractorClientSignaturesAtom, disableTaxAtom, disableTermsConAtom, disableTripChargeAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom, zoomInOutAtom } from "../../variables/NavbarVariables";
 import { TripChargeValidation } from "../../components/formValidation/electricalFormValidatin/TripChargeValidationForm";
 import { useEffect, useState } from "react";
+import { IoClose } from "react-icons/io5";
 
 
 
@@ -49,6 +49,19 @@ const InvoiceSelection = () => {
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
 
   const [, setRun] = useState(false)
+
+  const [, setShowLabalColorPicker] = useAtom(
+    showLabelColorPickerAtom
+  );
+  const [, setShowValueColorPicker] = useAtom(
+    showValueColorPickerAtom
+  );
+  const [, setShowOutlineColorPicker] = useAtom(
+    showOutlineColorPickerAtom
+  );
+  const [, setShowDescriptionsColorPicker] = useAtom(
+    showDescriptionsColorPickerAtom
+  );
 
   const [zoomLevel, setZoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
   const [disableTripCharge,] = useAtom(
@@ -283,6 +296,10 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
   const handleOnClick = ()=>{
     setActiveDropdown(null);
     setActiveInnerDropdown(null);
+    setShowOutlineColorPicker(false);
+    setShowDescriptionsColorPicker(false);
+    setShowValueColorPicker(false);
+    setShowLabalColorPicker(false);
   }
 
   

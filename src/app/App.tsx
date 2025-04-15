@@ -11,6 +11,10 @@ import {
   isEnterInvoiceAtom,
   projectMaterialDetailsAtom,
   projectsAtom,
+  // showDescriptionsColorPickerAtom,
+  // showLabelColorPickerAtom,
+  // showOutlineColorPickerAtom,
+  // showValueColorPickerAtom,
 } from "../variables/NavbarVariables";
 import { useEffect, useRef, useState } from "react";
 import ProjectMaterialDetails from "../components/projectMaterialDetails/ProjectMaterialDetails";
@@ -79,6 +83,20 @@ const App = () => {
 
   const navigate = useNavigate();
   const [, setHomeClick] = useAtom(homeClickAtom);
+
+
+  // const [showLabalColorPicker, setShowLabalColorPicker] = useAtom(
+  //     showLabelColorPickerAtom
+  //   );
+  //   const [showValueColorPicker, setShowValueColorPicker] = useAtom(
+  //     showValueColorPickerAtom
+  //   );
+  //   const [showOutlineColorPicker, setShowOutlineColorPicker] = useAtom(
+  //     showOutlineColorPickerAtom
+  //   );
+  //   const [showDescriptionsColorPicker, setShowDescriptionsColorPicker] = useAtom(
+  //     showDescriptionsColorPickerAtom
+  //   );
 
   useEffect(() => {
     const stopDragging = () => {
@@ -199,7 +217,7 @@ const App = () => {
     const { action, index, origin, status, type } = data;
 
     // console.log(temp.includes(type))
-    console.log(index, stepIndex);
+    // console.log(index, stepIndex);
 
     if (action === ACTIONS.CLOSE && origin === ORIGIN.KEYBOARD) {
       // do something
@@ -270,8 +288,8 @@ const App = () => {
     }
 
     // console.groupCollapsed(type);
-    console.log("type", type); //eslint-disable-line no-console
-    console.log("data", data); //eslint-disable-line no-console
+    // console.log("type", type); //eslint-disable-line no-console
+    // console.log("data", data); //eslint-disable-line no-console
     console.groupEnd();
   };
 
@@ -301,9 +319,15 @@ const App = () => {
     setProjects([]);
   }
 
+  
+
+  
+
   return (
     <div
+    
       onMouseMove={handlePanelMouseMove}
+      // onClick={handleAppOnClick}
       className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center overflow-hidden"
     >
       <NavBar />

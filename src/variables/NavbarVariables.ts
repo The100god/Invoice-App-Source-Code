@@ -60,3 +60,10 @@ export const homeClickAtom = atom<elctronicFormClickStates[]>([{
 
 export const zoomInOutAtom = atom<number>(100); // Default zoom level is 100%
   
+
+export interface printBillStates{
+    selectedPrintBill:boolean;
+}
+export const printBillAtom = atom<printBillStates[]>([{
+    selectedPrintBill:false
+}])

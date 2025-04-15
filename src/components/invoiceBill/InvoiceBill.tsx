@@ -1,36 +1,70 @@
-import { clientFormDataAtom } from "../../variables/electricalInvoiceVariable";
-import { activeDropdownAtom, activeTabIndexAtom, colorChangeAtom, showDescriptionsColorPickerAtom, showLabelColorPickerAtom, showOutlineColorPickerAtom, showValueColorPickerAtom } from "../../variables/NavbarVariables";
+import { invoiceSelectAtom } from "../../variables/Home";
+import {
+  clientFormDataAtom,
+  formDataAtom,
+} from "../../variables/electricalInvoiceVariable";
+import {
+  activeDropdownAtom,
+  activeTabIndexAtom,
+  colorChangeAtom,
+  printBillAtom,
+  projectsAtom,
+  showDescriptionsColorPickerAtom,
+  showLabelColorPickerAtom,
+  showOutlineColorPickerAtom,
+  showValueColorPickerAtom,
+} from "../../variables/NavbarVariables";
 import { useAtom } from "jotai";
-import React from "react";
-
+import React, { useEffect } from "react";
+import { toast } from "react-toastify";
+// import { useLocation, useNavigate } from "react-router-dom";
 const InvoiceBill: React.FC = () => {
-  const [colorChange, ] = useAtom(colorChangeAtom)
-  const [activeTabIndex, ] = useAtom(activeTabIndexAtom);
-
+  const [printBill, setPrintBill] = useAtom(printBillAtom);
+  const [colorChange] = useAtom(colorChangeAtom);
+  const [projects] = useAtom(projectsAtom);
+  const [activeTabIndex] = useAtom(activeTabIndexAtom);
+  const [invoiceSelect] = useAtom(invoiceSelectAtom);
+  const [formData] = useAtom(formDataAtom);
   const [clientFormData] = useAtom(clientFormDataAtom);
-    const [, setActiveDropdown] = useAtom(activeDropdownAtom);
-      const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
-        const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
-        const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
-        const [, setShowDescriptionsColorPicker] =
-          useAtom(showDescriptionsColorPickerAtom);
-      const handleClickEvent = ()=>{
-        setActiveDropdown(null);
-        setShowDescriptionsColorPicker(false);
-        setShowValueColorPicker(false);
-        setShowLabalColorPicker(false);
-        setShowOutlineColorPicker(false);
-      }
+  const [, setActiveDropdown] = useAtom(activeDropdownAtom);
+  const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
+  const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
+  const [, setShowOutlineColorPicker] = useAtom(showOutlineColorPickerAtom);
+  const [, setShowDescriptionsColorPicker] = useAtom(
+    showDescriptionsColorPickerAtom
+  );
+  const handleClickEvent = () => {
+    setActiveDropdown(null);
+    setShowDescriptionsColorPicker(false);
+    setShowValueColorPicker(false);
+    setShowLabalColorPicker(false);
+    setShowOutlineColorPicker(false);
+  };
 
-  const activeClientData = clientFormData[activeTabIndex]
+  const today = new Date();
+
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const yyyy = today.getFullYear();
+
+  const formattedDate = `${dd}/${mm}/${yyyy}`;
+
+  const activeClientData = clientFormData[activeTabIndex];
+  const activeBill = printBill[activeTabIndex];
+
+  const imageData: File | null = formData[activeTabIndex].companyLogo;
   const invoiceData = {
-    title: "Invoice Type",
+    title: invoiceSelect[activeTabIndex].selectedInvoice,
     invoiceNumber: "#00000",
-    dateOfIssue: "10/21/2024",
+    dateOfIssue: formattedDate,
     billedTo: {
-      name: activeClientData.clientName? activeClientData.clientName:"Thomas Residence",
-      address: activeClientData.address?activeClientData.address:"123 Example Ave.",
-      city: activeClientData.city?activeClientData.city:"Beverly Hills, CA",
+      name: activeClientData.clientName
+        ? activeClientData.clientName
+        : "Thomas Residence",
+      address: activeClientData.address
+        ? activeClientData.address
+        : "123 Example Ave.",
+      city: activeClientData.city ? activeClientData.city : "Beverly Hills, CA",
     },
     items: [
       { description: "Switches & Installations", unitCost: 50, quantity: 10 },
@@ -55,82 +89,189 @@ const InvoiceBill: React.FC = () => {
 
   const calculateTotal = () => calculateSubtotal() + calculateTax();
 
-  const activeColorData = colorChange[activeTabIndex]
+  const activeColorData = colorChange[activeTabIndex];
+
+  // const location = useLocation();
+  // const isPrint = new URLSearchParams(location.search).get('print');
+  // console.log("isPrint", isPrint)
+  // const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   // Only auto-print when it's opened in a new window
+  //   if (window.opener === null) {
+  //     setTimeout(() => {
+  //       window.print();
+  //     }, 500);
+  //   }
+  // },[]);
+  const handleGeneratePDF = async () => {
+    const projectName =
+      projects[activeTabIndex]?.name?.trim().replace(/\s+/g, "_") ||
+      `Project_${Date.now()}`;
+    const result = await window.electron?.printInvoice(projectName);
+    if (result.success) {
+      toast.success(`✅ PDF saved at: ${result.filePath}`);
+    } else {
+      console.log(`❌ Failed: ${result.message}`);
+    }
+  };
+
+  // const handlePrintByProjectName = async () => {
+  //   const element = document.getElementById("invoice-container");
+  //   if (!element) return toast.error("Print area not found!");
+
+  //   const htmlContent = element.innerHTML;
+  //   const projectName =
+  //     projects[activeTabIndex]?.name?.trim().replace(/\s+/g, "_") ||
+  //     `Project_${Date.now()}`;
+
+  //   const result = await window.electron?.printInvoiceByName(
+  //     htmlContent,
+  //     projectName
+  //   );
+  //   if (result?.success) {
+  //     toast.success(`✅ PDF saved at: ${result.filePath}`);
+  //   } else {
+  //     toast.error(`❌ Failed to save PDF: ${result?.message}`);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (activeBill?.selectedPrintBill) {
+      // window.print();
+      handleGeneratePDF();
+      // handlePrintByProjectName();
+      const printStop = setTimeout(() => {
+        setPrintBill((prev) => {
+          const updated = [...prev];
+          updated[activeTabIndex] = {
+            ...updated[activeTabIndex],
+            selectedPrintBill: false,
+          };
+          return updated;
+        });
+      }, 500);
+      return () => clearTimeout(printStop);
+    }
+  }, [printBill]);
+  // useEffect(() => {
+  //   const state = location.state as { shouldPrint?: boolean };
+
+  //   if (state?.shouldPrint) {
+  //     setTimeout(() => {
+  //       window.print();
+
+  //       // Go back or clear state after printing
+  //       // setTimeout(() => {
+  //       //   navigate(-1); // or navigate('/dashboard') if preferred
+  //       // }, 500);
+  //     }, 300);
+  //   }
+  // }, [location.state]);
   return (
-    <div onClick={handleClickEvent} className="flex justify-center pt-[24rem] pb-8 items-center w-full h-fit bg-transparent overflow-y-scroll">
-    <div className="flex flex-col items-center gap-10 w-[782px] h-fit bg-white">
-      {/* Header Section */}
-      <div className="flex flex-row justify-between h-fit w-full bg-white items-start p-6">
-        <div className="flex flex-col justify-between w-full h-full items-start gap-9 bg-transparent">
-          <div className="flex flex-col w-fit h-fit bg-transparent">
-            <h1 className="text-5xl text-[#000000] font-[500] bg-transparent">
-              {invoiceData.title}
-            </h1>
-            <p className="text-lg text-[#000000CC] font-[400] bg-transparent">
-              {invoiceData.invoiceNumber}
-            </p>
+    <div
+      id="invoice-container"
+      onClick={handleClickEvent}
+      className="print-page w-full h-full bg-white px-4 py-8 overflow-auto print:overflow-visible"
+    >
+      <div className="mx-auto flex flex-col gap-5 max-w-[800px] bg-white">
+        {/* Header Section */}
+        <div className="flex flex-row justify-between items-start w-full p-6 bg-white">
+          <div className="flex flex-col gap-9 w-full">
+            <div>
+              <h1 className="text-5xl font-medium text-black">
+                {invoiceData.title}
+              </h1>
+              <p className="text-lg text-black/80">
+                {invoiceData.invoiceNumber}
+              </p>
+            </div>
+            <div>
+              <p
+                style={{ color: activeColorData.labelColor }}
+                className="text-xl font-bold"
+              >
+                DATE OF ISSUE
+              </p>
+              <p className="text-sm text-black/60">{invoiceData.dateOfIssue}</p>
+            </div>
           </div>
-          {/* Date of Issue */}
-          <div className="flex flex-col w-fit h-fit bg-transparent">
-            <p style={{color:activeColorData.labelColor}} className="text-xl font-bold  bg-transparent">DATE OF ISSUE</p>
-            <p className="text-sm text-[#00000099]  bg-transparent">
-              {invoiceData.dateOfIssue}
-            </p>
+          <div className="w-[179px] h-[150px] bg-gray-900 border-black rounded-full">
+            <img
+              className="flex justify-center items-center object-contain rounded-full p-1 w-full h-full "
+              src={
+                imageData
+                  ? URL.createObjectURL(imageData)
+                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPa0aZdiJvKAvFa2G_NJtqCDi6StL27ApU4A&s"
+              }
+              alt="Company Logo"
+            />
           </div>
         </div>
-        {/* logo image */}
-        <div className="w-[179px] h-[179px] bg-gray-300"></div>
-      </div>
-      <div className="w-full mx-auto bg-white ">
-        {/* Information Section */}
-        <div className="p-6 bg-transparent">
-          <div className="grid grid-cols-2 gap-6 bg-transparent">
-            {/* Billed To */}
+
+        {/* Billed To Section */}
+        <div className="p-6 bg-white">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <p style={{color:activeColorData.labelColor}} className="text-xl font-bold bg-transparent">BILLED TO</p>
-              <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.name}</p>
-              <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.address}</p>
-              <p className="text-[#00000099] bg-transparent">{invoiceData.billedTo.city}</p>
+              <p
+                style={{ color: activeColorData.labelColor }}
+                className="text-xl font-bold"
+              >
+                BILLED TO
+              </p>
+              <p className="text-black/60">{invoiceData.billedTo.name}</p>
+              <p className="text-black/60">{invoiceData.billedTo.address}</p>
+              <p className="text-black/60">{invoiceData.billedTo.city}</p>
             </div>
           </div>
         </div>
 
         {/* Table Section */}
-        <div className="p-6">
-          {/* Table Header */}
-          <div className="flex justify-between items-center border-b-4   bg-transparent py-3 text-xl font-bold text-[#00000099] "
-          style={{ 
-            borderColor: activeColorData.outlineColor,
-            color:activeColorData.labelColor
-
-           }}
+        <div className="p-6 bg-white">
+          <div
+            className="flex justify-between items-center border-b-4 py-3 text-xl font-bold"
+            style={{
+              borderColor: activeColorData.outlineColor,
+              color: activeColorData.labelColor,
+            }}
           >
-            {/* DESCRIPTION - Largest Field */}
-            <p className="flex-1 text-left bg-transparent">DESCRIPTION</p>
-            {/* Smaller Fields on the Right */}
-            <div className="flex gap-10 bg-transparent">
-              <p className="w-[150px] text-center bg-transparent">UNIT COST</p>
-              <p className="w-[150px] text-center bg-transparent">QTY/HR RATE</p>
-              <p className="w-[150px] text-center bg-transparent">AMOUNT</p>
+            <p className="flex-1 text-left">DESCRIPTION</p>
+            <div className="flex gap-10">
+              <p className="w-[150px] text-center">UNIT COST</p>
+              <p className="w-[150px] text-center">QTY/HR RATE</p>
+              <p className="w-[150px] text-center">AMOUNT</p>
             </div>
           </div>
 
-          {/* Table Rows */}
           {invoiceData.items.map((item, index) => (
             <div
               key={index}
-              className="flex justify-between items-center py-3 border-b-2 bg-transparent text-gray-800"
+              className="flex justify-between items-center py-3 border-b-2 text-gray-800"
               style={{ borderColor: activeColorData.outlineColor }}
             >
-              {/* DESCRIPTION */}
-              <p style={{color:activeColorData.descriptionsColor}} className="flex-1 text-left bg-transparent">{item.description}</p>
-              {/* Smaller Fields on the Right */}
-              <div className="flex gap-10 bg-transparent">
-                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">
+              <p
+                style={{ color: activeColorData.descriptionsColor }}
+                className="flex-1 text-left"
+              >
+                {item.description}
+              </p>
+              <div className="flex gap-10">
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="w-[150px] text-center"
+                >
                   ${item.unitCost.toFixed(2)}
                 </p>
-                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">{item.quantity}</p>
-                <p style={{color:activeColorData.valuesColor}} className="w-[150px] text-center bg-transparent">
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="w-[150px] text-center"
+                >
+                  {item.quantity}
+                </p>
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="w-[150px] text-center"
+                >
                   ${(item.unitCost * item.quantity).toFixed(2)}
                 </p>
               </div>
@@ -139,53 +280,76 @@ const InvoiceBill: React.FC = () => {
         </div>
 
         {/* Footer Section */}
-        {/* Footer Section */}
-        <div className="p-6 mt-4 bg-transparent">
-          {/* Invoice Total */}
-          <div className="flex w-full justify-between items-start bg-transparent">
-
-          <div className="flex justify-between items-center mb-6 bg-transparent">
+        <div className="p-6 bg-white">
+          <div className="flex justify-between">
             <div>
               <p
-              style={{color:activeColorData.labelColor}}
-               className="text-xl font-bold bg-transparent">INVOICE TOTAL</p>
-              <p style={{color:activeColorData.valuesColor}} className="text-[52px] font-[400] bg-transparent">
+                style={{ color: activeColorData.labelColor }}
+                className="text-xl font-bold"
+              >
+                INVOICE TOTAL
+              </p>
+              <p
+                style={{ color: activeColorData.valuesColor }}
+                className="text-[52px] font-normal"
+              >
                 ${calculateTotal().toFixed(2)}
               </p>
             </div>
+            <div className="text-right space-y-2">
+              <div className="flex justify-between gap-6 mb-5">
+                <p className="font-bold text-xl text-black">SUBTOTAL</p>
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="font-bold text-xl"
+                >
+                  ${calculateSubtotal().toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between gap-6 mb-2">
+                <p className="font-bold text-xl text-black">
+                  (TAX RATE) {invoiceData.taxRate}%
+                </p>
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="font-bold text-xl"
+                >
+                  ${calculateTax().toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between gap-6 mb-2">
+                <p className="font-bold text-xl text-black">TAX</p>
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="font-bold text-xl"
+                >
+                  ${calculateTax().toFixed(2)}
+                </p>
+              </div>
+              <div className="flex justify-between gap-6 mb-2">
+                <p className="font-bold text-xl text-black">TOTAL</p>
+                <p
+                  style={{ color: activeColorData.valuesColor }}
+                  className="font-bold text-xl"
+                >
+                  ${calculateTotal().toFixed(2)}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Subtotal, Tax, and Total */}
-          <div className="space-y-2 text-right bg-transparent">
-            <div className="flex gap-6 justify-between mb-5 bg-transparent">
-              <p className="font-bold text-xl text-[#000000] bg-transparent">SUBTOTAL</p>
-              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateSubtotal().toFixed(2)}</p>
-            </div>
-            <div className="flex gap-6 justify-between mb-2 bg-transparent">
-              <p className="font-bold text-xl text-[#000000] bg-transparent">(TAX RATE) {invoiceData.taxRate}%</p>
-              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
-            </div>
-            <div className="flex gap-6 justify-between mb-2 bg-transparent">
-              <p className="font-bold text-xl text-[#000000] bg-transparent">TAX</p>
-              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTax().toFixed(2)}</p>
-            </div>
-            <div className="flex gap-6 justify-between mb-2 bg-transparent">
-              <p className="font-bold text-xl text-[#000000] bg-transparent">TOTAL</p>
-              <p style={{color:activeColorData.valuesColor}} className="font-bold text-xl bg-transparent">${calculateTotal().toFixed(2)}</p>
-            </div>
-          </div>
-          </div>
-
-          {/* Terms */}
-          <p className="flex flex-col mt-6 text-xl text-gray-500 bg-transparent">
-            <span style={{color:activeColorData.labelColor}} className="font-bold text-xl  bg-transparent">TERMS</span>
-            <span className="font-[400] text-xl text-[#000000] bg-transparent"> 
-            {invoiceData.terms}
+          <p className="mt-6 text-xl text-gray-500">
+            <span
+              style={{ color: activeColorData.labelColor }}
+              className="font-bold"
+            >
+              TERMS
             </span>
+            <br />
+            <span className="font-normal text-black">{invoiceData.terms}</span>
           </p>
         </div>
       </div>
-    </div>
     </div>
   );
 };

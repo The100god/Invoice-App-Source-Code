@@ -34,7 +34,7 @@ const BreakDownSwitch: React.FC<BreakDownSwitchProps> = ({ title }) => {
     }));
     setIsOn(!isOn);
   };
-  console.log("breakDown", breakDown);
+  // console.log("breakDown", breakDown);
 
   return (
     <div className="bg-[#3E3C3C] dark:bg-[#000000] rounded-sm w-[45px] h-[38px] flex flex-col justify-center items-center shadow-lg">

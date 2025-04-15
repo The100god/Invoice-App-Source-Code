@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuAlignCenter, LuAlignLeft, LuAlignRight } from "react-icons/lu";
 import { MdFormatListNumbered, MdArrowRight } from "react-icons/md";
@@ -18,6 +18,7 @@ import {
   disableTripChargeAtom,
   homeClickAtom,
   isEnterInvoiceAtom,
+  printBillAtom,
   projectMaterialDetailsAtom,
   projectsAtom,
   searchTermAtom,
@@ -43,6 +44,7 @@ import {
   itemSelectionDataAtom,
   labourErrorsAtom,
   labourStateAtom,
+  materialSectionStepsAtom,
   newMaterialIndexAtom,
   newMaterialVariableAtom,
   newMaterialVariableErrorAtom,
@@ -64,9 +66,12 @@ interface ElectronAPI {
   minimizeWindow: () => void;
   toggleMaximizeWindow: () => void;
   closeWindow: () => void;
+  printInvoice: () => void;
 }
 
 const Navbar: React.FC = () => {
+  const printRef = useRef<HTMLDivElement>(null);
+
   const [projects, setProjects] = useAtom(projectsAtom);
   const [isEnterInvoice, setISEnterInvoice] = useAtom(isEnterInvoiceAtom);
   const [activeProjectId, setActiveProjectId] = useAtom(activeProjectIdAtom);
@@ -77,7 +82,7 @@ const Navbar: React.FC = () => {
   );
 
   const [zoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
-
+const [printBill, setPrintBill] = useAtom(printBillAtom)
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
   const [stepsData, setStepsData] = useAtom(stepsAtom);
@@ -166,6 +171,9 @@ const Navbar: React.FC = () => {
   const [isExistingProjectVariable, setIsExistingProjectVariable] = useAtom(
     isExistingProjectAtom
   );
+
+  const [materialSectionSteps, setMaterialSectionSteps] = useAtom(materialSectionStepsAtom)
+  
   // Add a new project
   const addNewProject = () => {
     const newProjectId = projects.length;
@@ -175,6 +183,13 @@ const Navbar: React.FC = () => {
       ...projects,
       { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
     ]);
+
+    setPrintBill([
+      ...printBill,
+      {
+        selectedPrintBill:false,
+      }
+    ])
 
     //invoice selction
     setInvoiceSelect([
@@ -418,6 +433,12 @@ const Navbar: React.FC = () => {
       },
     ]);
 
+    setMaterialSectionSteps([
+      ...materialSectionSteps, {
+        materialSectionStepsCount:0
+      }
+    ])
+
     // add new Material.
     setNewMaterial([...newMaterial, []]);
     setNewMaterialError([...newMaterialError, []]);
@@ -491,6 +512,7 @@ const Navbar: React.FC = () => {
     );
     const updatedProgress = progress.filter((data, index) => index != id);
     const updatedHomeClick = homeClick.filter((data, index) => index != id);
+    const updatedPrintBillVariable = printBill.filter((data, index) => index != id);
     setHomeClick(updatedHomeClick); //homeClick data
     setBreakDown(updatedBreakDown); //breakdown data
     setColorChange(updatedColorPickerData); //homeClick data
@@ -510,6 +532,7 @@ const Navbar: React.FC = () => {
     setIsExistingProjectVariable(updatedIsExistingProject);
     setActiveTabIndex(updatedProjects.length);
     setProjects(updatedProjects);
+    setPrintBill(updatedPrintBillVariable);
 
     // If the active project is removed, set the active project to null or the first available project
     if (activeProjectId === id) {
@@ -609,10 +632,10 @@ const Navbar: React.FC = () => {
       console.log("Please enter a search query!");
       return;
     }
-    console.log(`Searching for: ${searchTerm}`);
-    console.log(searchTerm);
+    // console.log(`Searching for: ${searchTerm}`);
+    // console.log(searchTerm);
     setSearchTerm("");
-    console.log(searchTerm);
+    // console.log(searchTerm);
   };
 
   const handleRename = () => {
@@ -627,7 +650,7 @@ const Navbar: React.FC = () => {
         });
       });
 
-      console.log(`Project renamed to: ${newName}`);
+      // console.log(`Project renamed to: ${newName}`);
     } else {
       console.log("Invalid name. Operation canceled.");
     }
@@ -653,11 +676,18 @@ const Navbar: React.FC = () => {
 
   // Handle Dropdown Actions
   const handleFileDropdownAction = (op1: string, op2: string) => {
-    console.log(op1, op2);
+    // console.log(op1, op2);
 
     if (op1 === "Rename Invoice" || op2 === "F2") {
       setIsRename(true);
       // Prompt the user to enter a new project name
+    }
+    if(op1 === "Print" || op2 === "Ctrl+P"){
+      setPrintBill((prev) => {
+        const updated = [...prev];
+        updated[activeTabIndex] = { ...updated[activeTabIndex], selectedPrintBill: true };
+        return updated;
+      });
     }
 
     // switch (action) {
@@ -688,13 +718,13 @@ const Navbar: React.FC = () => {
   };
 
   const handleSelectMaterialClick = (index1: number, index2: number) => {
-    console.log(index1, index2);
+    // console.log(index1, index2);
     navigate(`/project/selectMaterial?index1=${index1}&index2=${index2}`);
     setActiveDropdown(null);
   };
 
   const handleEditAddAttributeClick = (index1: number, index2: number) => {
-    console.log(index1, index2);
+    // console.log(index1, index2);
     navigate(`/project/EditAddAttribute?index1=${index1}&index2=${index2}`);
     setActiveDropdown(null);
   };
@@ -846,12 +876,41 @@ const Navbar: React.FC = () => {
     navigate("/");
     setISEnterInvoice(false);
     setProjects([]);
+    setStepsData([{
+      electricalSteps:1
+    }])
+  };
+
+
+
+  const handlePrint = () => {
+    // try {
+    //   console.log("print")
+    //   // window.electron?.send("print-invoice");
+    //   window.electron?.printInvoice();
+    setPrintBill((prev) => {
+      const updated = [...prev];
+      updated[activeTabIndex] = { ...updated[activeTabIndex], selectedPrintBill: true };
+      return updated;
+    });
+      
+    // } catch (error) {
+    //   console.log("printPage",error)
+    // }
+    // navigate("/project/bill", { state: { shouldPrint: true } });
+    // window.print();
+    // if (window.electron?.ipcRenderer) {
+    //   console.log(window.electron.send("print-invoice"))
+    //   window.electron?.send("print-invoice");
+    // } else {
+    //   console.error("IPC renderer not available");
+    // }
   };
 
   return (
     <div
       id="titlebar"
-      className="flex flex-col w-full bg-[#000000] dark:bg-custom-bgcl-gradient text-white "
+      className="no-print flex flex-col w-full bg-[#000000] dark:bg-custom-bgcl-gradient text-white "
     >
       {/* First Row */}
       <div className="flex justify-between w-full h-[44px] items-center px-4 py-2 ">
@@ -1341,7 +1400,7 @@ const Navbar: React.FC = () => {
           <div className="flex flex-row items-center justify-between space-x-6">
             <div className="flex flex-row items-center justify-between space-x-4">
               {/* printer */}
-              <div className="flex items-center justify-center cursor-pointer">
+              <div onClick={handlePrint} className="print:hidden flex items-center justify-center cursor-pointer">
                 <svg
                   width="16"
                   height="16"

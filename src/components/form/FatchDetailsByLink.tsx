@@ -331,7 +331,7 @@ const ProductDetailsFetcher: React.FC<{ activeTabIndex: number }> = ({
     // const domain = urlObject.hostname;
     // const details = { price: "Price not found" };
     // console.log(details)
-    console.log(response)
+    // console.log(response)
       if (!response.ok)
         throw new Error(`API request failed with status: ${response.status}`);
 
@@ -381,7 +381,7 @@ const ProductDetailsFetcher: React.FC<{ activeTabIndex: number }> = ({
           details.price = "Domain not supported.";
       }
 
-      console.log(details);
+      // console.log(details);
       const updatedSelectionData = [...itemSelectionData];
       updatedSelectionData[activeTabIndex] = {
         ...activeTabData,

@@ -127,9 +127,31 @@ export const itemValidate = ({
   // Update the errors for the active tab
   // console.log("itemErrors", itemErrors)
   // const updatedErrors = [itemErrors];
-  const updatedErrors = [...itemErrors];
+  // const updatedErrors = [...itemErrors];
+  const updatedErrors = Array.isArray(itemErrors) ? [...itemErrors] : [];
+
+  // Expand the array if needed
+  // while (updatedErrors.length <= activeTabIndex) {
+  //   updatedErrors.push({
+  //     selectedItem: "",
+  //     brand: "",
+  //     style: "",
+  //     quantity: "",
+  //     color: "",
+  //     pole: "",
+  //     use: "",
+  //     version: "",
+  //     neutral: "",
+  //     type: "",
+  //     amp: "",
+  //     materialLink: "",
+  //     commissionType: "",
+  //     commissionValue: "",
+  //   });
+  // }
+
 updatedErrors[activeTabIndex] = newErrors;
 setItemErrors(updatedErrors);
-console.log("isValid: ", isValid)
+// console.log("isValid: ", isValid)
   return isValid;
 };

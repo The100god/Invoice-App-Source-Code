@@ -37,6 +37,8 @@ const SelectMaterialPage = () => {
     newMaterialError[index1][activeNewMaterialIndex];
 
   const [, setOpenAddNewMaterial] = useAtom(openAddNewMaterialAtom);
+  // const [materialSectionSteps, setMaterialSectionSteps] = useAtom(materialSectionStepsAtom)
+
 
   let grandTot: number;
 
@@ -158,19 +160,63 @@ const SelectMaterialPage = () => {
         };
         return updated;
       });
-      console.log("add new material is saved");
+      // console.log("add new material is saved");
 
       toast.success(`Material ${index2 + 1} is Saved!`, {
         position: "bottom-right",
       });
     } else {
-      console.log("Please add new material");
+      // console.log("Please add new material");
       toast.info(`Material ${index2 + 1} is not changed!`, {
         position: "bottom-right",
       });
     }
     navigate("/project/selection");
   };
+
+  // const handleMaterialNextFun = ()=>{
+  //   const activeMaterialStep = materialSectionSteps[activeTabIndex].materialSectionStepsCount
+  //   if (activeMaterialStep < 3) {
+  //     let stepValue = activeMaterialStep; // Start with the current step count
+  
+  //     // Check conditions to increment the step value
+  //     if (stepValue === 0 && (activeItemData.selectedItem !== "" || activeItemData.materialLink !== "")) {
+  //       stepValue = 1; // Move to step 1 if first condition is met
+  //     }
+  //     if (stepValue === 1 && ((activeItemData.brand !== "" && activeItemData.style !== "") || 
+  //                             (activeItemData.brand !== "" && activeItemData.amp !== ""))) {
+  //       stepValue = 2; // Move to step 2 if second condition is met
+  //     }
+  //     if (stepValue === 2 && (activeItemData.color !== "" && activeItemData.quantity > 0)) {
+  //       stepValue = 3; // Move to step 3 if third condition is met
+  //     }
+  //     setMaterialSectionSteps((prev)=>{
+  //       const updated = [...prev]
+  //       updated[activeTabIndex] = {
+  //         ...updated[activeTabIndex],
+  //         materialSectionStepsCount: stepValue-activeMaterialStep>1?activeMaterialStep+1: stepValue, // Increment the step count
+  //       };
+  
+  //       return updated;
+  //     })
+  //   }
+  // }
+  // const handleMaterialPrevFun = ()=>{
+  //   //
+  //   const activeMaterialStep = materialSectionSteps[activeTabIndex].materialSectionStepsCount
+  //   if(activeMaterialStep>0){
+  //     setMaterialSectionSteps((prev)=>{
+  //       const updated = [...prev]
+  //       updated[activeTabIndex] = {
+  //         ...updated[activeTabIndex],
+  //         materialSectionStepsCount: activeMaterialStep - 1, // Increment the step count
+  //       };
+  
+  //       return updated;
+  //     })
+  //   }
+  // }
+
 
   //   console.log(itemSelectionData)
   return (
@@ -205,6 +251,7 @@ const SelectMaterialPage = () => {
                     onSearchChange={(value) =>
                       updateItemData("selectedItem", value)
                     }
+                    prevVal={activeNewMaterialData?.selectedItem}
                     error={activeNewMaterialError?.selectedItem}
                     activeTabIndex={index1}
                   />
