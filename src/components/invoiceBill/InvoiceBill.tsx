@@ -1,5 +1,6 @@
 import { invoiceSelectAtom } from "../../variables/Home";
 import {
+  clientContractorAtom,
   clientFormDataAtom,
   formDataAtom,
 } from "../../variables/electricalInvoiceVariable";
@@ -26,6 +27,7 @@ const InvoiceBill: React.FC = () => {
   const [invoiceSelect] = useAtom(invoiceSelectAtom);
   const [formData] = useAtom(formDataAtom);
   const [clientFormData] = useAtom(clientFormDataAtom);
+  const [clientContractorData] = useAtom(clientContractorAtom)
   const [, setActiveDropdown] = useAtom(activeDropdownAtom);
   const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
   const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
@@ -50,6 +52,13 @@ const InvoiceBill: React.FC = () => {
   const formattedDate = `${dd}/${mm}/${yyyy}`;
 
   const activeClientData = clientFormData[activeTabIndex];
+  const activeClientContractorData = clientContractorData[activeTabIndex];
+  let contractorSignUrl: string | null = null;
+
+if (activeClientContractorData.contractorSign) {
+  contractorSignUrl = URL.createObjectURL(activeClientContractorData.contractorSign);
+}
+
   const activeBill = printBill[activeTabIndex];
 
   const imageData: File | null = formData[activeTabIndex].companyLogo;
@@ -246,31 +255,39 @@ const InvoiceBill: React.FC = () => {
           {invoiceData.items.map((item, index) => (
             <div
               key={index}
-              className="flex justify-between items-center py-3 border-b-2 text-gray-800"
+              className="flex justify-between items-center border-b-2 text-gray-800"
               style={{ borderColor: activeColorData.outlineColor }}
             >
               <p
-                style={{ color: activeColorData.descriptionsColor }}
-                className="flex-1 text-left"
+                style={{ color: activeColorData.descriptionsColor,
+                  borderColor: activeColorData.outlineColor
+                 }}
+                className="flex-1 py-3 text-left border-r-2"
               >
                 {item.description}
               </p>
               <div className="flex gap-10">
                 <p
-                  style={{ color: activeColorData.valuesColor }}
-                  className="w-[150px] text-center"
+                  style={{ color: activeColorData.valuesColor,
+                    borderColor: activeColorData.outlineColor
+                   }}
+                  className="w-[150px] py-3 text-center"
                 >
                   ${item.unitCost.toFixed(2)}
                 </p>
                 <p
-                  style={{ color: activeColorData.valuesColor }}
-                  className="w-[150px] text-center"
+                  style={{ color: activeColorData.valuesColor,
+                    borderColor: activeColorData.outlineColor
+                   }}
+                  className="w-[150px] py-3 text-center"
                 >
                   {item.quantity}
                 </p>
                 <p
-                  style={{ color: activeColorData.valuesColor }}
-                  className="w-[150px] text-center"
+                  style={{ color: activeColorData.valuesColor,
+                    borderColor: activeColorData.outlineColor
+                   }}
+                  className="w-[150px] py-3 text-center"
                 >
                   ${(item.unitCost * item.quantity).toFixed(2)}
                 </p>
@@ -343,11 +360,21 @@ const InvoiceBill: React.FC = () => {
               style={{ color: activeColorData.labelColor }}
               className="font-bold"
             >
-              TERMS
+              Service Agreement
             </span>
             <br />
             <span className="font-normal text-black">{invoiceData.terms}</span>
           </p>
+
+          <div className="mt-8 flex flex-col justify-center items-center w-fit">
+            <div className="flex justify-center items-center p-1 w-[201px] h-[150px] object-contain">
+
+            <img src={contractorSignUrl || "https://upload.wikimedia.org/wikipedia/en/d/d4/Samantha_Signature.jpg"} alt="img" className="w-fit h-fit"/>
+            </div>
+            <div className="w-[215px] my-2 border-b border-[#000000]"></div>
+            <span className="flex text-[#000000] text-[20px] font-medium">Contractor Signature</span>
+
+          </div>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ import TaxRate from './TaxRate';
 import TermsConditions from './TermsConditions';
 import ClientContractorSign from './ClientContractorSign';
 import { activeTabIndexAtom } from '../../../variables/NavbarVariables';
+import FinalizeItemSelection from './FinalizeItemSelection';
 
 const FinalizeSection = () => {
   const [invoiceSelect,] = useAtom(invoiceSelectAtom);
@@ -45,7 +46,7 @@ const FinalizeSection = () => {
                       Invoice Content
                     </h1>
                   </div>
-                  <ItemSelectionScreen />
+                  <FinalizeItemSelection />
                 </div>}
                 {!activeSelectedBreakDown.labourBreakDown && <div className="flex flex-col mt-6 w-full h-fit justify-center bg-transparent">
                   <div className="flex w-full justify-center items-center mb-6 bg-transparent">

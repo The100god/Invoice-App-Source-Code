@@ -72,14 +72,7 @@ const linksFilePath = path.join(app.getAppPath(), "src", "links.txt"); // Path t
 
 // Function to read links from file
 const loadLinks = (): string[] => {
-  // try {
-  //   if (!fs.existsSync(linksFilePath)) return [];
-  //   const data = fs.readFileSync(linksFilePath, 'utf-8');
-  //   return data.split('\n').filter(link => link.trim() !== '');
-  // } catch (error) {
-  //   console.error('Error reading links file:', error);
-  //   return [];
-  // }
+  
   try {
     if (!fs.existsSync(linksFilePath)) return [];
     const data = fs.readFileSync(linksFilePath, "utf-8");
@@ -93,11 +86,7 @@ const loadLinks = (): string[] => {
 
 // Function to save links to file
 const saveLinks = (updatedLinks: string[]): void => {
-  // try {
-  //   fs.writeFileSync(linksFilePath, updatedLinks.join('\n'), 'utf-8');
-  // } catch (error) {
-  //   console.error('Error saving links:', error);
-  // }
+  
   try {
     fs.writeFileSync(linksFilePath, JSON.stringify(updatedLinks, null, 2), "utf-8");
   } catch (error) {
