@@ -7,6 +7,7 @@ interface FormFieldProps {
   value: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error: string;
+  placeholder: string;
   width: number;
   height: number;
 }
@@ -19,6 +20,7 @@ const FormField = ({
   handleChange,
   error,
   width,
+  placeholder,
   height,
 }: FormFieldProps) => {
   return (
@@ -36,6 +38,7 @@ const FormField = ({
           // colorScheme:`${type==="data"? "dark":""}`
           
          }}
+         placeholder={placeholder}
         type={type}
         value={value}
         name={name}

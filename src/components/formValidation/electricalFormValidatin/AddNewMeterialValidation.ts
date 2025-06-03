@@ -105,10 +105,11 @@ interface NewMeterialValidateData {
       newErrors.quantity = "Quantity must be at least 1.";
       isValid = false;
     }
-  
+    if (activeFormData.selectedItem !== "Breaker"){
     if (!activeFormData.color.trim()) {
       newErrors.color = "Color is required.";
       isValid = false;
+    }
     }
   
     if (activeFormData.isCommission) {

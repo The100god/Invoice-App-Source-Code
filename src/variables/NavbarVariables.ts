@@ -37,10 +37,14 @@ export interface colorStates {
     descriptionsColor:string,
 }
 export const colorChangeAtom = atom<colorStates[]>([{
-    labelColor:"#00000099",
-    outlineColor:"#000000E5",
-    valuesColor:"#FFEA00",
-    descriptionsColor:"#00FF11",
+    // labelColor:"#00000099",
+    // outlineColor:"#000000E5",
+    // valuesColor:"#FFEA00",
+    // descriptionsColor:"#00FF11",
+    labelColor:"#000000",
+    outlineColor:"#000000",
+    valuesColor:"#000000",
+    descriptionsColor:"#000000",
 }])
 
 // Search term atom

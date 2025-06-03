@@ -17,6 +17,9 @@ declare global {
         projectName: string
       ) => Promise<{ success: boolean; filePath?: string; message?: string }>;
     };
+    env:{
+      UNSPLASH_KEY:string;
+    }
   }
 }
 

@@ -421,10 +421,12 @@ const HomePage: React.FC = () => {
       {
         contractorNameValue: "",
         contractDateValue: "",
-        contractorSign: null,
+        contractorSignFile: null,
+        contractorSign: "",
         clientNameValue: "",
         clientDateValue: "",
-        clientSign: null,
+        clientSignFile: null,
+        clientSign: "",
         sign: "No",
       },
     ]);
@@ -435,9 +437,11 @@ const HomePage: React.FC = () => {
         contractorNameValue: "",
         contractDateValue: "",
         contractorSign: "",
+        contractorSignFile: "",
         clientNameValue: "",
         clientDateValue: "",
         clientSign: "",
+        clientSignFile: "",
         sign: "",
       },
     ]);

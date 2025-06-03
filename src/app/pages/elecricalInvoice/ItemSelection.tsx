@@ -98,7 +98,7 @@ const ItemSelectionScreen = () => {
                               (activeItemData.brand !== "" && activeItemData.amp !== ""))) {
         stepValue = 2; // Move to step 2 if second condition is met
       }
-      if (stepValue === 2 && (activeItemData.color !== "" && activeItemData.quantity > 0)) {
+      if (stepValue === 2 && (activeItemData.selectedItem === "Breaker" || (activeItemData.color !== "" && activeItemData.quantity > 0))) {
         stepValue = 3; // Move to step 3 if third condition is met
       }
       setMaterialSectionSteps((prev)=>{
@@ -235,10 +235,12 @@ const ItemSelectionScreen = () => {
                   width={255}
                   height={55}
                 />
-                <Dropdown
+                {(
+  activeItemData?.brand !== "Siemens" ||
+  activeItemData?.use !== "Main Breaker"
+)  && <Dropdown
                   label="Select Version*"
                   options={[
-                    { value: "Homeline / QO", label: "Homeline / QO" },
                     { value: "Homeline", label: "Homeline" },
                     { value: "QO", label: "QO" },
                     { value: "x", label: "x" },
@@ -249,7 +251,7 @@ const ItemSelectionScreen = () => {
                   activeTabIndex={activeTabIndex}
                   width={255}
                   height={55}
-                />
+                />}
                 {/* {activeItemData.brand && <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                 <Dropdown
                   label="Select Pole*"
@@ -267,11 +269,17 @@ const ItemSelectionScreen = () => {
                 />
                 <Dropdown
                   label="Select Neutral*"
-                  options={[
+                  options={
+                    activeItemData?.use === "Main Breaker"?[
+                    { value: "Snap-On", label: "Snap-On" },
+                    { value: "x", label: "x" },
+                  ]:
+                    [
                     { value: "Snap-On", label: "Snap-On" },
                     { value: "Pig-Tail", label: "Pig-Tail" },
                     { value: "x", label: "x" },
-                  ]}
+                  ]
+                }
                   selectedValue={activeItemData?.neutral}
                   onChange={(value) => updateItemData("neutral", value)}
                   error={activeErrors?.neutral}
@@ -283,7 +291,6 @@ const ItemSelectionScreen = () => {
                   label="Select Type*"
                   options={[
                     { value: "Single", label: "Single" },
-                    { value: "Single & Twin", label: "Single & Twin" },
                     { value: "Twin", label: "Twin" },
                     { value: "Threeplex", label: "Threeplex" },
                     { value: "Quad", label: "Quad" },
@@ -401,7 +408,7 @@ const ItemSelectionScreen = () => {
             <>
               <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                 {/* Bar 4: Quantity input */}
-                <div className="flex flex-col items-start w-[145px] bg-transparent">
+                <div className={`flex flex-col items-start ${activeItemData.selectedItem!=="Breaker"?"w-[145px]":"w-[295px]"} bg-transparent`}>
                   <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                     Quantity*
                   </label>
@@ -420,7 +427,7 @@ const ItemSelectionScreen = () => {
                 </div>
 
                 {/* Bar 5: Preferred color */}
-                <Dropdown
+                {activeItemData.selectedItem!=="Breaker" && <Dropdown
                   label="Preferred Color*"
                   options={[
                     { value: "White", label: "White" },
@@ -432,9 +439,9 @@ const ItemSelectionScreen = () => {
                   activeTabIndex={activeTabIndex}
                   width={205}
                   height={55}
-                />
+                />}
 
-                <div className="flex flex-col items-start w-[156px] bg-transparent">
+                <div className={`flex flex-col items-start ${activeItemData.selectedItem!=="Breaker"?"w-[145px]":"w-[295px]"} bg-transparent`}>
                   <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                     Total Amount*
                   </label>

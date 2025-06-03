@@ -203,8 +203,8 @@ const AddNewMaterialPopUp = () => {
       }
       if (
         stepValue === 2 &&
-        activeNewMaterialData.color !== "" &&
-        activeNewMaterialData.quantity > 0
+        (activeNewMaterialData.selectedItem === "Breaker" || (activeNewMaterialData.color !== "" &&
+        activeNewMaterialData.quantity > 0))
       ) {
         stepValue = 3; // Move to step 3 if third condition is met
       }
@@ -373,13 +373,9 @@ const AddNewMaterialPopUp = () => {
                             width={255}
                             height={55}
                           />
-                          <Dropdown
+                          {(activeNewMaterialData?.brand !== "Siemens" || activeNewMaterialData?.use !=="Main Breaker") && <Dropdown
                             label="Select Version*"
                             options={[
-                              {
-                                value: "Homeline / QO",
-                                label: "Homeline / QO",
-                              },
                               { value: "Homeline", label: "Homeline" },
                               { value: "QO", label: "QO" },
                               { value: "x", label: "x" },
@@ -392,7 +388,7 @@ const AddNewMaterialPopUp = () => {
                             activeTabIndex={activeTabIndex}
                             width={255}
                             height={55}
-                          />
+                          />}
                           {/* {activeNewMaterialData.brand && ( */}
                           {/* <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                           <Dropdown
@@ -411,11 +407,17 @@ const AddNewMaterialPopUp = () => {
                           />
                           <Dropdown
                             label="Select Neutral*"
-                            options={[
-                              { value: "Snap-On", label: "Snap-On" },
-                              { value: "Pig-Tail", label: "Pig-Tail" },
-                              { value: "x", label: "x" },
-                            ]}
+                            options={
+                              activeNewMaterialData?.use === "Main Breaker"?[
+                                { value: "Snap-On", label: "Snap-On" },
+                                { value: "x", label: "x" },
+                              ]:
+                                [
+                                { value: "Snap-On", label: "Snap-On" },
+                                { value: "Pig-Tail", label: "Pig-Tail" },
+                                { value: "x", label: "x" },
+                              ]
+                          }
                             selectedValue={activeNewMaterialData?.neutral}
                             onChange={(value) =>
                               updateItemData("neutral", value)
@@ -429,10 +431,6 @@ const AddNewMaterialPopUp = () => {
                             label="Select Type*"
                             options={[
                               { value: "Single", label: "Single" },
-                              {
-                                value: "Single & Twin",
-                                label: "Single & Twin",
-                              },
                               { value: "Twin", label: "Twin" },
                               { value: "Threeplex", label: "Threeplex" },
                               { value: "Quad", label: "Quad" },
@@ -589,7 +587,7 @@ const AddNewMaterialPopUp = () => {
                     <>
                       <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                         {/* Bar 4: Quantity input */}
-                        <div className="flex flex-col items-start w-[145px] bg-transparent">
+                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[145px]":"w-[295px]"} bg-transparent`}>
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Quantity*
                           </label>
@@ -610,7 +608,7 @@ const AddNewMaterialPopUp = () => {
                         </div>
 
                         {/* Bar 5: Preferred color */}
-                        <Dropdown
+                        {activeNewMaterialData?.selectedItem!=="Breaker" && <Dropdown
                           label="Preferred Color*"
                           options={[
                             { value: "White", label: "White" },
@@ -622,9 +620,9 @@ const AddNewMaterialPopUp = () => {
                           activeTabIndex={activeTabIndex}
                           width={205}
                           height={55}
-                        />
+                        />}
 
-                        <div className="flex flex-col items-start w-[156px] bg-transparent">
+                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[156px]":"w-[295px]"} bg-transparent`}>
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Total Amount*
                           </label>

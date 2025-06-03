@@ -4,7 +4,7 @@ export interface stepsStates{
     electricalSteps:number
 }
 
-export const stepsAtom = atom<stepsStates[]>([{electricalSteps:1
+export const stepsAtom = atom<stepsStates[]>([{electricalSteps:7
 }]);
 
 // Atom for invoice selection (default: "Electrical Invoice")

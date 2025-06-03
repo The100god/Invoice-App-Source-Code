@@ -90,14 +90,14 @@ export interface ItemSelectionData {
   style: string;
   quantity: number;
   color: string;
-  pole:string;
-  use:string;
-  version:string;
-  neutral:string;
-  type:string;
-  amp:string;
-  note:string;
-  materialLink:string,
+  pole: string;
+  use: string;
+  version: string;
+  neutral: string;
+  type: string;
+  amp: string;
+  note: string;
+  materialLink: string;
   commissionType: string;
   linkPoductType: string;
   productLinkAmount: string;
@@ -113,13 +113,13 @@ export interface ItemErrors {
   style: string;
   quantity: string;
   color: string;
-  materialLink:string,
-  pole:string;
-  amp:string;
-  use:string;
-  version:string;
-  neutral:string;
-  type:string;
+  materialLink: string;
+  pole: string;
+  amp: string;
+  use: string;
+  version: string;
+  neutral: string;
+  type: string;
   commissionType: string;
   commissionValue: string;
 }
@@ -131,14 +131,14 @@ export const itemSelectionDataAtom = atom<ItemSelectionData[]>([
     style: "",
     quantity: 1,
     color: "",
-    pole:"",
-    use:"",
-  version:"",
-  neutral:"",
-  type:"",
-  amp:"",
-  note:"",
-  materialLink:"",
+    pole: "",
+    use: "",
+    version: "",
+    neutral: "",
+    type: "",
+    amp: "",
+    note: "",
+    materialLink: "",
     commissionType: "",
     commissionValue: "",
     linkPoductType: "",
@@ -158,13 +158,13 @@ export const itemErrorsAtom = atom<ItemErrors[]>([
     style: "",
     quantity: "",
     color: "",
-    pole:"",
-    use:"",
-  version:"",
-  neutral:"",
-  type:"",
-  amp:"",
-  materialLink:"",
+    pole: "",
+    use: "",
+    version: "",
+    neutral: "",
+    type: "",
+    amp: "",
+    materialLink: "",
     commissionType: "",
     commissionValue: "",
   },
@@ -320,18 +320,22 @@ export interface ClientContractorErrorsType {
   contractorNameValue: string;
   contractDateValue: string;
   contractorSign: string;
+  contractorSignFile:string;
   clientNameValue: string;
   clientDateValue: string;
   clientSign: string;
+  clientSignFile: string;
   sign: string;
 }
 export interface ClientContractorStates {
   contractorNameValue: string;
   contractDateValue: string;
-  contractorSign: File | null;
+  contractorSignFile: File | null;
+  contractorSign: string;
   clientNameValue: string;
   clientDateValue: string;
-  clientSign: File | null;
+  clientSignFile: File | null;
+  clientSign: string;
   sign: string;
 }
 
@@ -341,9 +345,11 @@ export const clientContractorErrorsAtom = atom<ClientContractorErrorsType[]>([
     contractorNameValue: "",
     contractDateValue: "",
     contractorSign: "",
+    contractorSignFile: "",
     clientNameValue: "",
     clientDateValue: "",
     clientSign: "",
+    clientSignFile: "",
     sign: "",
   },
 ]);
@@ -351,10 +357,12 @@ export const clientContractorAtom = atom<ClientContractorStates[]>([
   {
     contractorNameValue: "",
     contractDateValue: "",
-    contractorSign: null,
+    contractorSignFile: null,
+    contractorSign: "",
     clientNameValue: "",
     clientDateValue: "",
-    clientSign: null,
+    clientSign: "",
+    clientSignFile: null,
     sign: "No",
   },
 ]);
@@ -367,14 +375,14 @@ export interface newMaterialVariableStates {
   style: string;
   quantity: number;
   color: string;
-  pole:string;
-  amp:string;
-  note:string;
-  use:string;
-  version:string;
-  neutral:string;
-  type:string;
-  materialLink:string;
+  pole: string;
+  amp: string;
+  note: string;
+  use: string;
+  version: string;
+  neutral: string;
+  type: string;
+  materialLink: string;
   commissionType: string;
   linkProductType: string;
   productLinkAmount: string;
@@ -390,19 +398,19 @@ export interface newMaterialVariableError {
   style: string;
   quantity: string;
   color: string;
-  use:string;
-  version:string;
-  neutral:string;
-  type:string;
-  pole:string;
-  materialLink:string,
-  amp:string;
+  use: string;
+  version: string;
+  neutral: string;
+  type: string;
+  pole: string;
+  materialLink: string;
+  amp: string;
   commissionType: string;
   commissionValue: string;
 }
 
 export const newMaterialVariableAtom = atom<newMaterialVariableStates[][]>([
-  []
+  [],
 ]);
 // export const newMaterialVariableAtom = atom<newMaterialVariableStates[][]>([
 //   [{
@@ -422,7 +430,9 @@ export const newMaterialVariableAtom = atom<newMaterialVariableStates[][]>([
 //   },]
 // ]);
 
-export const newMaterialVariableErrorAtom = atom<newMaterialVariableError[][]>([[]])
+export const newMaterialVariableErrorAtom = atom<newMaterialVariableError[][]>([
+  [],
+]);
 // export const newMaterialVariableErrorAtom = atom<newMaterialVariableError[][]>([[{
 //   selectedItem: "",
 //     brand: "",
@@ -433,32 +443,51 @@ export const newMaterialVariableErrorAtom = atom<newMaterialVariableError[][]>([
 //     commissionValue: "",
 // }]])
 
-export interface newMaterialIndexState{
-  activeNewMaterialIndex:number
+export interface newMaterialIndexState {
+  activeNewMaterialIndex: number;
 }
-export interface MaterialSectionStepsState{
-  materialSectionStepsCount:number
+export interface MaterialSectionStepsState {
+  materialSectionStepsCount: number;
 }
-export interface SelectMaterialSectionStepsState{
-  selectMaterialSectionStepsCount:number
+export interface SelectMaterialSectionStepsState {
+  selectMaterialSectionStepsCount: number;
 }
-export interface AddNewMaterialSectionStepsState{
-  addNewMaterialSectionStepsCount:number
-}
-
-export interface openAddNewMaterialState{
-  openAddNewMaterialPopUp:boolean,
-}
-export interface isExistingProjectState{
-  isExistingProject:boolean,
+export interface AddNewMaterialSectionStepsState {
+  addNewMaterialSectionStepsCount: number;
 }
 
-export const openAddNewMaterialAtom = atom<openAddNewMaterialState[]>([{openAddNewMaterialPopUp:false}])
-export const newMaterialIndexAtom = atom<newMaterialIndexState[]>([{activeNewMaterialIndex:0}])
-export const materialSectionStepsAtom = atom<MaterialSectionStepsState[]>([{materialSectionStepsCount:0}])
-export const selectMaterialSectionStepsAtom = atom<SelectMaterialSectionStepsState[]>([{selectMaterialSectionStepsCount:0}])
-export const addNewMaterialSectionStepsAtom = atom<AddNewMaterialSectionStepsState[]>([{addNewMaterialSectionStepsCount:0}])
-export const isExistingProjectAtom = atom<isExistingProjectState[]>([{
-  isExistingProject:false,
-}])
+export interface openAddNewMaterialState {
+  openAddNewMaterialPopUp: boolean;
+}
+export interface isExistingProjectState {
+  isExistingProject: boolean;
+}
+export interface billLogoImageDataState {
+  billLogoImage: File | null;
+}
 
+export const openAddNewMaterialAtom = atom<openAddNewMaterialState[]>([
+  { openAddNewMaterialPopUp: false },
+]);
+export const newMaterialIndexAtom = atom<newMaterialIndexState[]>([
+  { activeNewMaterialIndex: 0 },
+]);
+export const materialSectionStepsAtom = atom<MaterialSectionStepsState[]>([
+  { materialSectionStepsCount: 0 },
+]);
+export const selectMaterialSectionStepsAtom = atom<
+  SelectMaterialSectionStepsState[]
+>([{ selectMaterialSectionStepsCount: 0 }]);
+export const addNewMaterialSectionStepsAtom = atom<
+  AddNewMaterialSectionStepsState[]
+>([{ addNewMaterialSectionStepsCount: 0 }]);
+export const isExistingProjectAtom = atom<isExistingProjectState[]>([
+  {
+    isExistingProject: false,
+  },
+]);
+export const billLogoImageDataAtom = atom<billLogoImageDataState[]>([
+  {
+    billLogoImage: null,
+  },
+]);

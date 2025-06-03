@@ -345,10 +345,9 @@ const SelectMaterialPage = () => {
                           width={255}
                           height={55}
                         />
-                        <Dropdown
+                        {(activeNewMaterialData?.brand !== "Siemens" || activeNewMaterialData?.use !=="Main Breaker") && <Dropdown
                           label="Select Version*"
                           options={[
-                            { value: "Homeline / QO", label: "Homeline / QO" },
                             { value: "Homeline", label: "Homeline" },
                             { value: "QO", label: "QO" },
                             { value: "x", label: "x" },
@@ -359,7 +358,7 @@ const SelectMaterialPage = () => {
                           activeTabIndex={index1}
                           width={255}
                           height={55}
-                        />
+                        />}
                         {/* <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                         <Dropdown
                           label="Select Pole*"
@@ -377,11 +376,17 @@ const SelectMaterialPage = () => {
                         />
                         <Dropdown
                           label="Select Neutral*"
-                          options={[
-                            { value: "Snap-On", label: "Snap-On" },
-                            { value: "Pig-Tail", label: "Pig-Tail" },
-                            { value: "x", label: "x" },
-                          ]}
+                          options={
+                            activeNewMaterialData?.use === "Main Breaker"?[
+                              { value: "Snap-On", label: "Snap-On" },
+                              { value: "x", label: "x" },
+                            ]:
+                              [
+                              { value: "Snap-On", label: "Snap-On" },
+                              { value: "Pig-Tail", label: "Pig-Tail" },
+                              { value: "x", label: "x" },
+                            ]
+                        }
                           selectedValue={activeNewMaterialData?.neutral}
                           onChange={(value) => updateItemData("neutral", value)}
                           error={activeNewMaterialError?.neutral}
@@ -393,7 +398,6 @@ const SelectMaterialPage = () => {
                           label="Select Type*"
                           options={[
                             { value: "Single", label: "Single" },
-                            { value: "Single & Twin", label: "Single & Twin" },
                             { value: "Twin", label: "Twin" },
                             { value: "Threeplex", label: "Threeplex" },
                             { value: "Quad", label: "Quad" },
@@ -545,7 +549,7 @@ const SelectMaterialPage = () => {
                     <>
                       <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                         {/* Bar 4: Quantity input */}
-                        <div className="flex flex-col items-start w-[145px] bg-transparent">
+                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[145px]":"w-[295px]"} bg-transparent`}>
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Quantity*
                           </label>
@@ -566,7 +570,7 @@ const SelectMaterialPage = () => {
                         </div>
 
                         {/* Bar 5: Preferred color */}
-                        <Dropdown
+                        {activeNewMaterialData?.selectedItem!=="Breaker" && <Dropdown
                           label="Preferred Color*"
                           options={[
                             { value: "White", label: "White" },
@@ -578,9 +582,9 @@ const SelectMaterialPage = () => {
                           activeTabIndex={index1}
                           width={205}
                           height={55}
-                        />
+                        />}
 
-                        <div className="flex flex-col items-start w-[156px] bg-transparent">
+                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[156px]":"w-[295px]"} bg-transparent`}>
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Total Amount*
                           </label>

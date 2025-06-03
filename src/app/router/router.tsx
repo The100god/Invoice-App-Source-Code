@@ -35,6 +35,7 @@ import {
   projectsAtom,
 } from "../../variables/NavbarVariables";
 
+
 const AppRouter = () => {
   const [projects] = useAtom(projectsAtom); // List of projects
   const [activeProjectId] = useAtom(activeProjectIdAtom); // Active project ID
@@ -51,7 +52,8 @@ const AppRouter = () => {
             {/* Redirect to the first project if no matching route */}
 
             <Route index element={<HomePage />} />
-            {/* <Route index element={<InvoiceBill />} /> */}
+            {/* <Route index element={<FinalClientContractorSign />} /> */}
+            {/* <Route index element={<BillLayout5/>} /> */}
             <Route path="/project/bill" element={<InvoiceBill />} />
             <Route path="/project/selection" element={<InvoiceSelection />} />
             <Route

@@ -42,3 +42,7 @@ contextBridge.exposeInMainWorld("electron", {
   // Example: Close the window
   closeWindow: (): void => ipcRenderer.send("manualClose"),
 });
+
+contextBridge.exposeInMainWorld("env", {
+  UNSPLASH_KEY : process.env.REACT_APP_ACCESS_KEY || "",
+})

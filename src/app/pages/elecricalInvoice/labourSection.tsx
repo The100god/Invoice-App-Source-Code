@@ -265,6 +265,7 @@ const labourSection = () => {
                     title="Total Hours*"
                     name="text"
                     type="number"
+                    placeholder="0"
                     value={activeLabourData.labourHour}
                     handleChange={(e) => {
                       updateLabourData("labourHour", e.target.value);
@@ -309,6 +310,7 @@ const labourSection = () => {
                       title="No. of Employees*"
                       name="text"
                       type="number"
+                      placeholder="0"
                       value={activeLabourData.employeesNo}
                       handleChange={(e) => {
                         updateLabourData("employeesNo", e.target.value);

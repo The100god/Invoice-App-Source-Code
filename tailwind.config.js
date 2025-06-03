@@ -42,6 +42,8 @@ module.exports = {
   variants: {
     extend: {
       display: ['print'],
+      overflow: ['print'],
+      height: ['print'],
     },
   },
 };

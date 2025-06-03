@@ -374,10 +374,9 @@ const EditAddAttributePopUp = () => {
                           width={255}
                           height={55}
                         />
-                        <Dropdown
+                        {(activeNewMaterialData?.brand !== "Siemens" || activeNewMaterialData?.use !=="Main Breaker") && <Dropdown
                           label="Select Version*"
                           options={[
-                            { value: "Homeline / QO", label: "Homeline / QO" },
                             { value: "Homeline", label: "Homeline" },
                             { value: "QO", label: "QO" },
                             { value: "x", label: "x" },
@@ -388,7 +387,7 @@ const EditAddAttributePopUp = () => {
                           activeTabIndex={index1}
                           width={255}
                           height={55}
-                        />
+                        />}
                         {/* {activeNewMaterialData?.brand && (
                           <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                         <Dropdown
@@ -407,11 +406,17 @@ const EditAddAttributePopUp = () => {
                         />
                         <Dropdown
                           label="Select Neutral*"
-                          options={[
-                            { value: "Snap-On", label: "Snap-On" },
-                            { value: "Pig-Tail", label: "Pig-Tail" },
-                            { value: "x", label: "x" },
-                          ]}
+                          options={
+                            activeNewMaterialData?.use === "Main Breaker"?[
+                              { value: "Snap-On", label: "Snap-On" },
+                              { value: "x", label: "x" },
+                            ]:
+                              [
+                              { value: "Snap-On", label: "Snap-On" },
+                              { value: "Pig-Tail", label: "Pig-Tail" },
+                              { value: "x", label: "x" },
+                            ]
+                        }
                           selectedValue={activeNewMaterialData?.neutral}
                           onChange={(value) => updateItemData("neutral", value)}
                           error={activeNewMaterialError?.neutral}
@@ -423,7 +428,6 @@ const EditAddAttributePopUp = () => {
                           label="Select Type*"
                           options={[
                             { value: "Single", label: "Single" },
-                            { value: "Single & Twin", label: "Single & Twin" },
                             { value: "Twin", label: "Twin" },
                             { value: "Threeplex", label: "Threeplex" },
                             { value: "Quad", label: "Quad" },
@@ -690,17 +694,16 @@ const EditAddAttributePopUp = () => {
                               height={55}
                             />
 
-                            <Dropdown
+                           {(addAttri?.brand !== "Siemens" || addAttri?.use !=="Main Breaker") &&  <Dropdown
                               label="Select Version*"
-                              options={[
-                                {
-                                  value: "Homeline / QO",
-                                  label: "Homeline / QO",
-                                },
+                              options={
+                                [
+                                
                                 { value: "Homeline", label: "Homeline" },
                                 { value: "QO", label: "QO" },
                                 { value: "x", label: "x" },
-                              ]}
+                              ]
+                            }
                               selectedValue={addAttri?.version}
                               onChange={(value) =>
                                 updateAddAttributeData("version", value, index)
@@ -709,7 +712,7 @@ const EditAddAttributePopUp = () => {
                               activeTabIndex={index1}
                               width={255}
                               height={55}
-                            />
+                            />}
                             {/* {addAttri?.brand && (
                               <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                                 <Dropdown
@@ -733,11 +736,17 @@ const EditAddAttributePopUp = () => {
                                 />
                                 <Dropdown
                                   label="Select Neutral*"
-                                  options={[
-                                    { value: "Snap-On", label: "Snap-On" },
-                                    { value: "Pig-Tail", label: "Pig-Tail" },
-                                    { value: "x", label: "x" },
-                                  ]}
+                                  options={
+                                    addAttri?.use === "Main Breaker"?[
+                                      { value: "Snap-On", label: "Snap-On" },
+                                      { value: "x", label: "x" },
+                                    ]:
+                                      [
+                                      { value: "Snap-On", label: "Snap-On" },
+                                      { value: "Pig-Tail", label: "Pig-Tail" },
+                                      { value: "x", label: "x" },
+                                    ]
+                                }
                                   selectedValue={addAttri?.neutral}
                                   onChange={(value) =>
                                     updateAddAttributeData("neutral", value, index)
@@ -752,10 +761,7 @@ const EditAddAttributePopUp = () => {
                                   label="Select Type*"
                                   options={[
                                     { value: "Single", label: "Single" },
-                                    {
-                                      value: "Single & Twin",
-                                      label: "Single & Twin",
-                                    },
+                                    
                                     { value: "Twin", label: "Twin" },
                                     { value: "Threeplex", label: "Threeplex" },
                                     { value: "Quad", label: "Quad" },

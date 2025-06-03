@@ -46,22 +46,99 @@ body #titlebar {
       overflow: visible !important;
     }
   
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  
     .no-print {
       display: none !important;
     }
   
-    .print-page {
-      /* overflow: visible !important;
-    height: auto !important;
-    max-height: none !important; */
-    break-inside: avoid;
-    page-break-inside: avoid;
-    overflow: visible !important;
-      /* page-break-after: auto; */
+    .print-page,
+    .break-inside-avoid,
+    .break-after-avoid {
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
+  
+    #invoice-container {
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      page-break-after: auto;
+      page-break-inside: auto;
+    }
+  
+    .invoice-page {
+      page-break-after: always;
+    }
+  
     * {
       box-shadow: none !important;
     }
+  }
+
+  /* @media print {
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .invoice-container:not(:last-child) {
+      page-break-after: always;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+
+    .print-page,
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
+
+  .print\:break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  * {
+    box-shadow: none !important;
+  }
+   */
+    /* .print-page { */
+      /* overflow: visible !important;
+    height: auto !important;
+    max-height: none !important; */
+    /* break-inside: avoid;
+    page-break-inside: avoid;
+    overflow: visible !important; */
+      /* page-break-after: auto; */
+    /* }
+    
+
+    .page-break {
+      page-break-before: always;
+    } */
+
+     /* Force elements that are too large to break correctly */
+  /* .break-inside-avoid {
+    break-inside: avoid;
+  }
+
+  .break-after-page {
+    page-break-after: always;
+  } */
     /* #invoice-container {
       /* min-height: auto !important; */
       /*height: auto !important;
@@ -73,7 +150,7 @@ body #titlebar {
       -webkit-print-color-adjust: exact !important;
       color-adjust: exact !important;
     } */
-  }
+  /* } */
   
   
   /* @page {

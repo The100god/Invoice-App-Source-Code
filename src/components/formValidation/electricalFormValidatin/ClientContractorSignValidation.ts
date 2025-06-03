@@ -4,9 +4,11 @@ interface ClientContractorErrorsType {
   contractorNameValue: string;
   contractDateValue: string;
   contractorSign: string;
+  contractorSignFile: string;
   clientNameValue: string;
   clientDateValue: string;
   clientSign: string;
+  clientSignFile: string;
   sign: string;
 }
 
@@ -29,9 +31,11 @@ export const ClientContractorSignValidation = ({
     contractorNameValue: "",
     contractDateValue: "",
     contractorSign: "",
+    contractorSignFile: "",
     clientNameValue: "",
     clientDateValue: "",
     clientSign: "",
+    clientSignFile: "",
     sign: "",
   };
 
@@ -44,15 +48,15 @@ export const ClientContractorSignValidation = ({
     isValid = false;
   }
 
-  if (!activeClientContractorData.contractDateValue.trim()) {
-    newErrors.contractDateValue = "Contract date is required.";
-    isValid = false;
-  }
+  // if (!activeClientContractorData.contractDateValue.trim()) {
+  //   newErrors.contractDateValue = "Contract date is required.";
+  //   isValid = false;
+  // }
 
-  if (!activeClientContractorData.contractorSign) {
-    newErrors.contractorSign = "Contractor's signature is required.";
-    isValid = false;
-  }
+  // if (!activeClientContractorData.contractorSign.trim()) {
+  //   newErrors.contractorSign = "Contractor's signature is required.";
+  //   isValid = false;
+  // }
 
   // Validate client fields
   if (!activeClientContractorData.clientNameValue.trim()) {
@@ -60,15 +64,15 @@ export const ClientContractorSignValidation = ({
     isValid = false;
   }
 
-  if (!activeClientContractorData.clientDateValue.trim()) {
-    newErrors.clientDateValue = "Client date is required.";
-    isValid = false;
-  }
+  // if (!activeClientContractorData.clientDateValue.trim()) {
+  //   newErrors.clientDateValue = "Client date is required.";
+  //   isValid = false;
+  // }
 
-  if (!activeClientContractorData.clientSign) {
-    newErrors.clientSign = "Client's signature is required.";
-    isValid = false;
-  }
+  // if (!activeClientContractorData.clientSign.trim()) {
+  //   newErrors.clientSign = "Client's signature is required.";
+  //   isValid = false;
+  // }
 
   // Validate radio group
   if (!activeClientContractorData.sign) {
