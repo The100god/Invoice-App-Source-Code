@@ -221,13 +221,31 @@ const ItemSelectionScreen = () => {
                 />
                 <Dropdown
                   label="Select Use*"
-                  options={[
+                  options={
+                    activeItemData.brand === "Siemens" || activeItemData.brand === "Eaton"?
+                    [
                     { value: "Standard", label: "Standard" },
-                    { value: "Main Breaker", label: "Main Breaker" },
+                    { value: "Tandem", label: "Tandem" },
                     { value: "AFCI", label: "AFCI" },
                     { value: "GFCI", label: "GFCI" },
-                    { value: "AFCI/GFCI", label: "AFCI/GFCI" },
-                  ]}
+                  ]  
+                  :
+                    activeItemData.brand === "General Electric"?
+                    [
+                    { value: "Standard", label: "Standard" },
+                    { value: "Tandem", label: "Tandem" },
+                    { value: "Quadplex", label: "Quadplex" },
+                    { value: "GFCI", label: "GFCI" },
+                  ] 
+                  :
+
+                  [
+                    { value: "Standard", label: "Standard" },
+                    { value: "Dual Function", label: "Dual Function" },
+                    { value: "CAFCI/GFCI", label: "CAFCI/GFCI" },
+                  ] 
+        
+                }
                   selectedValue={activeItemData?.use}
                   onChange={(value) => updateItemData("use", value)}
                   error={activeErrors?.use}
@@ -240,11 +258,39 @@ const ItemSelectionScreen = () => {
   activeItemData?.use !== "Main Breaker"
 )  && <Dropdown
                   label="Select Version*"
-                  options={[
+                  options={
+
+                    activeItemData.brand === "Siemens" ?
+                    [
+                    { value: "Tandem", label: "Tandem" },
+                    { value: "QP", label: "QP" },
+                    { value: "QT", label: "QT" },
+                    { value: "x", label: "x" },
+                  ]
+                  :
+                  activeItemData.brand === "Eaton"?
+                    [
+                    { value: "BR", label: "BR" },
+                    { value: "CH", label: "CH" },
+                    { value: "x", label: "x" },
+                  ]
+                  :
+                    activeItemData.brand === "General Electric"?
+                    [
+                    { value: "Q-Line", label: "Q-Line" },
+                    { value: "THQL", label: "THQL" },
+                    { value: "THQP", label: "THQP" },
+                    { value: "x", label: "x" },
+                  ]
+                  :
+                    [
                     { value: "Homeline", label: "Homeline" },
                     { value: "QO", label: "QO" },
                     { value: "x", label: "x" },
-                  ]}
+                  ]
+                  
+                    
+                }
                   selectedValue={activeItemData?.version}
                   onChange={(value) => updateItemData("version", value)}
                   error={activeErrors?.version}
@@ -255,11 +301,26 @@ const ItemSelectionScreen = () => {
                 {/* {activeItemData.brand && <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                 <Dropdown
                   label="Select Pole*"
-                  options={[
+                  options={
+                    activeItemData.brand === "Siemens" || activeItemData.brand === "General Electric"?
+                    [
+                    { value: "1-Pole", label: "1-Pole" },
+                    { value: "2-Pole", label: "2-Pole" },
+                    { value: "Quad", label: "Quad" },
+                  ] 
+                  :
+                    activeItemData.brand === "Eaton"?
+                    [
+                    { value: "1-Pole", label: "1-Pole" },
+                    { value: "2-Pole", label: "2-Pole" },
+                  ]
+                  :
+                  [
                     { value: "Single Pole", label: "Single Pole" },
                     { value: "2-Pole", label: "2-Pole" },
                     { value: "3-Pole", label: "3-Pole" },
-                  ]}
+                  ] 
+                    }
                   selectedValue={activeItemData.pole}
                   onChange={(value) => updateItemData("pole", value)}
                   error={activeErrors.style}
@@ -275,8 +336,8 @@ const ItemSelectionScreen = () => {
                     { value: "x", label: "x" },
                   ]:
                     [
-                    { value: "Snap-On", label: "Snap-On" },
-                    { value: "Pig-Tail", label: "Pig-Tail" },
+                    { value: "Plug-On Neutral", label: "Plug-On Neutral" },
+                    { value: "Pigtail", label: "Pigtail" },
                     { value: "x", label: "x" },
                   ]
                 }

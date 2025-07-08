@@ -25,12 +25,14 @@ import {
   stepsAtom,
 } from "../../variables/Home";
 import {
+  billLogoImageDataAtom,
   clientContractorAtom,
   clientContractorErrorsAtom,
   clientErrorsAtom,
   clientFormDataAtom,
   errorsAtom,
   formDataAtom,
+  invoiceBillSelectAtom,
   isExistingProjectAtom,
   itemErrorsAtom,
   itemSelectionDataAtom,
@@ -73,10 +75,10 @@ const HomePage: React.FC = () => {
   const [projects, setProjects] = useAtom(projectsAtom);
   const [, setActiveProjectId] = useAtom(activeProjectIdAtom);
 
-  const [, setHomeClick] = useAtom(homeClickAtom);
+  const [homeClick, setHomeClick] = useAtom(homeClickAtom);
   const [, setStepsData] = useAtom(stepsAtom);
   const [, setProgress] = useAtom(progressAtom);
-  const [, setInvoiceSelect] = useAtom(invoiceSelectAtom);
+  const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
   const [, setShowLabalColorPicker] = useAtom(showLabelColorPickerAtom);
   const [, setShowValueColorPicker] = useAtom(showValueColorPickerAtom);
@@ -89,7 +91,7 @@ const HomePage: React.FC = () => {
   const [, setActiveInnerDropdown] = useAtom(activeInnerDropdownAtom);
 
   //breakdown variable
-  const [, setBreakDown] = useAtom(breakDownAtom);
+  const [breakDown, setBreakDown] = useAtom(breakDownAtom);
 
   const [, setFormData] = useAtom(formDataAtom);
   const [, setErrors] = useAtom(errorsAtom);
@@ -131,7 +133,7 @@ const HomePage: React.FC = () => {
   // const [isRename, setIsRename] = useState(false);
   // const [newName, setNewName] = useState("");
 
-  const [, setOpenAddNewMaterial] = useAtom(
+  const [openAddNewMaterial, setOpenAddNewMaterial] = useAtom(
     openAddNewMaterialAtom
   );
 
@@ -139,12 +141,15 @@ const HomePage: React.FC = () => {
     isExistingProjectAtom
   );
 
-  const [, setColorChange] = useAtom(colorChangeAtom);
+  const [colorChange, setColorChange] = useAtom(colorChangeAtom);
 
   const [, setActiveTabIndex] = useAtom(activeTabIndexAtom);
 
   const [zoomLevel, setZoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
   const [printBill, setPrintBill] = useAtom(printBillAtom)
+    const [invoiceBillSelect, setInvoiceBillSelect] = useAtom(invoiceBillSelectAtom)
+    const [billLogoImageData, setBillLogoImageData] = useAtom(billLogoImageDataAtom)
+
   const hasSeenTour = localStorage.getItem("hasSeenTour"); // variable for chacking if tour run for once or not
 
   const parseRelativeDate = (relativeDate: string): Date => {
@@ -194,15 +199,31 @@ const HomePage: React.FC = () => {
         selectedPrintBill:false,
       }
     ])
+
+    setBillLogoImageData([
+      ...billLogoImageData,
+      {
+        billLogoImage:null,
+      }
+    ])
+
+    setInvoiceBillSelect([
+      ...invoiceBillSelect,
+      Array(11).fill({ 
+    selectedBillInvoice: "BillLayout3",
+    selectedBillImage: "bill3",
+
+   }) // adjust array size if you support more tabs
+    ])
     //invoice selction
     setInvoiceSelect([
-      // ...invoiceSelect,
+      ...invoiceSelect,
       { selectedInvoice: "Electrical Invoice" },
     ]);
 
     // navbar color picker
     setColorChange([
-      // ...colorChange,
+      ...colorChange,
       {
         labelColor: "#00000099",
         outlineColor: "#000000E5",
@@ -213,7 +234,7 @@ const HomePage: React.FC = () => {
 
     // homeClick
     setHomeClick([
-      // ...homeClick,
+      ...homeClick,
       {
         elctronicHomeClick: false,
       },
@@ -237,7 +258,7 @@ const HomePage: React.FC = () => {
 
     // break down
     setBreakDown([
-      // ...breakDown,
+      ...breakDown,
       {
         labourBreakDown: false,
         materialBreakDown: false,
@@ -460,7 +481,7 @@ const HomePage: React.FC = () => {
       // ...newMaterialIndex, 
       { activeNewMaterialIndex: 0 }]);
     setOpenAddNewMaterial([
-      // ...openAddNewMaterial,
+      ...openAddNewMaterial,
       { openAddNewMaterialPopUp: false },
     ]);
     setIsExistingProjectVariable([

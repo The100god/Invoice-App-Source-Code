@@ -72,7 +72,7 @@ const FinalizeSection = () => {
 
       {!activeSelectedBreakDown.materialBreakDown && (
         <div className="flex flex-col mt-6 w-[80%] h-fit justify-center bg-transparent">
-          <div className="flex w-full justify-center items-center mb-6 bg-transparent mb-4">
+          <div className="flex w-full justify-center items-center bg-transparent mb-4">
             <h1 className="text-2xl text-primary dark:text-white font-[500] font-[Helvetica Neue] bg-transparent">
               Material
             </h1>

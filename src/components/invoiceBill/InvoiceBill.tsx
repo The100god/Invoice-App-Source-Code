@@ -6,6 +6,7 @@ import {
   clientContractorAtom,
   clientFormDataAtom,
   formDataAtom,
+  invoiceBillSelectAtom,
   itemSelectionDataAtom,
   taxRateAtom,
   termConditionAtom,
@@ -24,17 +25,24 @@ import {
 import { useAtom } from "jotai";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-// import BillLayout1 from "../billLayout/BillLayout1";
-// import BillLayout2 from "../billLayout/BillLayout2";
-// import BillLayout3 from "../billLayout/BillLayout3";
 import {
   extractKeyword,
   fetchImage,
   findMatchingElectricalWord,
   isElectricalImage,
 } from "../form/FetchImageOnHover";
+import BillLayout1 from "../billLayout/BillLayout1";
+import BillLayout2 from "../billLayout/BillLayout2";
+import BillLayout3 from "../billLayout/BillLayout3";
+import BillLayout5 from "../billLayout/BillLayout5";
 import BillLayout4 from "../billLayout/BillLayout4";
-// import BillLayout5 from "../billLayout/BillLayout5";
+import BillLayout6 from "../billLayout/BillLayout6";
+import BillLayout7 from "../billLayout/BillLayout7";
+import BillLayout8 from "../billLayout/BillLayout8";
+import BillLayout9 from "../billLayout/BillLayout9";
+import BillLayout10 from "../billLayout/BillLayout10";
+import BillLayout11 from "../billLayout/BillLayout11";
+import InvoiceDesignSlider from "../navigation/InvoiceDesignSlider";
 // import { useLocation, useNavigate } from "react-router-dom";
 
 export interface invoiceDataPropsType {
@@ -61,6 +69,10 @@ export interface invoiceDataPropsType {
 
 const InvoiceBill: React.FC = () => {
   const [printBill, setPrintBill] = useAtom(printBillAtom);
+    const [invoiceBillSelect, ] = useAtom(invoiceBillSelectAtom);
+      const [, setInvoiceBillSelect] = useAtom(invoiceBillSelectAtom);
+
+  
   const [colorChange] = useAtom(colorChangeAtom);
   const [projects] = useAtom(projectsAtom);
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
@@ -306,6 +318,68 @@ const InvoiceBill: React.FC = () => {
   // }
   return (
     <>
+    
+
+    {(() => {
+
+      type LayoutName =
+  | "BillLayout1"
+  | "BillLayout2"
+  | "BillLayout3"
+  | "BillLayout4"
+  | "BillLayout5"
+  | "BillLayout6"
+  | "BillLayout7"
+  | "BillLayout8"
+  | "BillLayout9"
+  | "BillLayout10"
+  | "BillLayout11";
+
+  const LayoutComponentMap: Record<LayoutName, React.FC<any>> = {
+  BillLayout1,
+  BillLayout2,
+  BillLayout3,
+  BillLayout4,
+  BillLayout5,
+  BillLayout6,
+  BillLayout7,
+  BillLayout8,
+  BillLayout9,
+  BillLayout10,
+  BillLayout11,
+};
+  const selectedLayoutName = invoiceBillSelect[activeTabIndex][activeTabIndex].selectedBillInvoice as LayoutName;
+const SelectedLayout = LayoutComponentMap[selectedLayoutName];
+  return SelectedLayout ? (
+   <div className="invoice-wrapper w-full h-fit overflow-auto">
+  <div className="print-page break-after-page w-full h-fit mt-3 print:px-0 print:py-0 print:mx-0">
+
+    <SelectedLayout
+      handleClickEvent={handleClickEvent}
+      activeTabIndex={activeTabIndex}
+      imagePreview={imagePreview}
+      hoveredWord={hoveredWord}
+      invoiceData={invoiceData}
+      activeColorData={activeColorData}
+      loading={loading}
+      subtotal={subtotal}
+      tax={tax}
+      total={total}
+      setHoveredWord={setHoveredWord}
+      setImagePreview={setImagePreview}
+      contractorSign={activeClientContractorData.contractorSign}
+      clientSign={activeClientContractorData.clientSign}
+      contractorSignUrl={contractorSignUrl}
+      clientSignUrl={clientSignUrl}
+    />
+  </div>
+  </div>
+  ) : null;
+})()}
+<div className="no-print z-50 bg-white shadow p-2 rounded">
+  <InvoiceDesignSlider activeTabIndex={activeTabIndex} />
+</div>
+
       {/* <BillLayout1
         handleClickEvent={handleClickEvent}
         activeTabIndex={activeTabIndex}
@@ -360,7 +434,7 @@ const InvoiceBill: React.FC = () => {
         contractorSignUrl={contractorSignUrl}
         clientSignUrl={clientSignUrl}
       /> */}
-      <BillLayout4
+      {/* <BillLayout4
         handleClickEvent={handleClickEvent}
         activeTabIndex={activeTabIndex}
         imagePreview={imagePreview}
@@ -377,8 +451,116 @@ const InvoiceBill: React.FC = () => {
         clientSign={activeClientContractorData.clientSign}
         contractorSignUrl={contractorSignUrl}
         clientSignUrl={clientSignUrl}
-      />
+      /> */}
       {/* <BillLayout5
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout6
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout7
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout8
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout9
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout10
+        handleClickEvent={handleClickEvent}
+        activeTabIndex={activeTabIndex}
+        imagePreview={imagePreview}
+        hoveredWord={hoveredWord}
+        invoiceData={invoiceData}
+        activeColorData={activeColorData}
+        loading={loading}
+        subtotal={subtotal}
+        tax={tax}
+        total={total}
+        setHoveredWord={setHoveredWord}
+        setImagePreview={setImagePreview}
+        contractorSign={activeClientContractorData.contractorSign}
+        clientSign={activeClientContractorData.clientSign}
+        contractorSignUrl={contractorSignUrl}
+        clientSignUrl={clientSignUrl}
+      /> */}
+      {/* <BillLayout11
         handleClickEvent={handleClickEvent}
         activeTabIndex={activeTabIndex}
         imagePreview={imagePreview}

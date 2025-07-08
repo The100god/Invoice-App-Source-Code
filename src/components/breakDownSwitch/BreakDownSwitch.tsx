@@ -14,10 +14,10 @@ const BreakDownSwitch: React.FC<BreakDownSwitchProps> = ({ title }) => {
   const [isOn, setIsOn] = useState(false);
   const isBreakOn =
     title === "Labour"
-      ? breakDown[activeTabIndex].labourBreakDown
+      ? breakDown[activeTabIndex]?.labourBreakDown
       : title === "Material"
-      ? breakDown[activeTabIndex].materialBreakDown
-      : breakDown[activeTabIndex].tripChargeBreakDown;
+      ? breakDown[activeTabIndex]?.materialBreakDown
+      : breakDown[activeTabIndex]?.tripChargeBreakDown;
 
   // Handle toggle state
   const toggleSwitch = () => {

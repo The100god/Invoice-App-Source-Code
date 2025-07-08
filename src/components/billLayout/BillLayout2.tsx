@@ -49,10 +49,10 @@ const BillLayout2: React.FC<billLayout2Props> = ({
     <div
       id="invoice-container"
       onClick={handleClickEvent}
-      className="print-page relative w-full h-full bg-white px-4 py-6 overflow-auto print:overflow-visible"
+      className="print-page relative w-full h-full bg-white mx-auto px-8 py-6 overflow-auto print:overflow-visible"
     >
       <div
-        className="absolute inset-0 bg-no-repeat m-auto max-w-[800px] h-full top-[50%] bg-center bg-contain opacity-15 pointer-events-none"
+        className="absolute inset-0 bg-no-repeat m-auto max-w-[800px] h-full top-[10%] bg-center bg-contain opacity-15 pointer-events-none"
         style={{
           backgroundImage: `url(${
             imageData

@@ -331,8 +331,8 @@ const App = () => {
       className="w-screen relative bg-secondary dark:bg-custom-bgcl-gradient dark:text-white h-screen flex flex-col items-center overflow-hidden"
     >
       <NavBar />
-      {openAddNewMaterial[activeTabIndex].openAddNewMaterialPopUp &&
-      newMaterial[activeTabIndex].length > 0 ? (
+      {openAddNewMaterial?.length>0 && openAddNewMaterial[activeTabIndex]?.openAddNewMaterialPopUp &&
+      newMaterial[activeTabIndex]?.length > 0 ? (
         <AddNewMaterialPopUp />
       ) : (
         <Outlet />

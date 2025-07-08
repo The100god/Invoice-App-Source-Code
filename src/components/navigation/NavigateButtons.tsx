@@ -30,7 +30,7 @@ const NavigateButtons = ({
         })}
         className="py-1 px-6 text-lg font-[700] bg-bgcol rounded-[20px] text-secondary"
       >
-       {activeSteps.electricalSteps === 9 ?"Done":"Next Step"}
+       {activeSteps?.electricalSteps === 9 ?"Done":"Next Step"}
       </button>
     </div>
   );

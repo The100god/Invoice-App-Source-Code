@@ -1,5 +1,20 @@
 import { atom } from "jotai";
 
+type InvoiceBillSelectType = {
+  selectedBillInvoice: string;
+  selectedBillImage: string;
+}[];
+
+// Default value: all tabs start with BillLayout1
+export const invoiceBillSelectAtom = atom<InvoiceBillSelectType[]>([
+  Array(11).fill({ 
+    selectedBillInvoice: "BillLayout3",
+    selectedBillImage: "bill3",
+
+   }) // adjust array size if you support more tabs
+]);
+
+
 // Define the type for the form data
 export interface InvoiceFormData {
   dateOfIssue: string;
@@ -467,7 +482,7 @@ export interface billLogoImageDataState {
 }
 
 export const openAddNewMaterialAtom = atom<openAddNewMaterialState[]>([
-  { openAddNewMaterialPopUp: false },
+  // { openAddNewMaterialPopUp: false },
 ]);
 export const newMaterialIndexAtom = atom<newMaterialIndexState[]>([
   { activeNewMaterialIndex: 0 },

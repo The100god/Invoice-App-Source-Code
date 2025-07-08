@@ -1,7 +1,6 @@
 import { activeTabIndexAtom } from "../../../variables/NavbarVariables";
 import { stepsAtom } from "../../../variables/Home";
 import { useAtom } from "jotai";
-import React from "react";
 
 const ElectricalInvoiceHeading = () => {
   const [stepsData] = useAtom(stepsAtom);
@@ -72,13 +71,6 @@ const ElectricalInvoiceHeading = () => {
         <>
           <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">
             Finalization
-          </h1>
-        </>
-      )}
-      {activeSteps.electricalSteps == 10 && (
-        <>
-          <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">
-            Finished
           </h1>
         </>
       )}

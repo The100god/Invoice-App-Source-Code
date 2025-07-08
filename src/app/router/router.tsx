@@ -34,6 +34,7 @@ import {
   activeProjectIdAtom,
   projectsAtom,
 } from "../../variables/NavbarVariables";
+// import BillLayout11 from "../../components/billLayout/BillLayout11";
 
 
 const AppRouter = () => {
@@ -52,8 +53,9 @@ const AppRouter = () => {
             {/* Redirect to the first project if no matching route */}
 
             <Route index element={<HomePage />} />
+
             {/* <Route index element={<FinalClientContractorSign />} /> */}
-            {/* <Route index element={<BillLayout5/>} /> */}
+            {/* <Route index element={<BillLayout11/>} /> */}
             <Route path="/project/bill" element={<InvoiceBill />} />
             <Route path="/project/selection" element={<InvoiceSelection />} />
             <Route

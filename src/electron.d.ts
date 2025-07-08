@@ -6,6 +6,7 @@ declare global {
     electron: ElectronAPI & {
       loadLinks: () => Promise<string[]>;
       saveLinks: (updatedLinks: string[]) => Promise<void>;
+      loadBillImages: () => Promise<string[]>;
       printInvoice: () => Promise<{
         success: boolean;
         filePath?: string;

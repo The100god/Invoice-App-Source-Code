@@ -50,7 +50,7 @@ const BillLayout4: React.FC<billLayout4Props> = ({
       className="print-page relative w-full h-full bg-white px-4 py-6 overflow-auto print:overflow-visible"
     >
       <div
-        className="absolute inset-0 bg-no-repeat m-auto max-w-[900px] h-full top-[60%] bg-center bg-contain opacity-15 pointer-events-none"
+        className="absolute inset-0 bg-no-repeat m-auto max-w-[900px] h-full top-[10%] bg-center bg-contain opacity-15 pointer-events-none"
         style={{
           backgroundImage: `url(${
             imageData
@@ -161,16 +161,16 @@ const BillLayout4: React.FC<billLayout4Props> = ({
                   color: activeColorData.labelColor,
                 }}
               >
-                <p className="w-[380px] py-2 text-black text-start  px-2">Description</p>
-                <p className="w-[150px] py-2 text-black text-center ">Unit Cost</p>
-                <p className="w-[180px] py-2 text-black text-center ">Qty/Hr. Rate</p>
-                <p className="w-[150px] py-2 text-black text-center ">Amount</p>
+                <p className="w-[40%] py-2 text-black text-start  px-2">Description</p>
+                <p className="w-[20%] py-2 text-black text-center ">Unit Cost</p>
+                <p className="w-[20%] py-2 text-black text-center ">Qty/Hr. Rate</p>
+                <p className="w-[20%] py-2 text-black text-center ">Amount</p>
               </div>
               <div className="flex flex-col justify-center items-center border-b-4 border-black pb-6 pt-3 w-full">
                 {invoiceData.items.map((item, index) => (
                   <div
                     key={index}
-                    className="flex justify-between items-center text-black relative"
+                    className="flex justify-between items-center text-black relative w-full"
                     style={{ borderColor: activeColorData.outlineColor }}
                     onMouseEnter={() => setHoveredWord(item.description)}
                     onMouseLeave={() => setImagePreview("")}
@@ -180,7 +180,7 @@ const BillLayout4: React.FC<billLayout4Props> = ({
                         color: activeColorData.descriptionsColor,
                         borderColor: activeColorData.outlineColor,
                       }}
-                      className="w-[380px] py-2 text-wrap px-2 pl-2 relative"
+                      className="w-[40%] py-2 text-wrap px-2 pl-2 relative"
                     >
                       {hoveredWord === item.description && imagePreview && (
                         <div className="absolute -top-[200px] left-0 bg-white p-2 border rounded shadow-lg z-50 w-[250px]">
@@ -205,7 +205,7 @@ const BillLayout4: React.FC<billLayout4Props> = ({
                         color: activeColorData.valuesColor,
                         borderColor: activeColorData.outlineColor,
                       }}
-                      className="w-[150px] py-2 text-center"
+                      className="w-[20%] py-2 text-center"
                     >
                       ${item.unitCost.toFixed(2)}
                       {/* 40 */}
@@ -215,7 +215,7 @@ const BillLayout4: React.FC<billLayout4Props> = ({
                         color: activeColorData.valuesColor,
                         borderColor: activeColorData.outlineColor,
                       }}
-                      className="w-[180px] py-2 text-center"
+                      className="w-[20%] py-2 text-center"
                     >
                       {item.quantity}
                       {/* 40 */}
@@ -225,7 +225,7 @@ const BillLayout4: React.FC<billLayout4Props> = ({
                         color: activeColorData.valuesColor,
                         borderColor: activeColorData.outlineColor,
                       }}
-                      className="w-[150px] py-2 text-center"
+                      className="w-[20%] py-2 text-center"
                     >
                       ${(item.unitCost * item.quantity).toFixed(2)}
                       {/* 300 */}

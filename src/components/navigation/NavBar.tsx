@@ -33,12 +33,14 @@ import ColorPicker from "../colorPicker/ColorPicker";
 import LightDarkThemeBtn from "../lightDarkTheme/lightDarkThemeBtn";
 import BreakDownSwitch from "../breakDownSwitch/BreakDownSwitch";
 import {
+  billLogoImageDataAtom,
   clientContractorAtom,
   clientContractorErrorsAtom,
   clientErrorsAtom,
   clientFormDataAtom,
   errorsAtom,
   formDataAtom,
+  invoiceBillSelectAtom,
   isExistingProjectAtom,
   itemErrorsAtom,
   itemSelectionDataAtom,
@@ -82,7 +84,7 @@ const Navbar: React.FC = () => {
   );
 
   const [zoomLevel] = useAtom(zoomInOutAtom); // Default zoom level is 100%
-const [printBill, setPrintBill] = useAtom(printBillAtom)
+  const [printBill, setPrintBill] = useAtom(printBillAtom);
   const [invoiceSelect, setInvoiceSelect] = useAtom(invoiceSelectAtom);
 
   const [stepsData, setStepsData] = useAtom(stepsAtom);
@@ -172,8 +174,17 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     isExistingProjectAtom
   );
 
-  const [materialSectionSteps, setMaterialSectionSteps] = useAtom(materialSectionStepsAtom)
-  
+  const [materialSectionSteps, setMaterialSectionSteps] = useAtom(
+    materialSectionStepsAtom
+  );
+
+  const [invoiceBillSelect, setInvoiceBillSelect] = useAtom(
+    invoiceBillSelectAtom
+  );
+  const [billLogoImageData, setBillLogoImageData] = useAtom(
+    billLogoImageDataAtom
+  );
+
   // Add a new project
   const addNewProject = () => {
     const newProjectId = projects.length;
@@ -184,12 +195,49 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
       { name: `Untitled - Project ${newProjectId + 1}`, id: newProjectId },
     ]);
 
+    // const usedNumbers = projects
+    //   .map((p) => {
+    //     const match = p.name.match(/Untitled - Project (\d+)/);
+    //     return match ? parseInt(match[1]) : null;
+    //   })
+    //   .filter((n): n is number => n !== null)
+    //   .sort((a, b) => a - b);
+
+    // let newProjectNumber = 1;
+    // for (let i = 0; i < usedNumbers.length; i++) {
+    //   if (usedNumbers[i] !== i + 1) {
+    //     newProjectNumber = i + 1;
+    //     break;
+    //   }
+    //   newProjectNumber = usedNumbers.length + 1;
+    // }
+
+    // const newProjectName = `Untitled - Project ${newProjectNumber}`;
+    // const newProjectId = Date.now(); // unique ID
+
+    // setProjects([...projects, { name: newProjectName, id: newProjectId }]);
+
+    // Followed by rest of atoms: formData, errors, etc.
+
     setPrintBill([
       ...printBill,
       {
-        selectedPrintBill:false,
-      }
-    ])
+        selectedPrintBill: false,
+      },
+    ]);
+    setBillLogoImageData([
+      ...billLogoImageData,
+      {
+        billLogoImage: null,
+      },
+    ]);
+    setInvoiceBillSelect([
+      ...invoiceBillSelect,
+      Array(11).fill({
+        selectedBillInvoice: "BillLayout3",
+        selectedBillImage: "bill3",
+      }), // adjust array size if you support more tabs
+    ]);
 
     //invoice selction
     setInvoiceSelect([
@@ -438,17 +486,18 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     ]);
 
     setMaterialSectionSteps([
-      ...materialSectionSteps, {
-        materialSectionStepsCount:0
-      }
-    ])
+      ...materialSectionSteps,
+      {
+        materialSectionStepsCount: 0,
+      },
+    ]);
 
     // add new Material.
     setNewMaterial([...newMaterial, []]);
     setNewMaterialError([...newMaterialError, []]);
     setNewMaterialIndex([...newMaterialIndex, { activeNewMaterialIndex: 0 }]);
     setOpenAddNewMaterial([
-      ...openAddNewMaterial,
+      // ...openAddNewMaterial,
       { openAddNewMaterialPopUp: false },
     ]);
     setIsExistingProjectVariable([
@@ -457,7 +506,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
         isExistingProject: false,
       },
     ]);
-
+    // const newActiveTabIndex = projects.length;
     setActiveTabIndex(newProjectId); // New tab index
 
     setActiveProjectId(newProjectId); // Make the new project active
@@ -516,7 +565,15 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     );
     const updatedProgress = progress.filter((data, index) => index != id);
     const updatedHomeClick = homeClick.filter((data, index) => index != id);
-    const updatedPrintBillVariable = printBill.filter((data, index) => index != id);
+    const updatedPrintBillVariable = printBill.filter(
+      (data, index) => index != id
+    );
+    const updatedInvoiceBillSelect = invoiceBillSelect.filter(
+      (data, index) => index != id
+    );
+    const updatedBillLogoImageData = billLogoImageData.filter(
+      (data, index) => index != id
+    );
     setHomeClick(updatedHomeClick); //homeClick data
     setBreakDown(updatedBreakDown); //breakdown data
     setColorChange(updatedColorPickerData); //homeClick data
@@ -537,6 +594,8 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     setActiveTabIndex(updatedProjects.length);
     setProjects(updatedProjects);
     setPrintBill(updatedPrintBillVariable);
+    setInvoiceBillSelect(updatedInvoiceBillSelect);
+    setBillLogoImageData(updatedBillLogoImageData);
 
     // If the active project is removed, set the active project to null or the first available project
     if (activeProjectId === id) {
@@ -686,10 +745,13 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
       setIsRename(true);
       // Prompt the user to enter a new project name
     }
-    if(op1 === "Print" || op2 === "Ctrl+P"){
+    if (op1 === "Print" || op2 === "Ctrl+P") {
       setPrintBill((prev) => {
         const updated = [...prev];
-        updated[activeTabIndex] = { ...updated[activeTabIndex], selectedPrintBill: true };
+        updated[activeTabIndex] = {
+          ...updated[activeTabIndex],
+          selectedPrintBill: true,
+        };
         return updated;
       });
     }
@@ -880,12 +942,12 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     navigate("/");
     setISEnterInvoice(false);
     setProjects([]);
-    setStepsData([{
-      electricalSteps:1
-    }])
+    setStepsData([
+      {
+        electricalSteps: 1,
+      },
+    ]);
   };
-
-
 
   const handlePrint = () => {
     // try {
@@ -894,10 +956,13 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
     //   window.electron?.printInvoice();
     setPrintBill((prev) => {
       const updated = [...prev];
-      updated[activeTabIndex] = { ...updated[activeTabIndex], selectedPrintBill: true };
+      updated[activeTabIndex] = {
+        ...updated[activeTabIndex],
+        selectedPrintBill: true,
+      };
       return updated;
     });
-      
+
     // } catch (error) {
     //   console.log("printPage",error)
     // }
@@ -1038,12 +1103,12 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                                         if (
                                           isExistingProjectVariable[
                                             activeTabIndex
-                                          ].isExistingProject
+                                          ]?.isExistingProject
                                         ) {
                                           selectProject(mat.id);
                                           navigate(`/project/${mat.id}`);
                                           if (
-                                            homeClick[mat.id].elctronicHomeClick
+                                            homeClick[mat.id]?.elctronicHomeClick
                                           ) {
                                             navigate(
                                               "/project/existingPtoject"
@@ -1404,7 +1469,10 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
           <div className="flex flex-row items-center justify-between space-x-6">
             <div className="flex flex-row items-center justify-between space-x-4">
               {/* printer */}
-              <div onClick={handlePrint} className="print:hidden flex items-center justify-center cursor-pointer">
+              <div
+                onClick={handlePrint}
+                className="print:hidden flex items-center justify-center cursor-pointer"
+              >
                 <svg
                   width="16"
                   height="16"
@@ -1530,7 +1598,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
               <div className="relative flex flex-row gap-3 justify-center items-center">
                 <span
                   style={{
-                    backgroundColor: colorChange[activeTabIndex].outlineColor,
+                    backgroundColor: colorChange[activeTabIndex]?.outlineColor,
                   }}
                   className="flex w-[11px] h-[11px]"
                 ></span>
@@ -1551,7 +1619,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                       onColorChange={(color) =>
                         handelColorPickerAction("outlineColor", color)
                       }
-                      initialColor={colorChange[activeTabIndex].outlineColor}
+                      initialColor={colorChange[activeTabIndex]?.outlineColor}
                     />
                   </div>
                 )}
@@ -1559,7 +1627,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
               <div className="relative flex flex-row gap-3 justify-center items-center">
                 <span
                   style={{
-                    backgroundColor: colorChange[activeTabIndex].labelColor,
+                    backgroundColor: colorChange[activeTabIndex]?.labelColor,
                   }}
                   className="flex w-[11px] h-[11px]"
                 ></span>
@@ -1580,7 +1648,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                       onColorChange={(color) =>
                         handelColorPickerAction("labelColor", color)
                       }
-                      initialColor={colorChange[activeTabIndex].labelColor}
+                      initialColor={colorChange[activeTabIndex]?.labelColor}
                     />
                   </div>
                 )}
@@ -1588,7 +1656,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
               <div className="relative flex flex-row gap-3 justify-center items-center">
                 <span
                   style={{
-                    backgroundColor: colorChange[activeTabIndex].valuesColor,
+                    backgroundColor: colorChange[activeTabIndex]?.valuesColor,
                   }}
                   className="flex w-[11px] h-[11px]"
                 ></span>
@@ -1609,7 +1677,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                       onColorChange={(color) =>
                         handelColorPickerAction("valuesColor", color)
                       }
-                      initialColor={colorChange[activeTabIndex].valuesColor}
+                      initialColor={colorChange[activeTabIndex]?.valuesColor}
                     />
                   </div>
                 )}
@@ -1618,7 +1686,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                 <span
                   style={{
                     backgroundColor:
-                      colorChange[activeTabIndex].descriptionsColor,
+                      colorChange[activeTabIndex]?.descriptionsColor,
                   }}
                   className="flex w-[11px] h-[11px]"
                 ></span>
@@ -1642,7 +1710,7 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                         handelColorPickerAction("descriptionsColor", color)
                       }
                       initialColor={
-                        colorChange[activeTabIndex].descriptionsColor
+                        colorChange[activeTabIndex]?.descriptionsColor
                       }
                     />
                   </div>
@@ -1692,8 +1760,12 @@ const [printBill, setPrintBill] = useAtom(printBillAtom)
                 <button
                   onClick={() => {
                     selectProject(project.id);
+                    // if(stepsData[activeTabIndex].electricalSteps>9){
+                    //   navigate("/project/bill");
+                    // }
                     navigate(`/project/${project.id}`);
-                    if (homeClick[project.id].elctronicHomeClick) {
+
+                    if (homeClick[project.id]?.elctronicHomeClick) {
                       navigate("/project/selection");
                     }
                   }}

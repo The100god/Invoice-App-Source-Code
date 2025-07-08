@@ -170,7 +170,7 @@ const AddNewMaterialPopUp = () => {
       const updated = [...prev];
       updated[activeTabIndex] = {
         ...updated[activeTabIndex],
-        addNewMaterialSectionStepsCount:0
+        addNewMaterialSectionStepsCount: 0,
       };
 
       return updated;
@@ -203,8 +203,9 @@ const AddNewMaterialPopUp = () => {
       }
       if (
         stepValue === 2 &&
-        (activeNewMaterialData.selectedItem === "Breaker" || (activeNewMaterialData.color !== "" &&
-        activeNewMaterialData.quantity > 0))
+        (activeNewMaterialData.selectedItem === "Breaker" ||
+          (activeNewMaterialData.color !== "" &&
+            activeNewMaterialData.quantity > 0))
       ) {
         stepValue = 3; // Move to step 3 if third condition is met
       }
@@ -275,7 +276,7 @@ const AddNewMaterialPopUp = () => {
                         onSearchChange={(value) =>
                           updateItemData("selectedItem", value)
                         }
-                        prevVal = {activeNewMaterialData.selectedItem}
+                        prevVal={activeNewMaterialData.selectedItem}
                         error={activeNewMaterialError.selectedItem}
                         activeTabIndex={activeTabIndex}
                       />
@@ -359,13 +360,35 @@ const AddNewMaterialPopUp = () => {
                           />
                           <Dropdown
                             label="Select Use*"
-                            options={[
-                              { value: "Standard", label: "Standard" },
-                              { value: "Main Breaker", label: "Main Breaker" },
-                              { value: "AFCI", label: "AFCI" },
-                              { value: "GFCI", label: "GFCI" },
-                              { value: "AFCI/GFCI", label: "AFCI/GFCI" },
-                            ]}
+                            options={
+                              activeNewMaterialData.brand === "Siemens" ||
+                              activeNewMaterialData.brand === "Eaton"
+                                ? [
+                                    { value: "Standard", label: "Standard" },
+                                    { value: "Tandem", label: "Tandem" },
+                                    { value: "AFCI", label: "AFCI" },
+                                    { value: "GFCI", label: "GFCI" },
+                                  ]
+                                : activeNewMaterialData.brand ===
+                                  "General Electric"
+                                ? [
+                                    { value: "Standard", label: "Standard" },
+                                    { value: "Tandem", label: "Tandem" },
+                                    { value: "Quadplex", label: "Quadplex" },
+                                    { value: "GFCI", label: "GFCI" },
+                                  ]
+                                : [
+                                    { value: "Standard", label: "Standard" },
+                                    {
+                                      value: "Dual Function",
+                                      label: "Dual Function",
+                                    },
+                                    {
+                                      value: "CAFCI/GFCI",
+                                      label: "CAFCI/GFCI",
+                                    },
+                                  ]
+                            }
                             selectedValue={activeNewMaterialData?.use}
                             onChange={(value) => updateItemData("use", value)}
                             error={activeNewMaterialError?.use}
@@ -373,31 +396,74 @@ const AddNewMaterialPopUp = () => {
                             width={255}
                             height={55}
                           />
-                          {(activeNewMaterialData?.brand !== "Siemens" || activeNewMaterialData?.use !=="Main Breaker") && <Dropdown
-                            label="Select Version*"
-                            options={[
-                              { value: "Homeline", label: "Homeline" },
-                              { value: "QO", label: "QO" },
-                              { value: "x", label: "x" },
-                            ]}
-                            selectedValue={activeNewMaterialData?.version}
-                            onChange={(value) =>
-                              updateItemData("version", value)
-                            }
-                            error={activeNewMaterialError?.version}
-                            activeTabIndex={activeTabIndex}
-                            width={255}
-                            height={55}
-                          />}
+                          {(activeNewMaterialData?.brand !== "Siemens" ||
+                            activeNewMaterialData?.use !== "Main Breaker") && (
+                            <Dropdown
+                              label="Select Version*"
+                              options={
+                                activeNewMaterialData.brand === "Siemens"
+                                  ? [
+                                      { value: "Tandem", label: "Tandem" },
+                                      { value: "QP", label: "QP" },
+                                      { value: "QT", label: "QT" },
+                                      { value: "x", label: "x" },
+                                    ]
+                                  : activeNewMaterialData.brand === "Eaton"
+                                  ? [
+                                      { value: "BR", label: "BR" },
+                                      { value: "CH", label: "CH" },
+                                      { value: "x", label: "x" },
+                                    ]
+                                  : activeNewMaterialData.brand ===
+                                    "General Electric"
+                                  ? [
+                                      { value: "Q-Line", label: "Q-Line" },
+                                      { value: "THQL", label: "THQL" },
+                                      { value: "THQP", label: "THQP" },
+                                      { value: "x", label: "x" },
+                                    ]
+                                  : [
+                                      { value: "Homeline", label: "Homeline" },
+                                      { value: "QO", label: "QO" },
+                                      { value: "x", label: "x" },
+                                    ]
+                              }
+                              selectedValue={activeNewMaterialData?.version}
+                              onChange={(value) =>
+                                updateItemData("version", value)
+                              }
+                              error={activeNewMaterialError?.version}
+                              activeTabIndex={activeTabIndex}
+                              width={255}
+                              height={55}
+                            />
+                          )}
                           {/* {activeNewMaterialData.brand && ( */}
                           {/* <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                           <Dropdown
                             label="Select Pole*"
-                            options={[
-                              { value: "Single Pole", label: "Single Pole" },
-                              { value: "2-Pole", label: "2-Pole" },
-                              { value: "3-Pole", label: "3-Pole" },
-                            ]}
+                            options={
+                              activeNewMaterialData.brand === "Siemens" ||
+                              activeNewMaterialData.brand === "General Electric"
+                                ? [
+                                    { value: "1-Pole", label: "1-Pole" },
+                                    { value: "2-Pole", label: "2-Pole" },
+                                    { value: "Quad", label: "Quad" },
+                                  ]
+                                : activeNewMaterialData.brand === "Eaton"
+                                ? [
+                                    { value: "1-Pole", label: "1-Pole" },
+                                    { value: "2-Pole", label: "2-Pole" },
+                                  ]
+                                : [
+                                    {
+                                      value: "Single Pole",
+                                      label: "Single Pole",
+                                    },
+                                    { value: "2-Pole", label: "2-Pole" },
+                                    { value: "3-Pole", label: "3-Pole" },
+                                  ]
+                            }
                             selectedValue={activeNewMaterialData.pole}
                             onChange={(value) => updateItemData("pole", value)}
                             error={activeNewMaterialError.pole}
@@ -408,16 +474,20 @@ const AddNewMaterialPopUp = () => {
                           <Dropdown
                             label="Select Neutral*"
                             options={
-                              activeNewMaterialData?.use === "Main Breaker"?[
-                                { value: "Snap-On", label: "Snap-On" },
-                                { value: "x", label: "x" },
-                              ]:
-                                [
-                                { value: "Snap-On", label: "Snap-On" },
-                                { value: "Pig-Tail", label: "Pig-Tail" },
-                                { value: "x", label: "x" },
-                              ]
-                          }
+                              activeNewMaterialData?.use === "Main Breaker"
+                                ? [
+                                    { value: "Snap-On", label: "Snap-On" },
+                                    { value: "x", label: "x" },
+                                  ]
+                                : [
+                                    {
+                                      value: "Plug-On Neutral",
+                                      label: "Plug-On Neutral",
+                                    },
+                                    { value: "Pigtail", label: "Pigtail" },
+                                    { value: "x", label: "x" },
+                                  ]
+                            }
                             selectedValue={activeNewMaterialData?.neutral}
                             onChange={(value) =>
                               updateItemData("neutral", value)
@@ -587,7 +657,13 @@ const AddNewMaterialPopUp = () => {
                     <>
                       <div className="flex flex-row justify-between items-start gap-2 w-[577px] bg-transparent">
                         {/* Bar 4: Quantity input */}
-                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[145px]":"w-[295px]"} bg-transparent`}>
+                        <div
+                          className={`flex flex-col items-start ${
+                            activeNewMaterialData.selectedItem !== "Breaker"
+                              ? "w-[145px]"
+                              : "w-[295px]"
+                          } bg-transparent`}
+                        >
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Quantity*
                           </label>
@@ -608,21 +684,29 @@ const AddNewMaterialPopUp = () => {
                         </div>
 
                         {/* Bar 5: Preferred color */}
-                        {activeNewMaterialData?.selectedItem!=="Breaker" && <Dropdown
-                          label="Preferred Color*"
-                          options={[
-                            { value: "White", label: "White" },
-                            { value: "Black", label: "Black" },
-                          ]}
-                          selectedValue={activeNewMaterialData.color}
-                          onChange={(value) => updateItemData("color", value)}
-                          error={activeNewMaterialError.color}
-                          activeTabIndex={activeTabIndex}
-                          width={205}
-                          height={55}
-                        />}
+                        {activeNewMaterialData?.selectedItem !== "Breaker" && (
+                          <Dropdown
+                            label="Preferred Color*"
+                            options={[
+                              { value: "White", label: "White" },
+                              { value: "Black", label: "Black" },
+                            ]}
+                            selectedValue={activeNewMaterialData.color}
+                            onChange={(value) => updateItemData("color", value)}
+                            error={activeNewMaterialError.color}
+                            activeTabIndex={activeTabIndex}
+                            width={205}
+                            height={55}
+                          />
+                        )}
 
-                        <div className={`flex flex-col items-start ${activeNewMaterialData.selectedItem!=="Breaker"?"w-[156px]":"w-[295px]"} bg-transparent`}>
+                        <div
+                          className={`flex flex-col items-start ${
+                            activeNewMaterialData.selectedItem !== "Breaker"
+                              ? "w-[156px]"
+                              : "w-[295px]"
+                          } bg-transparent`}
+                        >
                           <label className="text-lg font-medium text-[#000000B2] dark:text-white bg-transparent mb-2">
                             Total Amount*
                           </label>

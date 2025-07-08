@@ -123,7 +123,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
   
 
   const handleBack = () => {
-    if (activeSteps.electricalSteps === 1) {
+    if (activeSteps?.electricalSteps === 1) {
       navigate(-1);
       return;
     }
@@ -143,7 +143,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       return step;
     };
   
-    const prevStep = previousValidStep(activeSteps.electricalSteps);
+    const prevStep = previousValidStep(activeSteps?.electricalSteps);
     updateSteps(activeTabIndex, { electricalSteps: prevStep });
   
     setProgress((prevProgress) => {
@@ -237,12 +237,12 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
     ];
   
     const currentStepConfig = stepConfigurations.find(
-      (config) => config.step === activeSteps.electricalSteps
+      (config) => config.step === activeSteps?.electricalSteps
     );
 
   
     if (currentStepConfig?.validateFn()) {
-      if (activeSteps.electricalSteps === 4){
+      if (activeSteps?.electricalSteps === 4){
         setIsExistingProjectVariable((prev) => {
           const updated = [...prev];
           // Update the value for the active tab
@@ -252,7 +252,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         });
       }
       
-      const nextStep = nextValidStep(activeSteps.electricalSteps);
+      const nextStep = nextValidStep(activeSteps?.electricalSteps);
       updateSteps(activeTabIndex, { electricalSteps: nextStep });
   
       setProgress((prevProgress) => {
@@ -263,8 +263,8 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       });
   
       console.log("Proceeding to the next step...");
-    } else if (activeSteps.electricalSteps === 6 || activeSteps.electricalSteps === 7) {
-      const nextStep = activeSteps.electricalSteps + 1;
+    } else if (activeSteps?.electricalSteps === 6 || activeSteps?.electricalSteps === 7) {
+      const nextStep = activeSteps?.electricalSteps + 1;
       updateSteps(activeTabIndex, { electricalSteps: nextStep });
       setProgress((prevProgress) => {
         const updatedProgress = [...prevProgress];
@@ -289,7 +289,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
   const handleCloseForm = () => {
     navigate("/project/bill");
     updateSteps(activeTabIndex, {
-      electricalSteps:11,
+      electricalSteps:9,
     });
   };
 
@@ -345,19 +345,19 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         </span>
         <div className="flex flex-col justify-center w-full items-center h-[fit-content] bg-transparent">
           <div className="flex flex-col justify-center w-full items-center gap-4 h-[fit-content] px-6 py-6 bg-transparent">
-            {activeSelectedInvoice.selectedInvoice == "Electrical Invoice" && (
+            {activeSelectedInvoice?.selectedInvoice == "Electrical Invoice" && (
               <ElectricalInvoiceHeading />
             )}
           </div>
-          <ProgrssBar progress={activeProgress.progress} />
+          <ProgrssBar progress={activeProgress?.progress} />
         </div>
 
         <div
           className={`flex flex-col w-full h-[506px] bg-transparent p-4 ${
-            (activeSteps.electricalSteps == 7) ? " overflow-y-hidden" : "overflow-y-scroll"
+            (activeSteps?.electricalSteps == 7) ? " overflow-y-hidden" : "overflow-y-scroll"
           }`}
         >
-          {activeSteps.electricalSteps == 1 && (
+          {activeSteps?.electricalSteps == 1 && (
             <div id="selectInvoiceType" className="flex flex-row justify-around items-center bg-transparent">
               <Link to="/info/rough-in">
                 <button
@@ -383,18 +383,18 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
             </div>
           )}
           <div className="mt-8 bg-transparent">
-            {activeSelectedInvoice.selectedInvoice == "Electrical Invoice" && <ElecricalInvoiceHero />}
+            {activeSelectedInvoice?.selectedInvoice == "Electrical Invoice" && <ElecricalInvoiceHero />}
           </div>
         </div>
 
         {/* Add the navigation buttons here */}
-        {activeSteps.electricalSteps == 9 ? (
+        {activeSteps?.electricalSteps == 9 ? (
           <div className="flex w-full h-[fit-content] bg-[#C5D9DE80] dark:darkBottom bottom-0 px-2 py-6 rounded-b-[15px]">
             <NavigateCloseButtons handleCloseForm={handleCloseForm} />
           </div>
         ) : (
           <div className="flex justify-between w-full h-[fit-content] bg-[#C5D9DE80] dark:darkBottom bottom-0 px-4 py-6 rounded-b-[15px]">
-            {![5, 6, 7, 8, 9, 10].includes(activeSteps.electricalSteps) && (
+            {![5, 6, 7, 8, 9].includes(activeSteps?.electricalSteps) && (
               <NavigatePreview handlePreview={handlePreview} />
             )}
             <NavigateButtons handleBack={handleBack} handleNext={handleNext} />
@@ -402,7 +402,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         )}
       </div>
       <div className="relative flex w-fit h-[90%] justify-end items-end m-2 right-0 bg-transparent">
-        {activeSteps.electricalSteps == 4 ? (
+        {activeSteps?.electricalSteps == 4 ? (
           <CostCalculator />
         ) : (
           <div className="w-[23.06px] h-[142px] m-auto mr-0 right-0 border-[4px] border-solid border-[#D9D9D9] bg-[#000000] rounded-[5px] backdrop-blur-[100px]">

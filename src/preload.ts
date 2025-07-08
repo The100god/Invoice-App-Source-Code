@@ -41,6 +41,8 @@ contextBridge.exposeInMainWorld("electron", {
 
   // Example: Close the window
   closeWindow: (): void => ipcRenderer.send("manualClose"),
+
+  loadBillImages: () => ipcRenderer.invoke("load-bill-images")
 });
 
 contextBridge.exposeInMainWorld("env", {

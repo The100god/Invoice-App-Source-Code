@@ -90,7 +90,7 @@ const BillLayout5: React.FC<billLayout5Props> = ({
             {/* right  */}
             <div className="flex flex-col justify-center items-end flex-1">
               <div className="flex flex-row justify-end items-center gap-3 w-full h-fit p-2 mb-8">
-                <div className="w-[110px] h-[110px] bg-gray-900 border-black rounded-full">
+                <div className="w-[110px] h-[110px] bg-white border-4 border-black rounded-full">
                   <img
                     className="flex justify-center items-center object-contain rounded-full p-1 w-full h-full "
                     src={

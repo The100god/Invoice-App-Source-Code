@@ -360,13 +360,35 @@ const EditAddAttributePopUp = () => {
                         {/* updating */}
                         <Dropdown
                           label="Select Use*"
-                          options={[
-                            { value: "Standard", label: "Standard" },
-                            { value: "Main Breaker", label: "Main Breaker" },
-                            { value: "AFCI", label: "AFCI" },
-                            { value: "GFCI", label: "GFCI" },
-                            { value: "AFCI/GFCI", label: "AFCI/GFCI" },
-                          ]}
+                          options={
+                            activeNewMaterialData.brand === "Siemens" ||
+                            activeNewMaterialData.brand === "Eaton"
+                              ? [
+                                  { value: "Standard", label: "Standard" },
+                                  { value: "Tandem", label: "Tandem" },
+                                  { value: "AFCI", label: "AFCI" },
+                                  { value: "GFCI", label: "GFCI" },
+                                ]
+                              : activeNewMaterialData.brand ===
+                                "General Electric"
+                              ? [
+                                  { value: "Standard", label: "Standard" },
+                                  { value: "Tandem", label: "Tandem" },
+                                  { value: "Quadplex", label: "Quadplex" },
+                                  { value: "GFCI", label: "GFCI" },
+                                ]
+                              : [
+                                  { value: "Standard", label: "Standard" },
+                                  {
+                                    value: "Dual Function",
+                                    label: "Dual Function",
+                                  },
+                                  {
+                                    value: "CAFCI/GFCI",
+                                    label: "CAFCI/GFCI",
+                                  },
+                                ]
+                          }
                           selectedValue={activeNewMaterialData?.use}
                           onChange={(value) => updateItemData("use", value)}
                           error={activeNewMaterialError?.use}
@@ -374,29 +396,74 @@ const EditAddAttributePopUp = () => {
                           width={255}
                           height={55}
                         />
-                        {(activeNewMaterialData?.brand !== "Siemens" || activeNewMaterialData?.use !=="Main Breaker") && <Dropdown
-                          label="Select Version*"
-                          options={[
-                            { value: "Homeline", label: "Homeline" },
-                            { value: "QO", label: "QO" },
-                            { value: "x", label: "x" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.version}
-                          onChange={(value) => updateItemData("version", value)}
-                          error={activeNewMaterialError?.version}
-                          activeTabIndex={index1}
-                          width={255}
-                          height={55}
-                        />}
+                        {(activeNewMaterialData?.brand !== "Siemens" ||
+                          activeNewMaterialData?.use !== "Main Breaker") && (
+                          <Dropdown
+                            label="Select Version*"
+                            options={
+                              activeNewMaterialData.brand === "Siemens"
+                                ? [
+                                    { value: "Tandem", label: "Tandem" },
+                                    { value: "QP", label: "QP" },
+                                    { value: "QT", label: "QT" },
+                                    { value: "x", label: "x" },
+                                  ]
+                                : activeNewMaterialData.brand === "Eaton"
+                                ? [
+                                    { value: "BR", label: "BR" },
+                                    { value: "CH", label: "CH" },
+                                    { value: "x", label: "x" },
+                                  ]
+                                : activeNewMaterialData.brand ===
+                                  "General Electric"
+                                ? [
+                                    { value: "Q-Line", label: "Q-Line" },
+                                    { value: "THQL", label: "THQL" },
+                                    { value: "THQP", label: "THQP" },
+                                    { value: "x", label: "x" },
+                                  ]
+                                : [
+                                    { value: "Homeline", label: "Homeline" },
+                                    { value: "QO", label: "QO" },
+                                    { value: "x", label: "x" },
+                                  ]
+                            }
+                            selectedValue={activeNewMaterialData?.version}
+                            onChange={(value) =>
+                              updateItemData("version", value)
+                            }
+                            error={activeNewMaterialError?.version}
+                            activeTabIndex={index1}
+                            width={255}
+                            height={55}
+                          />
+                        )}
                         {/* {activeNewMaterialData?.brand && (
                           <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                         <Dropdown
                           label="Select Pole*"
-                          options={[
-                            { value: "Single Pole", label: "Single Pole" },
-                            { value: "2-Pole", label: "2-Pole" },
-                            { value: "3-Pole", label: "3-Pole" },
-                          ]}
+                          options={
+                            activeNewMaterialData.brand === "Siemens" ||
+                            activeNewMaterialData.brand === "General Electric"
+                              ? [
+                                  { value: "1-Pole", label: "1-Pole" },
+                                  { value: "2-Pole", label: "2-Pole" },
+                                  { value: "Quad", label: "Quad" },
+                                ]
+                              : activeNewMaterialData.brand === "Eaton"
+                              ? [
+                                  { value: "1-Pole", label: "1-Pole" },
+                                  { value: "2-Pole", label: "2-Pole" },
+                                ]
+                              : [
+                                  {
+                                    value: "Single Pole",
+                                    label: "Single Pole",
+                                  },
+                                  { value: "2-Pole", label: "2-Pole" },
+                                  { value: "3-Pole", label: "3-Pole" },
+                                ]
+                          }
                           selectedValue={activeNewMaterialData?.pole}
                           onChange={(value) => updateItemData("pole", value)}
                           error={activeNewMaterialError?.pole}
@@ -407,16 +474,20 @@ const EditAddAttributePopUp = () => {
                         <Dropdown
                           label="Select Neutral*"
                           options={
-                            activeNewMaterialData?.use === "Main Breaker"?[
-                              { value: "Snap-On", label: "Snap-On" },
-                              { value: "x", label: "x" },
-                            ]:
-                              [
-                              { value: "Snap-On", label: "Snap-On" },
-                              { value: "Pig-Tail", label: "Pig-Tail" },
-                              { value: "x", label: "x" },
-                            ]
-                        }
+                            activeNewMaterialData?.use === "Main Breaker"
+                              ? [
+                                  { value: "Snap-On", label: "Snap-On" },
+                                  { value: "x", label: "x" },
+                                ]
+                              : [
+                                  {
+                                    value: "Plug-On Neutral",
+                                    label: "Plug-On Neutral",
+                                  },
+                                  { value: "Pigtail", label: "Pigtail" },
+                                  { value: "x", label: "x" },
+                                ]
+                          }
                           selectedValue={activeNewMaterialData?.neutral}
                           onChange={(value) => updateItemData("neutral", value)}
                           error={activeNewMaterialError?.neutral}
@@ -676,222 +747,285 @@ const EditAddAttributePopUp = () => {
 
                             <Dropdown
                               label="Select Use*"
-                              options={[
-                                { value: "Standard", label: "Standard" },
-                                {
-                                  value: "Main Breaker",
-                                  label: "Main Breaker",
-                                },
-                                { value: "AFCI", label: "AFCI" },
-                                { value: "GFCI", label: "GFCI" },
-                                { value: "AFCI/GFCI", label: "AFCI/GFCI" },
-                              ]}
+                              options={
+                                addAttri.brand === "Siemens" ||
+                                addAttri.brand === "Eaton"
+                                  ? [
+                                      { value: "Standard", label: "Standard" },
+                                      { value: "Tandem", label: "Tandem" },
+                                      { value: "AFCI", label: "AFCI" },
+                                      { value: "GFCI", label: "GFCI" },
+                                    ]
+                                  : addAttri.brand === "General Electric"
+                                  ? [
+                                      { value: "Standard", label: "Standard" },
+                                      { value: "Tandem", label: "Tandem" },
+                                      { value: "Quadplex", label: "Quadplex" },
+                                      { value: "GFCI", label: "GFCI" },
+                                    ]
+                                  : [
+                                      { value: "Standard", label: "Standard" },
+                                      {
+                                        value: "Dual Function",
+                                        label: "Dual Function",
+                                      },
+                                      {
+                                        value: "CAFCI/GFCI",
+                                        label: "CAFCI/GFCI",
+                                      },
+                                    ]
+                              }
                               selectedValue={addAttri?.use}
-                              onChange={(value) => updateAddAttributeData("use", value, index)}
+                              onChange={(value) =>
+                                updateAddAttributeData("use", value, index)
+                              }
                               error={""}
                               activeTabIndex={index1}
                               width={255}
                               height={55}
                             />
 
-                           {(addAttri?.brand !== "Siemens" || addAttri?.use !=="Main Breaker") &&  <Dropdown
-                              label="Select Version*"
+                            {(addAttri?.brand !== "Siemens" ||
+                              addAttri?.use !== "Main Breaker") && (
+                              <Dropdown
+                                label="Select Version*"
+                                options={
+                                  addAttri.brand === "Siemens"
+                                    ? [
+                                        { value: "Tandem", label: "Tandem" },
+                                        { value: "QP", label: "QP" },
+                                        { value: "QT", label: "QT" },
+                                        { value: "x", label: "x" },
+                                      ]
+                                    : addAttri.brand === "Eaton"
+                                    ? [
+                                        { value: "BR", label: "BR" },
+                                        { value: "CH", label: "CH" },
+                                        { value: "x", label: "x" },
+                                      ]
+                                    : addAttri.brand === "General Electric"
+                                    ? [
+                                        { value: "Q-Line", label: "Q-Line" },
+                                        { value: "THQL", label: "THQL" },
+                                        { value: "THQP", label: "THQP" },
+                                        { value: "x", label: "x" },
+                                      ]
+                                    : [
+                                        {
+                                          value: "Homeline",
+                                          label: "Homeline",
+                                        },
+                                        { value: "QO", label: "QO" },
+                                        { value: "x", label: "x" },
+                                      ]
+                                }
+                                selectedValue={addAttri?.version}
+                                onChange={(value) =>
+                                  updateAddAttributeData(
+                                    "version",
+                                    value,
+                                    index
+                                  )
+                                }
+                                error={""}
+                                activeTabIndex={index1}
+                                width={255}
+                                height={55}
+                              />
+                            )}
+                            {/* {addAttri?.brand && (
+                              <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
+                            <Dropdown
+                              label="Select Pole*"
                               options={
-                                [
-                                
-                                { value: "Homeline", label: "Homeline" },
-                                { value: "QO", label: "QO" },
-                                { value: "x", label: "x" },
-                              ]
-                            }
-                              selectedValue={addAttri?.version}
+                                addAttri.brand === "Siemens" ||
+                                addAttri.brand === "General Electric"
+                                  ? [
+                                      { value: "1-Pole", label: "1-Pole" },
+                                      { value: "2-Pole", label: "2-Pole" },
+                                      { value: "Quad", label: "Quad" },
+                                    ]
+                                  : addAttri.brand === "Eaton"
+                                  ? [
+                                      { value: "1-Pole", label: "1-Pole" },
+                                      { value: "2-Pole", label: "2-Pole" },
+                                    ]
+                                  : [
+                                      {
+                                        value: "Single Pole",
+                                        label: "Single Pole",
+                                      },
+                                      { value: "2-Pole", label: "2-Pole" },
+                                      { value: "3-Pole", label: "3-Pole" },
+                                    ]
+                              }
+                              selectedValue={addAttri?.pole}
                               onChange={(value) =>
-                                updateAddAttributeData("version", value, index)
+                                updateAddAttributeData("pole", value, index)
                               }
                               error={""}
                               activeTabIndex={index1}
                               width={255}
                               height={55}
-                            />}
-                            {/* {addAttri?.brand && (
-                              <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
-                                <Dropdown
-                                  label="Select Pole*"
-                                  options={[
-                                    {
-                                      value: "Single Pole",
-                                      label: "Single Pole",
-                                    },
-                                    { value: "2-Pole", label: "2-Pole" },
-                                    { value: "3-Pole", label: "3-Pole" },
-                                  ]}
-                                  selectedValue={addAttri?.pole}
-                                  onChange={(value) =>
-                                    updateAddAttributeData("pole", value, index)
-                                  }
-                                  error={""}
-                                  activeTabIndex={index1}
-                                  width={255}
-                                  height={55}
-                                />
-                                <Dropdown
-                                  label="Select Neutral*"
-                                  options={
-                                    addAttri?.use === "Main Breaker"?[
+                            />
+                            <Dropdown
+                              label="Select Neutral*"
+                              options={
+                                addAttri?.use === "Main Breaker"
+                                  ? [
                                       { value: "Snap-On", label: "Snap-On" },
-                                      { value: "x", label: "x" },
-                                    ]:
-                                      [
-                                      { value: "Snap-On", label: "Snap-On" },
-                                      { value: "Pig-Tail", label: "Pig-Tail" },
                                       { value: "x", label: "x" },
                                     ]
-                                }
-                                  selectedValue={addAttri?.neutral}
-                                  onChange={(value) =>
-                                    updateAddAttributeData("neutral", value, index)
-                                  }
-                                  error={""}
-                                  activeTabIndex={index1}
-                                  width={255}
-                                  height={55}
-                                />
-
-                                <Dropdown
-                                  label="Select Type*"
-                                  options={[
-                                    { value: "Single", label: "Single" },
-                                    
-                                    { value: "Twin", label: "Twin" },
-                                    { value: "Threeplex", label: "Threeplex" },
-                                    { value: "Quad", label: "Quad" },
-                                  ]}
-                                  selectedValue={addAttri?.type}
-                                  onChange={(value) =>
-                                    updateAddAttributeData("type", value, index)
-                                  }
-                                  error={""}
-                                  activeTabIndex={index1}
-                                  width={255}
-                                  height={55}
-                                />
-                                {addAttri?.pole && (
-                                  <Dropdown
-                                    label="Select Amps*"
-                                    options={[
+                                  : [
+                                      {
+                                        value: "Plug-On Neutral",
+                                        label: "Plug-On Neutral",
+                                      },
+                                      { value: "Pigtail", label: "Pigtail" },
                                       { value: "x", label: "x" },
-                                      { value: "10", label: "10" },
-                                      { value: "15", label: "15" },
-                                      { value: "20", label: "20" },
-                                      { value: "25", label: "25" },
-                                      { value: "30", label: "30" },
-                                      { value: "35", label: "35" },
-                                      { value: "40", label: "40" },
-                                      { value: "45", label: "45" },
-                                      { value: "50", label: "50" },
-                                      { value: "60", label: "60" },
-                                      { value: "70", label: "70" },
-                                      { value: "80", label: "80" },
-                                      { value: "90", label: "90" },
-                                      { value: "100", label: "100" },
-                                      { value: "125", label: "125" },
-                                      { value: "15/15", label: "15/15" },
-                                      { value: "15/20", label: "15/20" },
-                                      {
-                                        value: "(15/20 - Homeline Only)",
-                                        label: "(15/20 - Homeline Only)",
-                                      },
-                                      { value: "20/20", label: "20/20" },
-                                      { value: "20/30", label: "20/30" },
-                                      { value: "30/30", label: "30/30" },
-                                      {
-                                        value: "15/(20/20)/15",
-                                        label: "15/(20/20)/15",
-                                      },
-                                      {
-                                        value: "15/(25/25)/15",
-                                        label: "15/(25/25)/15",
-                                      },
-                                      {
-                                        value: "15/(30/30)/15",
-                                        label: "15/(30/30)/15",
-                                      },
-                                      {
-                                        value: "15/(40/40)/15",
-                                        label: "15/(40/40)/15",
-                                      },
-                                      {
-                                        value: "15/(50/50)/15",
-                                        label: "15/(50/50)/15",
-                                      },
-                                      {
-                                        value: "20/(20/20)/20",
-                                        label: "20/(20/20)/20",
-                                      },
-                                      {
-                                        value: "20/(25/25)/20",
-                                        label: "20/(25/25)/20",
-                                      },
-                                      {
-                                        value: "20/(30/30)/20",
-                                        label: "20/(30/30)/20",
-                                      },
-                                      {
-                                        value: "20/(40/40)/20",
-                                        label: "20/(40/40)/20",
-                                      },
-                                      {
-                                        value: "20/(50/50)/20",
-                                        label: "20/(50/50)/20",
-                                      },
-                                      {
-                                        value: "30/(30/30)/30",
-                                        label: "30/(30/30)/30",
-                                      },
-                                      {
-                                        value: "20/20/20/20",
-                                        label: "20/20/20/20",
-                                      },
-                                      {
-                                        value: "20/30/30/20",
-                                        label: "20/30/30/20",
-                                      },
-                                      {
-                                        value: "30/20/20/30",
-                                        label: "30/20/20/30",
-                                      },
-                                      {
-                                        value: "30/30/30/30",
-                                        label: "30/30/30/30",
-                                      },
-                                      {
-                                        value: "40/20/20/40",
-                                        label: "40/20/20/40",
-                                      },
-                                      {
-                                        value: "40/30/30/40",
-                                        label: "40/30/30/40",
-                                      },
-                                      {
-                                        value: "40/40/40/40",
-                                        label: "40/40/40/40",
-                                      },
-                                    ]}
-                                    selectedValue={addAttri?.amp}
-                                    onChange={(value) =>
-                                      updateAddAttributeData(
-                                        "amp",
-                                        value,
-                                        index
-                                      )
-                                    }
-                                    error={""}
-                                    activeTabIndex={index1}
-                                    width={255}
-                                    height={55}
-                                  />
-                                )}
-                              {/* </div> */}
+                                    ]
+                              }
+                              selectedValue={addAttri?.neutral}
+                              onChange={(value) =>
+                                updateAddAttributeData("neutral", value, index)
+                              }
+                              error={""}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+
+                            <Dropdown
+                              label="Select Type*"
+                              options={[
+                                { value: "Single", label: "Single" },
+
+                                { value: "Twin", label: "Twin" },
+                                { value: "Threeplex", label: "Threeplex" },
+                                { value: "Quad", label: "Quad" },
+                              ]}
+                              selectedValue={addAttri?.type}
+                              onChange={(value) =>
+                                updateAddAttributeData("type", value, index)
+                              }
+                              error={""}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+                            {addAttri?.pole && (
+                              <Dropdown
+                                label="Select Amps*"
+                                options={[
+                                  { value: "x", label: "x" },
+                                  { value: "10", label: "10" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "35", label: "35" },
+                                  { value: "40", label: "40" },
+                                  { value: "45", label: "45" },
+                                  { value: "50", label: "50" },
+                                  { value: "60", label: "60" },
+                                  { value: "70", label: "70" },
+                                  { value: "80", label: "80" },
+                                  { value: "90", label: "90" },
+                                  { value: "100", label: "100" },
+                                  { value: "125", label: "125" },
+                                  { value: "15/15", label: "15/15" },
+                                  { value: "15/20", label: "15/20" },
+                                  {
+                                    value: "(15/20 - Homeline Only)",
+                                    label: "(15/20 - Homeline Only)",
+                                  },
+                                  { value: "20/20", label: "20/20" },
+                                  { value: "20/30", label: "20/30" },
+                                  { value: "30/30", label: "30/30" },
+                                  {
+                                    value: "15/(20/20)/15",
+                                    label: "15/(20/20)/15",
+                                  },
+                                  {
+                                    value: "15/(25/25)/15",
+                                    label: "15/(25/25)/15",
+                                  },
+                                  {
+                                    value: "15/(30/30)/15",
+                                    label: "15/(30/30)/15",
+                                  },
+                                  {
+                                    value: "15/(40/40)/15",
+                                    label: "15/(40/40)/15",
+                                  },
+                                  {
+                                    value: "15/(50/50)/15",
+                                    label: "15/(50/50)/15",
+                                  },
+                                  {
+                                    value: "20/(20/20)/20",
+                                    label: "20/(20/20)/20",
+                                  },
+                                  {
+                                    value: "20/(25/25)/20",
+                                    label: "20/(25/25)/20",
+                                  },
+                                  {
+                                    value: "20/(30/30)/20",
+                                    label: "20/(30/30)/20",
+                                  },
+                                  {
+                                    value: "20/(40/40)/20",
+                                    label: "20/(40/40)/20",
+                                  },
+                                  {
+                                    value: "20/(50/50)/20",
+                                    label: "20/(50/50)/20",
+                                  },
+                                  {
+                                    value: "30/(30/30)/30",
+                                    label: "30/(30/30)/30",
+                                  },
+                                  {
+                                    value: "20/20/20/20",
+                                    label: "20/20/20/20",
+                                  },
+                                  {
+                                    value: "20/30/30/20",
+                                    label: "20/30/30/20",
+                                  },
+                                  {
+                                    value: "30/20/20/30",
+                                    label: "30/20/20/30",
+                                  },
+                                  {
+                                    value: "30/30/30/30",
+                                    label: "30/30/30/30",
+                                  },
+                                  {
+                                    value: "40/20/20/40",
+                                    label: "40/20/20/40",
+                                  },
+                                  {
+                                    value: "40/30/30/40",
+                                    label: "40/30/30/40",
+                                  },
+                                  {
+                                    value: "40/40/40/40",
+                                    label: "40/40/40/40",
+                                  },
+                                ]}
+                                selectedValue={addAttri?.amp}
+                                onChange={(value) =>
+                                  updateAddAttributeData("amp", value, index)
+                                }
+                                error={""}
+                                activeTabIndex={index1}
+                                width={255}
+                                height={55}
+                              />
+                            )}
+                            {/* </div> */}
                             {/* )} */}
                           </div>
                         )}

@@ -6,7 +6,7 @@ import TripCharge from "./TripCharge";
 import LabourSection from "./labourSection";
 import { useAtom } from "jotai";
 import { stepsAtom } from "../../../variables/Home";
-import Finished from "../../../components/finished/Finished";
+// import Finished from "../../../components/finished/Finished";
 import FinalizeSection from "./FinalizeSection";
 import TaxRate from "./TaxRate";
 import TermsConditions from "./TermsConditions";
@@ -30,7 +30,7 @@ const ElecricalInvoiceHero = () => {
       {activeSteps.electricalSteps == 7 && <TermsConditions />}
       {activeSteps.electricalSteps == 8 && <ClientContractorSign />}
       {activeSteps.electricalSteps == 9 && <FinalizeSection />}
-      {activeSteps.electricalSteps == 10 && <Finished />}
+      {/* {activeSteps.electricalSteps == 10 && <Finished />} */}
       {/* {activeSteps.electricalSteps == 11 && <InvoiceBill />} */}
     </div>
   );

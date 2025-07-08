@@ -35,10 +35,14 @@ module.exports = {
       },
     },
   },
-  plugins: [],
-  // corePlugins: {
-  //   preflight: false, // if using custom styles
-  // },
+  plugins: [
+  require('tailwind-scrollbar-hide'),
+],
+  corePlugins: {
+    // preflight: false, // if using custom styles
+    breakAfter: true,
+    breakInside: true,
+  },
   variants: {
     extend: {
       display: ['print'],

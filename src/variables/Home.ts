@@ -4,14 +4,16 @@ export interface stepsStates{
     electricalSteps:number
 }
 
-export const stepsAtom = atom<stepsStates[]>([{electricalSteps:7
+export const stepsAtom = atom<stepsStates[]>([{electricalSteps:1
 }]);
 
 // Atom for invoice selection (default: "Electrical Invoice")
 export interface invoiceSelectState{
     selectedInvoice:string;
 }
-export const invoiceSelectAtom = atom<invoiceSelectState[]>([{selectedInvoice:"Electrical Invoice"}]);
+export const invoiceSelectAtom = atom<invoiceSelectState[]>([
+    // {selectedInvoice:"Electrical Invoice"},
+]);
 export const formFieldErrorAtom = atom<boolean>(false);
 
 //progress 
@@ -32,7 +34,13 @@ export interface breakDownStates{
     materialBreakDown:boolean;
     tripChargeBreakDown:boolean;
 }
-export const breakDownAtom = atom<breakDownStates[]>([])
+export const breakDownAtom = atom<breakDownStates[]>([
+    {
+        labourBreakDown: false,
+        materialBreakDown: false,
+        tripChargeBreakDown: false,
+      },
+])
 
 
   

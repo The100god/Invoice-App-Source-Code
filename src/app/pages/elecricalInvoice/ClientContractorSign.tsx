@@ -335,7 +335,7 @@ const ClientContractorSign: React.FC = () => {
             <SignatureField
               label="Contractor Signature"
               nameEditable={contractorSignName}
-              setNameEditable={setClientSignName}
+              setNameEditable={setContractorSignName}
               updateSignatureName={updateClientContractorData}
               handleFileChange={handleContractorFileChange}
               signatureFile={activeClientContractorData.contractorSignFile}

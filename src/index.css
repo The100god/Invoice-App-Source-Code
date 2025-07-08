@@ -20,6 +20,39 @@ body #titlebar {
     user-select: all;
   }
 
+  /* Embla Carousel Styles */
+/* .embla {
+  overflow: hidden;
+}
+.embla__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+.embla__container {
+  display: flex;
+  user-select: none;
+}
+.embla__slide {
+  flex: 0 0 auto;
+  width: 140px;
+  height: 180px;
+  margin: 0 0.75rem;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+} */
+
+/* Optional: Tailwind utility extension */
+/* @layer utilities {
+  .embla__slide--active {
+    @apply scale-125 opacity-100 border-white;
+  }
+  .embla__slide--inactive:first-child {
+    @apply scale-75 opacity-50 border-transparent;
+  }
+  .embla__slide--inactive:nth-child(2) {
+    @apply scale-50 opacity-50 border-transparent;
+  }
+} */
+
 
 
   @keyframes ripple {
@@ -36,47 +69,135 @@ body #titlebar {
   .animate-ripple {
     animation: ripple 0.5s linear;
   }
+  /* .embla__slide {
+  flex: 0 0 auto;              /* Prevents shrink/grow and keeps size */
+  /* position: relative;
+  transition: transform 0.3s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+} */
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  align-items: center;
+}
+
+.embla__slide {
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
 
 
   @media print {
+    @page {
+    size: A4;
+    margin: 0;
+  }
     html, body {
       margin: 0 !important;
       padding: 0 !important;
-      height: auto !important;
-      overflow: visible !important;
+      height: 100% !important;
+      width: 100% !important;
+      overflow: initial !important;
     }
   
     body {
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      box-sizing: border-box;
     }
   
     .no-print {
       display: none !important;
     }
+
+    .print\:w-full {
+    width: 100% !important;
+  }
+
+  .print\:mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .print\:px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .print\:py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .print\:max-w-none {
+    max-width: none !important;
+  }
+
+  .print\:h-auto {
+    height: auto !important;
+  }
+
   
-    .print-page,
+    .print-page{
+      page-break-after: always;
+    break-after: always;
+    width: 100% !important;
+    break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .break-after-page {
+    page-break-after: always;
+  }
     .break-inside-avoid,
     .break-after-avoid {
       break-inside: avoid;
       page-break-inside: avoid;
     }
+    .invoice-wrapper {
+       width: 100vw !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  #invoice-container {
+    margin: 0 auto !important;
+    padding: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: auto !important;
+    box-sizing: border-box;
+    transform: scale(0.75); /* Optional: scales down content slightly to fit */
+     transform-origin: top center;
+  }
   
-    #invoice-container {
-      overflow: visible !important;
-      height: auto !important;
-      max-height: none !important;
-      page-break-after: auto;
-      page-break-inside: auto;
-    }
-  
-    .invoice-page {
-      page-break-after: always;
-    }
+    /* .invoice-page {
+    page-break-after: always;
+    break-after: always;
+    width: 100% !important;
+    max-height: none !important;
+    box-sizing: border-box;
+    /* padding: 1cm;  */
+  /* } */ 
+  .print\:overflow-visible {
+    overflow: visible !important;
+  }
   
     * {
       box-shadow: none !important;
     }
+    /* .printable-area, .printable-area * {
+    visibility: visible;
+  }
+  .printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  } */
   }
 
   /* @media print {
@@ -104,9 +225,7 @@ body #titlebar {
     page-break-inside: avoid !important;
   }
 
-  .print\:overflow-visible {
-    overflow: visible !important;
-  }
+  
 
   .print\:break-inside-avoid {
     break-inside: avoid !important;
