@@ -332,6 +332,13 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       setRun(true)
     })
 
+    useEffect(() => {
+    const scrollContainer = document.getElementById("scroll-container-at-top");
+    if (scrollContainer) {
+      scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [activeSteps.electricalSteps]);
+
   return (
     <div style={{
       transform: `scale(${zoomLevel / 100})`,
@@ -353,6 +360,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         </div>
 
         <div
+        id="scroll-container-at-top"
           className={`flex flex-col w-full h-[506px] bg-transparent p-4 ${
             (activeSteps?.electricalSteps == 7) ? " overflow-y-hidden" : "overflow-y-scroll"
           }`}

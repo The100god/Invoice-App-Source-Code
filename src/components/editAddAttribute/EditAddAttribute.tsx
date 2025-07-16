@@ -13,10 +13,16 @@ import NavigationSaveCancel from "../navigation/NavigationSaveCancel";
 // import { selectMaterialValidate } from "../formValidation/electricalFormValidatin/SelectMaterialPageValidation";
 import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { activeTabIndexAtom } from "../../variables/NavbarVariables";
 import SearchLinkToggle from "../form/SearchLinkToggle";
 import NotesInput from "../form/NotesInput";
+import {
+  extractKeyword,
+  fetchImage,
+  findMatchingElectricalWord,
+  isElectricalImage,
+} from "../form/FetchImageOnHover";
 
 const EditAddAttributePopUp = () => {
   const location = useLocation();
@@ -29,6 +35,11 @@ const EditAddAttributePopUp = () => {
     newMaterialVariableErrorAtom
   );
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
+  const [imagePreview, setImagePreview] = useState([
+    {
+      imgPrv: "",
+    },
+  ]);
 
   const [countAttribute, setCountAttribute] = useState(-1);
   const [addAttributeVariable, setAddAttributeVariable] = useState<
@@ -69,7 +80,8 @@ const EditAddAttributePopUp = () => {
       return updated;
     });
   };
-  const updateAddAttributeData = (
+
+  const updateAddAttributeData = async (
     key: keyof {
       selectedItem: string;
       brand: string;
@@ -93,6 +105,39 @@ const EditAddAttributePopUp = () => {
       };
       return updated;
     });
+
+    // If updated field is selectedItem, fetch image for this index
+    if (key === "selectedItem") {
+      const matchedWord = findMatchingElectricalWord(value);
+      const query = matchedWord
+        ? `electrical ${matchedWord}`
+        : `electrical ${value}`;
+
+      try {
+        let results = await fetchImage(query);
+        let validImage = results.find(isElectricalImage) || results[0];
+
+        if (!validImage) {
+          const keyword = extractKeyword(value);
+          const fallbackQuery = `electrical ${keyword}`;
+          results = await fetchImage(fallbackQuery);
+          validImage = results.find(isElectricalImage);
+        }
+
+        setImagePreview((prev) => {
+          const updated = [...prev];
+          updated[index+1] = { imgPrv: validImage?.urls.small || "" };
+          return updated;
+        });
+      } catch (err) {
+        console.error("Error fetching image:", err);
+        setImagePreview((prev) => {
+          const updated = [...prev];
+          updated[index+1] = { imgPrv: "" };
+          return updated;
+        });
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -235,12 +280,70 @@ const EditAddAttributePopUp = () => {
       });
       return updated;
     });
+    setImagePreview((prev) => {
+      const updated = [...prev];
+      updated.push({ imgPrv: "" });
+      return updated;
+    });
   };
   const handleRemoveAttribute = (ind: number) => {
     setAddAttributeVariable((prev) => prev.filter((_, index) => index !== ind));
+    setImagePreview((prev) => prev.filter((_, index) => index !== ind + 1));
     const newAttributeCount = countAttribute - 1;
     setCountAttribute(newAttributeCount);
   };
+
+  useEffect(() => {
+    const fatchMaterialImage = async () => {
+      const matchedWord = findMatchingElectricalWord(
+        activeNewMaterialData.selectedItem
+      );
+      const query = matchedWord
+        ? "electrical" + " " + matchedWord
+        : `electrical ${activeNewMaterialData.selectedItem}`;
+
+      try {
+        let results = await fetchImage(query);
+        let validImage = results.find(isElectricalImage) || results[0];
+
+        // 🔁 If not found, try again with extracted keyword
+        if (!validImage) {
+          const keyword = extractKeyword(activeNewMaterialData.selectedItem);
+          const fallbackQuery = `electrical ${keyword} `;
+          results = await fetchImage(fallbackQuery);
+          validImage = results.find(isElectricalImage);
+        }
+        const index = addAttributeVariable.length;
+        if (validImage) {
+          // setImagePreview(validImage.urls.small);
+          setImagePreview((prev) => {
+            const updated = [...prev];
+            updated[index] = {
+              imgPrv: validImage.urls.small,
+            };
+            return updated;
+          });
+        } else {
+          // setImagePreview(""); // or set a placeholder
+          setImagePreview((prev) => {
+            const updated = [...prev];
+            updated[index].imgPrv = "";
+            return updated;
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching image:", err);
+        const index = addAttributeVariable.length
+        setImagePreview((prev) => {
+          const updated = [...prev];
+          updated[index].imgPrv = "";
+          return updated;
+        });
+      }
+    };
+
+    fatchMaterialImage();
+  }, [activeNewMaterialData.selectedItem, addAttributeVariable.length]);
   //   console.log("countAttribute", countAttribute);
   //   console.log("addAttribute", addAttributeVariable);
 
@@ -294,37 +397,55 @@ const EditAddAttributePopUp = () => {
                     {activeNewMaterialData?.selectedItem === "outlet" && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection using RadioGroup */}
-                        <Dropdown
-                          label="Select Brand*"
-                          options={[
-                            { value: "Leviton", label: "Leviton" },
-                            { value: "LeGrand", label: "LeGrand" },
-                            { value: "Lutron", label: "Lutron" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.brand}
-                          onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError?.brand}
-                          activeTabIndex={index1}
-                          width={259}
-                          height={55}
-                        />
 
-                        {/* Bar 3: Style selection using RadioGroup */}
-                        {activeNewMaterialData?.brand && (
+                        <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                           <Dropdown
-                            label="Select Style*"
+                            label="Select Brand*"
                             options={[
-                              { value: "Decora", label: "Decora" },
-                              { value: "Duplex", label: "Duplex" },
+                              { value: "Leviton", label: "Leviton" },
+                              { value: "LeGrand", label: "LeGrand" },
+                              { value: "Lutron", label: "Lutron" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.brand}
+                            onChange={(value) => updateItemData("brand", value)}
+                            error={activeNewMaterialError?.brand}
                             activeTabIndex={index1}
-                            width={158}
+                            width={259}
                             height={55}
                           />
-                        )}
+
+                          {/* Bar 3: Style selection using RadioGroup */}
+                          {activeNewMaterialData?.brand && (
+                            <Dropdown
+                              label="Select Style*"
+                              options={[
+                                { value: "Decora", label: "Decora" },
+                                { value: "Duplex", label: "Duplex" },
+                              ]}
+                              selectedValue={activeNewMaterialData?.style}
+                              onChange={(value) =>
+                                updateItemData("style", value)
+                              }
+                              error={activeNewMaterialError?.style}
+                              activeTabIndex={index1}
+                              width={259}
+                              height={55}
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview[0].imgPrv
+                                  ? imagePreview[0].imgPrv
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -336,7 +457,7 @@ const EditAddAttributePopUp = () => {
                       // "50amp Breaker",
                       "Breaker",
                     ].includes(activeNewMaterialData?.selectedItem) && (
-                      <div className=" flex flex-row flex-wrap justify-between items-start gap-4 w-[577px] bg-transparent">
+                      <div className=" flex flex-col flex-wrap justify-between items-start h-[500px] w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
                           label="Select Brand*"
@@ -599,6 +720,20 @@ const EditAddAttributePopUp = () => {
                             height={55}
                           />
                         )}
+
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview[0].imgPrv
+                                  ? imagePreview[0].imgPrv
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                     {/* </div>
@@ -611,37 +746,54 @@ const EditAddAttributePopUp = () => {
                     ].includes(activeNewMaterialData?.selectedItem) && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
-                        <Dropdown
-                          label="Select Brand*"
-                          options={[
-                            { value: "Leviton", label: "Leviton" },
-                            { value: "LeGrand", label: "LeGrand" },
-                            { value: "Lutron", label: "Lutron" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.brand}
-                          onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError?.brand}
-                          activeTabIndex={index1}
-                          width={259}
-                          height={55}
-                        />
-
-                        {/* Bar 3: Style selection for switches using RadioGroup */}
-                        {activeNewMaterialData?.brand && (
+                        <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                           <Dropdown
-                            label="Select Style*"
+                            label="Select Brand*"
                             options={[
-                              { value: "Toggle", label: "Toggle" },
-                              { value: "Rocker", label: "Rocker" },
+                              { value: "Leviton", label: "Leviton" },
+                              { value: "LeGrand", label: "LeGrand" },
+                              { value: "Lutron", label: "Lutron" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.brand}
+                            onChange={(value) => updateItemData("brand", value)}
+                            error={activeNewMaterialError?.brand}
                             activeTabIndex={index1}
-                            width={158}
+                            width={259}
                             height={55}
                           />
-                        )}
+
+                          {/* Bar 3: Style selection for switches using RadioGroup */}
+                          {activeNewMaterialData?.brand && (
+                            <Dropdown
+                              label="Select Style*"
+                              options={[
+                                { value: "Toggle", label: "Toggle" },
+                                { value: "Rocker", label: "Rocker" },
+                              ]}
+                              selectedValue={activeNewMaterialData?.style}
+                              onChange={(value) =>
+                                updateItemData("style", value)
+                              }
+                              error={activeNewMaterialError?.style}
+                              activeTabIndex={index1}
+                              width={259}
+                              height={55}
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview[0].imgPrv
+                                  ? imagePreview[0].imgPrv
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -676,41 +828,60 @@ const EditAddAttributePopUp = () => {
                         {addAttri?.selectedItem.toLowerCase() === "outlet" && (
                           <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                             {/* Bar 2: Brand selection using RadioGroup */}
-                            <Dropdown
-                              label="Select Brand*"
-                              options={[
-                                { value: "Leviton", label: "Leviton" },
-                                { value: "LeGrand", label: "LeGrand" },
-                                { value: "Lutron", label: "Lutron" },
-                              ]}
-                              selectedValue={addAttri?.brand}
-                              onChange={(value) =>
-                                updateAddAttributeData("brand", value, index)
-                              }
-                              error={""}
-                              activeTabIndex={index1}
-                              width={259}
-                              height={55}
-                            />
-
-                            {/* Bar 3: Style selection using RadioGroup */}
-                            {addAttri?.brand && (
+                            <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                               <Dropdown
-                                label="Select Style*"
+                                label="Select Brand*"
                                 options={[
-                                  { value: "Decora", label: "Decora" },
-                                  { value: "Duplex", label: "Duplex" },
+                                  { value: "Leviton", label: "Leviton" },
+                                  { value: "LeGrand", label: "LeGrand" },
+                                  { value: "Lutron", label: "Lutron" },
                                 ]}
-                                selectedValue={addAttri?.style}
+                                selectedValue={addAttri?.brand}
                                 onChange={(value) =>
-                                  updateAddAttributeData("style", value, index)
+                                  updateAddAttributeData("brand", value, index)
                                 }
                                 error={""}
                                 activeTabIndex={index1}
-                                width={158}
+                                width={259}
                                 height={55}
                               />
-                            )}
+
+                              {/* Bar 3: Style selection using RadioGroup */}
+                              {addAttri?.brand && (
+                                <Dropdown
+                                  label="Select Style*"
+                                  options={[
+                                    { value: "Decora", label: "Decora" },
+                                    { value: "Duplex", label: "Duplex" },
+                                  ]}
+                                  selectedValue={addAttri?.style}
+                                  onChange={(value) =>
+                                    updateAddAttributeData(
+                                      "style",
+                                      value,
+                                      index
+                                    )
+                                  }
+                                  error={""}
+                                  activeTabIndex={index1}
+                                  width={259}
+                                  height={55}
+                                />
+                              )}
+                            </div>
+                            <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                              <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                                <img
+                                  src={
+                                    imagePreview[index + 1].imgPrv
+                                      ? imagePreview[index + 1].imgPrv
+                                      : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                                  }
+                                  alt="preview img"
+                                  className=" rounded-lg w-[200px] h-[200px]"
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
 
@@ -722,7 +893,7 @@ const EditAddAttributePopUp = () => {
                           // "50amp Breaker",
                           "Breaker",
                         ].includes(addAttri?.selectedItem) && (
-                          <div className=" flex flex-col justify-between items-start gap-4 w-[577px] bg-transparent">
+                          <div className=" flex flex-col flex-wrap justify-between items-start h-[500px] w-[577px] bg-transparent">
                             {/* Bar 2: Brand selection for switches using RadioGroup */}
                             <Dropdown
                               label="Select Brand*"
@@ -1027,6 +1198,19 @@ const EditAddAttributePopUp = () => {
                             )}
                             {/* </div> */}
                             {/* )} */}
+                            <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                              <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                                <img
+                                  src={
+                                    imagePreview[index + 1].imgPrv
+                                      ? imagePreview[index + 1].imgPrv
+                                      : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                                  }
+                                  alt="preview img"
+                                  className=" rounded-lg w-[200px] h-[200px]"
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
 
@@ -1037,41 +1221,60 @@ const EditAddAttributePopUp = () => {
                         ].includes(addAttri?.selectedItem.toLowerCase()) && (
                           <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                             {/* Bar 2: Brand selection for switches using RadioGroup */}
-                            <Dropdown
-                              label="Select Brand*"
-                              options={[
-                                { value: "Leviton", label: "Leviton" },
-                                { value: "LeGrand", label: "LeGrand" },
-                                { value: "Lutron", label: "Lutron" },
-                              ]}
-                              selectedValue={addAttri?.brand}
-                              onChange={(value) =>
-                                updateAddAttributeData("brand", value, index)
-                              }
-                              error={""}
-                              activeTabIndex={index1}
-                              width={259}
-                              height={55}
-                            />
-
-                            {/* Bar 3: Style selection for switches using RadioGroup */}
-                            {addAttri?.brand && (
+                            <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                               <Dropdown
-                                label="Select Style*"
+                                label="Select Brand*"
                                 options={[
-                                  { value: "Toggle", label: "Toggle" },
-                                  { value: "Rocker", label: "Rocker" },
+                                  { value: "Leviton", label: "Leviton" },
+                                  { value: "LeGrand", label: "LeGrand" },
+                                  { value: "Lutron", label: "Lutron" },
                                 ]}
-                                selectedValue={addAttri?.style}
+                                selectedValue={addAttri?.brand}
                                 onChange={(value) =>
-                                  updateAddAttributeData("style", value, index)
+                                  updateAddAttributeData("brand", value, index)
                                 }
                                 error={""}
                                 activeTabIndex={index1}
-                                width={158}
+                                width={259}
                                 height={55}
                               />
-                            )}
+
+                              {/* Bar 3: Style selection for switches using RadioGroup */}
+                              {addAttri?.brand && (
+                                <Dropdown
+                                  label="Select Style*"
+                                  options={[
+                                    { value: "Toggle", label: "Toggle" },
+                                    { value: "Rocker", label: "Rocker" },
+                                  ]}
+                                  selectedValue={addAttri?.style}
+                                  onChange={(value) =>
+                                    updateAddAttributeData(
+                                      "style",
+                                      value,
+                                      index
+                                    )
+                                  }
+                                  error={""}
+                                  activeTabIndex={index1}
+                                  width={259}
+                                  height={55}
+                                />
+                              )}
+                            </div>
+                            <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                              <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                                <img
+                                  src={
+                                    imagePreview[index + 1].imgPrv
+                                      ? imagePreview[index + 1].imgPrv
+                                      : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                                  }
+                                  alt="preview img"
+                                  className=" rounded-lg w-[200px] h-[200px]"
+                                />
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>

@@ -8,6 +8,8 @@ import {
   formDataAtom,
   invoiceBillSelectAtom,
   itemSelectionDataAtom,
+  newMaterialIndexAtom,
+  newMaterialVariableAtom,
   taxRateAtom,
   termConditionAtom,
 } from "../../variables/electricalInvoiceVariable";
@@ -99,6 +101,7 @@ const InvoiceBill: React.FC = () => {
     null
   );
   const [loading] = useState(false);
+  const [newMaterial] = useAtom(newMaterialVariableAtom)
   const activeItemData = itemSelectionData[activeTabIndex];
 
   const handleClickEvent = () => {
@@ -159,7 +162,7 @@ const InvoiceBill: React.FC = () => {
     });
   }, [clientfilledFormData.companyLogo, activeTabIndex]);
 
-  const discriptionData = `${
+  const discriptionData = [`${
     activeItemData?.brand ? activeItemData?.brand + "," : ""
   }${activeItemData?.style ? activeItemData?.style + "," : ""}${
     activeItemData?.use ? activeItemData?.use + "," : ""
@@ -167,7 +170,36 @@ const InvoiceBill: React.FC = () => {
     activeItemData?.neutral ? activeItemData?.neutral + "," : ""
   }${activeItemData?.pole ? activeItemData?.pole + "," : ""}${
     activeItemData?.amp ? activeItemData?.amp + " amp" : ""
-  }`;
+  }`];
+
+  if (newMaterial.length && newMaterial[activeTabIndex]?.length > 0) {
+  newMaterial[activeTabIndex].forEach((item) => {
+    const itemDesc =
+      `${item.brand ? item.brand + ", " : ""}` +
+      `${item.style ? item.style + ", " : ""}` +
+      `${item.use ? item.use + ", " : ""}` +
+      `${item.version ? item.version + ", " : ""}` +
+      `${item.neutral ? item.neutral + ", " : ""}` +
+      `${item.pole ? item.pole + ", " : ""}` +
+      `${item.amp ? item.amp + " amp" : ""}`;
+
+    if (itemDesc.trim()) {
+      discriptionData.push(itemDesc);
+    }
+  });
+}
+
+const item:any = [] 
+discriptionData.forEach((i)=>{
+  item.push({
+    description: i.trim().length
+          ? i.trim()
+          : "Simens, Standard, 2-Pole, 15 amp",
+        unitCost: 50,
+        quantity: activeItemData?.quantity,
+  })
+
+})
 
   const invoiceData: invoiceDataPropsType = {
     title: invoiceSelect[activeTabIndex].selectedInvoice,
@@ -184,21 +216,23 @@ const InvoiceBill: React.FC = () => {
         : "123 Example Ave.",
       city: activeClientData.city ? activeClientData.city : "Beverly Hills, CA",
     },
-    items: [
-      {
-        description: discriptionData.trim().length
-          ? discriptionData.trim()
-          : "Simens, Standard, 2-Pole, 15 amp",
-        unitCost: 50,
-        quantity: activeItemData?.quantity,
-      },
-      { description: "6in. Can Light Trim", unitCost: 30, quantity: 5 },
-      {
-        description: "Cover Plates Installation",
-        unitCost: 20,
-        quantity: 15,
-      },
-    ],
+    
+    items: item,
+    // items: [
+    //   {
+    //     description: discriptionData.trim().length
+    //       ? discriptionData.trim()
+    //       : "Simens, Standard, 2-Pole, 15 amp",
+    //     unitCost: 50,
+    //     quantity: activeItemData?.quantity,
+    //   },
+    //   { description: "6in. Can Light Trim", unitCost: 30, quantity: 5 },
+    //   {
+    //     description: "Cover Plates Installation",
+    //     unitCost: 20,
+    //     quantity: 15,
+    //   },
+    // ],
     taxRate: Number(taxRateData) || 0,
     terms:
       activeTermAndCondition.length > 0

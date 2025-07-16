@@ -354,7 +354,7 @@ const labourSection = () => {
             {activeLabourData.labourType == "Variable" && (
               <div className="flex flex-col gap-y-4 bg-transparent">
                 <div className="flex flex-col w-[337px] bg-transparent">
-                  <label className="text-primary  dark:text-white mb-1 bg-transparent">
+                  <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
                     Contractor's Total Hourly Rate*
                   </label>
                   <div className=" bg-transparent">
@@ -380,7 +380,7 @@ const labourSection = () => {
                 </div>
 
                 <div className="flex flex-col w-[337px] bg-transparent">
-                  <label className="text-primary  dark:text-white mb-1 bg-transparent">
+                  <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
                     Contractor’s Rate/hr*
                   </label>
                   <div className="relative bg-transparent">
@@ -540,7 +540,7 @@ const labourSection = () => {
               </div>
 
               <div className="flex flex-col w-[337px] bg-transparent">
-                <label className="text-primary dark:text-white mb-1 bg-transparent">
+                <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
                   Amount*
                 </label>
                 <div className="relative bg-transparent">
@@ -573,7 +573,7 @@ const labourSection = () => {
               </div>
 
               <div className="flex flex-col w-[337px] bg-transparent">
-                <label className="text-primary dark:text-white mb-1 bg-transparent">
+                <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
                   Quantity*
                 </label>
                 <div className="relative bg-transparent">

@@ -17,6 +17,13 @@ import { useLocation, useNavigate } from "react-router/dist";
 import { toast } from "react-toastify";
 import SearchLinkToggle from "../form/SearchLinkToggle";
 import NotesInput from "../form/NotesInput";
+import {
+  extractKeyword,
+  fetchImage,
+  findMatchingElectricalWord,
+  isElectricalImage,
+} from "../form/FetchImageOnHover";
+import { useEffect, useState } from "react";
 
 const SelectMaterialPage = () => {
   const location = useLocation();
@@ -35,6 +42,7 @@ const SelectMaterialPage = () => {
   const activeNewMaterialData = newMaterial[index1][activeNewMaterialIndex];
   const activeNewMaterialError =
     newMaterialError[index1][activeNewMaterialIndex];
+  const [imagePreview, setImagePreview] = useState("");
 
   const [, setOpenAddNewMaterial] = useAtom(openAddNewMaterialAtom);
   // const [materialSectionSteps, setMaterialSectionSteps] = useAtom(materialSectionStepsAtom)
@@ -173,6 +181,41 @@ const SelectMaterialPage = () => {
     navigate("/project/selection");
   };
 
+  useEffect(() => {
+    const fatchMaterialImage = async () => {
+      const matchedWord = findMatchingElectricalWord(
+        activeNewMaterialData.selectedItem
+      );
+      const query = matchedWord
+        ? "electrical" + " " + matchedWord
+        : `electrical ${activeNewMaterialData.selectedItem}`;
+
+      try {
+        let results = await fetchImage(query);
+        let validImage = results.find(isElectricalImage) || results[0];
+
+        // 🔁 If not found, try again with extracted keyword
+        if (!validImage) {
+          const keyword = extractKeyword(activeNewMaterialData.selectedItem);
+          const fallbackQuery = `electrical ${keyword} `;
+          results = await fetchImage(fallbackQuery);
+          validImage = results.find(isElectricalImage);
+        }
+
+        if (validImage) {
+          setImagePreview(validImage.urls.small);
+        } else {
+          setImagePreview(""); // or set a placeholder
+        }
+      } catch (err) {
+        console.error("Error fetching image:", err);
+        setImagePreview("");
+      }
+    };
+
+    fatchMaterialImage();
+  }, [activeNewMaterialData.selectedItem]);
+
   // const handleMaterialNextFun = ()=>{
   //   const activeMaterialStep = materialSectionSteps[activeTabIndex].materialSectionStepsCount
   //   if (activeMaterialStep < 3) {
@@ -263,37 +306,54 @@ const SelectMaterialPage = () => {
                     {activeNewMaterialData?.selectedItem === "outlet" && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection using RadioGroup */}
-                        <Dropdown
-                          label="Select Brand*"
-                          options={[
-                            { value: "Leviton", label: "Leviton" },
-                            { value: "LeGrand", label: "LeGrand" },
-                            { value: "Lutron", label: "Lutron" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.brand}
-                          onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError?.brand}
-                          activeTabIndex={index1}
-                          width={259}
-                          height={55}
-                        />
-
-                        {/* Bar 3: Style selection using RadioGroup */}
-                        {activeNewMaterialData?.brand && (
+                        <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                           <Dropdown
-                            label="Select Style*"
+                            label="Select Brand*"
                             options={[
-                              { value: "Decora", label: "Decora" },
-                              { value: "Duplex", label: "Duplex" },
+                              { value: "Leviton", label: "Leviton" },
+                              { value: "LeGrand", label: "LeGrand" },
+                              { value: "Lutron", label: "Lutron" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.brand}
+                            onChange={(value) => updateItemData("brand", value)}
+                            error={activeNewMaterialError?.brand}
                             activeTabIndex={index1}
-                            width={158}
+                            width={259}
                             height={55}
                           />
-                        )}
+
+                          {/* Bar 3: Style selection using RadioGroup */}
+                          {activeNewMaterialData?.brand && (
+                            <Dropdown
+                              label="Select Style*"
+                              options={[
+                                { value: "Decora", label: "Decora" },
+                                { value: "Duplex", label: "Duplex" },
+                              ]}
+                              selectedValue={activeNewMaterialData?.style}
+                              onChange={(value) =>
+                                updateItemData("style", value)
+                              }
+                              error={activeNewMaterialError?.style}
+                              activeTabIndex={index1}
+                              width={259}
+                              height={55}
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview
+                                  ? imagePreview
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -305,7 +365,7 @@ const SelectMaterialPage = () => {
                       // "50amp Breaker",
                       "Breaker",
                     ].includes(activeNewMaterialData?.selectedItem) && (
-                      <div className=" flex flex-row flex-wrap justify-between items-start gap-4 w-[577px] bg-transparent">
+                      <div className=" flex flex-col flex-wrap justify-between items-start h-[500px] w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
                         <Dropdown
                           label="Select Brand*"
@@ -568,6 +628,19 @@ const SelectMaterialPage = () => {
                           />
                         )}
                         {/* </div> */}
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview
+                                  ? imagePreview
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
 
@@ -578,37 +651,54 @@ const SelectMaterialPage = () => {
                     ].includes(activeNewMaterialData?.selectedItem) && (
                       <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                         {/* Bar 2: Brand selection for switches using RadioGroup */}
-                        <Dropdown
-                          label="Select Brand*"
-                          options={[
-                            { value: "Leviton", label: "Leviton" },
-                            { value: "LeGrand", label: "LeGrand" },
-                            { value: "Lutron", label: "Lutron" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.brand}
-                          onChange={(value) => updateItemData("brand", value)}
-                          error={activeNewMaterialError?.brand}
-                          activeTabIndex={index1}
-                          width={259}
-                          height={55}
-                        />
-
-                        {/* Bar 3: Style selection for switches using RadioGroup */}
-                        {activeNewMaterialData?.brand && (
+                        <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                           <Dropdown
-                            label="Select Style*"
+                            label="Select Brand*"
                             options={[
-                              { value: "Toggle", label: "Toggle" },
-                              { value: "Rocker", label: "Rocker" },
+                              { value: "Leviton", label: "Leviton" },
+                              { value: "LeGrand", label: "LeGrand" },
+                              { value: "Lutron", label: "Lutron" },
                             ]}
-                            selectedValue={activeNewMaterialData?.style}
-                            onChange={(value) => updateItemData("style", value)}
-                            error={activeNewMaterialError?.style}
+                            selectedValue={activeNewMaterialData?.brand}
+                            onChange={(value) => updateItemData("brand", value)}
+                            error={activeNewMaterialError?.brand}
                             activeTabIndex={index1}
-                            width={158}
+                            width={259}
                             height={55}
                           />
-                        )}
+
+                          {/* Bar 3: Style selection for switches using RadioGroup */}
+                          {activeNewMaterialData?.brand && (
+                            <Dropdown
+                              label="Select Style*"
+                              options={[
+                                { value: "Toggle", label: "Toggle" },
+                                { value: "Rocker", label: "Rocker" },
+                              ]}
+                              selectedValue={activeNewMaterialData?.style}
+                              onChange={(value) =>
+                                updateItemData("style", value)
+                              }
+                              error={activeNewMaterialError?.style}
+                              activeTabIndex={index1}
+                              width={259}
+                              height={55}
+                            />
+                          )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                          <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                            <img
+                              src={
+                                imagePreview
+                                  ? imagePreview
+                                  : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                              }
+                              alt="preview img"
+                              className=" rounded-lg w-[200px] h-[200px]"
+                            />
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>

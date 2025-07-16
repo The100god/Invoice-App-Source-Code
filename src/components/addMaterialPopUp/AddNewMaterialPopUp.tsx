@@ -18,12 +18,16 @@ import { toast } from "react-toastify";
 import SearchLinkToggle from "../form/SearchLinkToggle";
 import NotesInput from "../form/NotesInput";
 import NavigateMaterialSectionStepsBtn from "../navigation/NavigateMaterialSectionSteps";
+import { useEffect, useState } from "react";
+import { extractKeyword, fetchImage, findMatchingElectricalWord, isElectricalImage } from "../form/FetchImageOnHover";
 
 const AddNewMaterialPopUp = () => {
   const [newMaterial, setNewMaterial] = useAtom(newMaterialVariableAtom);
   const [newMaterialError, setNewMaterialError] = useAtom(
     newMaterialVariableErrorAtom
   );
+    const [imagePreview, setImagePreview] = useState("");
+
   const [newMaterialIndex, setNewMaterialIndex] = useAtom(newMaterialIndexAtom);
   const [activeTabIndex] = useAtom(activeTabIndexAtom);
   const activeNewMaterialIndex =
@@ -241,6 +245,41 @@ const AddNewMaterialPopUp = () => {
     }
   };
 
+  useEffect(() => {
+      const fatchMaterialImage = async () => {
+        const matchedWord = findMatchingElectricalWord(
+          activeNewMaterialData.selectedItem
+        );
+        const query = matchedWord
+          ? "electrical" + " " + matchedWord
+          : `electrical ${activeNewMaterialData.selectedItem}`;
+  
+        try {
+          let results = await fetchImage(query);
+          let validImage = results.find(isElectricalImage) || results[0];
+  
+          // 🔁 If not found, try again with extracted keyword
+          if (!validImage) {
+            const keyword = extractKeyword(activeNewMaterialData.selectedItem);
+            const fallbackQuery = `electrical ${keyword} `;
+            results = await fetchImage(fallbackQuery);
+            validImage = results.find(isElectricalImage);
+          }
+  
+          if (validImage) {
+            setImagePreview(validImage.urls.small);
+          } else {
+            setImagePreview(""); // or set a placeholder
+          }
+        } catch (err) {
+          console.error("Error fetching image:", err);
+          setImagePreview("");
+        }
+      };
+  
+      fatchMaterialImage();
+    }, [activeNewMaterialData.selectedItem]);
+
   //   console.log(itemSelectionData)
   return (
     <div className="h-full w-full flex flex-row items-center justify-between overflow-y-scroll ">
@@ -294,6 +333,7 @@ const AddNewMaterialPopUp = () => {
                         "outlet" && (
                         <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                           {/* Bar 2: Brand selection using RadioGroup */}
+                          <div className=" flex flex-col justify-between items-center w-full bg-transparent">
                           <Dropdown
                             label="Select Brand*"
                             options={[
@@ -323,10 +363,24 @@ const AddNewMaterialPopUp = () => {
                               }
                               error={activeNewMaterialError.style}
                               activeTabIndex={activeTabIndex}
-                              width={158}
+                              width={259}
                               height={55}
                             />
                           )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                    <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                      <img
+                        src={
+                          imagePreview
+                            ? imagePreview
+                            : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                        }
+                        alt="preview img"
+                        className=" rounded-lg w-[200px] h-[200px]"
+                      />
+                    </div>
+                  </div>
                         </div>
                       )}
 
@@ -338,7 +392,7 @@ const AddNewMaterialPopUp = () => {
                         // "50amp Breaker",
                         "Breaker",
                       ].includes(activeNewMaterialData.selectedItem) && (
-                        <div className=" flex flex-row flex-wrap justify-between items-start gap-4 w-[577px] bg-transparent">
+                        <div className=" flex flex-col flex-wrap justify-between items-start h-[500px] w-[577px] bg-transparent">
                           {/* Bar 2: Brand selection for switches using RadioGroup */}
                           <Dropdown
                             label="Select Brand*"
@@ -603,6 +657,20 @@ const AddNewMaterialPopUp = () => {
                           {/* )} */}
                           {/* </div> */}
                           {/* )} */}
+
+                          <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                    <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                      <img
+                        src={
+                          imagePreview
+                            ? imagePreview
+                            : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                        }
+                        alt="preview img"
+                        className=" rounded-lg w-[200px] h-[200px]"
+                      />
+                    </div>
+                  </div>
                         </div>
                       )}
 
@@ -615,6 +683,8 @@ const AddNewMaterialPopUp = () => {
                       ) && (
                         <div className=" flex flex-row justify-between items-center w-[577px] bg-transparent">
                           {/* Bar 2: Brand selection for switches using RadioGroup */}
+                         <div className=" flex flex-col justify-between items-center w-full bg-transparent">
+
                           <Dropdown
                             label="Select Brand*"
                             options={[
@@ -648,6 +718,20 @@ const AddNewMaterialPopUp = () => {
                               height={55}
                             />
                           )}
+                        </div>
+                        <div className="flex flex-col justify-center items-start w-fit h-fit p-4 bg-gray-300 ">
+                    <div className="flex flex-col justify-center items-center w-fit bg-transparent">
+                      <img
+                        src={
+                          imagePreview
+                            ? imagePreview
+                            : "https://upload.wikimedia.org/wikipedia/commons/f/fd/Jtecul.jpg"
+                        }
+                        alt="preview img"
+                        className=" rounded-lg w-[200px] h-[200px]"
+                      />
+                    </div>
+                  </div>
                         </div>
                       )}
                     </div>

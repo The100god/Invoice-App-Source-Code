@@ -108,10 +108,10 @@ const InvoiceInfo = () => {
 
         <div className="flex flex-row justify-between items-center w-full bg-transparent">
           <div>
-            <label className="block mb-2 text-primary dark:text-white bg-transparent">
+            <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
               Phone Number*
             </label>
-            <div className="flex w-[306px] h-[55px] border-2 border-[#A9A5A5] bg-transparent rounded-[10px] focus:border-[#00C5FF] p-2 items-center">
+            <div className="flex w-[306px] h-[55px] border-2 border-[#A9A5A5] mt-1 bg-transparent rounded-[10px] focus:border-[#00C5FF] p-2 items-center">
               <select
                 value={activeFormData.countryCode}
                 onChange={handleCountryCodeChange}
@@ -154,7 +154,7 @@ const InvoiceInfo = () => {
         </div>
 
         <div className="flex flex-col w-full bg-transparent">
-          <label className="block mb-2 text-primary dark:text-white bg-transparent">
+          <label className="text-lg font-medium text-[#000000B2] dark:text-white mb-2 bg-transparent">
             Company Logo*
           </label>
           <div className="mt-1 p-3 flex border-2 border-[#A9A5A5] bg-transparent rounded-[10px] focus:border-[#00C5FF] w-[693px] h-fit">
