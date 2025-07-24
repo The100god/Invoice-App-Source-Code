@@ -284,7 +284,7 @@ const ItemSelectionScreen = () => {
                 // "50amp Breaker",
                 "Breaker",
               ].includes(activeItemData.selectedItem) && (
-                <div className=" flex flex-col flex-wrap justify-between items-start h-[510px] w-[577px] bg-transparent">
+                <div className=" flex flex-col flex-wrap justify-between items-start h-[500px] w-[577px] bg-transparent">
                   {/* Bar 2: Brand selection for switches using RadioGroup */}
                   <Dropdown
                     label="Select Brand*"
@@ -304,26 +304,29 @@ const ItemSelectionScreen = () => {
                   <Dropdown
                     label="Select Use*"
                     options={
-                      activeItemData.brand === "Siemens" ||
-                      activeItemData.brand === "Eaton"
-                        ? [
-                            { value: "Standard", label: "Standard" },
-                            { value: "Tandem", label: "Tandem" },
-                            { value: "AFCI", label: "AFCI" },
-                            { value: "GFCI", label: "GFCI" },
-                          ]
-                        : activeItemData.brand === "General Electric"
-                        ? [
-                            { value: "Standard", label: "Standard" },
-                            { value: "Tandem", label: "Tandem" },
-                            { value: "Quadplex", label: "Quadplex" },
-                            { value: "GFCI", label: "GFCI" },
-                          ]
-                        : [
-                            { value: "Standard", label: "Standard" },
-                            { value: "Dual Function", label: "Dual Function" },
-                            { value: "CAFCI/GFCI", label: "CAFCI/GFCI" },
-                          ]
+                      // activeItemData.brand === "Siemens" ||
+                      // activeItemData.brand === "Eaton"
+                      //   ?
+                      [
+                        { value: "Standard", label: "Standard" },
+                        { value: "Main Breaker", label: "Main Breaker" },
+                        // { value: "Tandem", label: "Tandem" },
+                        { value: "AFCI", label: "AFCI" },
+                        { value: "GFCI", label: "GFCI" },
+                        { value: "AFCI/GFCI", label: "AFCI/GFCI" },
+                      ]
+                      // : activeItemData.brand === "General Electric"
+                      // ? [
+                      //     { value: "Standard", label: "Standard" },
+                      //     { value: "Tandem", label: "Tandem" },
+                      //     { value: "Quadplex", label: "Quadplex" },
+                      //     { value: "GFCI", label: "GFCI" },
+                      //   ]
+                      // : [
+                      //     { value: "Standard", label: "Standard" },
+                      //     { value: "Dual Function", label: "Dual Function" },
+                      //     { value: "CAFCI/GFCI", label: "CAFCI/GFCI" },
+                      //   ]
                     }
                     selectedValue={activeItemData?.use}
                     onChange={(value) => updateItemData("use", value)}
@@ -332,65 +335,89 @@ const ItemSelectionScreen = () => {
                     width={255}
                     height={55}
                   />
-                  {(activeItemData?.brand !== "Siemens" ||
-                    activeItemData?.use !== "Main Breaker") && (
-                    <Dropdown
-                      label="Select Version*"
-                      options={
-                        activeItemData.brand === "Siemens"
-                          ? [
-                              { value: "Tandem", label: "Tandem" },
-                              { value: "QP", label: "QP" },
-                              { value: "QT", label: "QT" },
-                              { value: "x", label: "x" },
-                            ]
-                          : activeItemData.brand === "Eaton"
-                          ? [
-                              { value: "BR", label: "BR" },
-                              { value: "CH", label: "CH" },
-                              { value: "x", label: "x" },
-                            ]
-                          : activeItemData.brand === "General Electric"
-                          ? [
-                              { value: "Q-Line", label: "Q-Line" },
-                              { value: "THQL", label: "THQL" },
-                              { value: "THQP", label: "THQP" },
-                              { value: "x", label: "x" },
-                            ]
-                          : [
-                              { value: "Homeline", label: "Homeline" },
-                              { value: "QO", label: "QO" },
-                              { value: "x", label: "x" },
-                            ]
-                      }
-                      selectedValue={activeItemData?.version}
-                      onChange={(value) => updateItemData("version", value)}
-                      error={activeErrors?.version}
-                      activeTabIndex={activeTabIndex}
-                      width={255}
-                      height={55}
-                    />
-                  )}
+                  {activeItemData?.brand === "Square D" &&
+                    activeItemData?.use !== "Main Breaker" && (
+                      <Dropdown
+                        label="Select Version*"
+                        options={
+                          // activeItemData.brand === "Siemens"
+                          //   ? [
+                          //       { value: "Tandem", label: "Tandem" },
+                          //       { value: "QP", label: "QP" },
+                          //       { value: "QT", label: "QT" },
+                          //       { value: "x", label: "x" },
+                          //     ]
+                          //   : activeItemData.brand === "Eaton"
+                          //   ? [
+                          //       { value: "BR", label: "BR" },
+                          //       { value: "CH", label: "CH" },
+                          //       { value: "x", label: "x" },
+                          //     ]
+                          //   : activeItemData.brand === "General Electric"
+                          //   ? [
+                          //       { value: "Q-Line", label: "Q-Line" },
+                          //       { value: "THQL", label: "THQL" },
+                          //       { value: "THQP", label: "THQP" },
+                          //       { value: "x", label: "x" },
+                          //     ]
+                          //   :
+                          [
+                            { value: "Homeline", label: "Homeline" },
+                            { value: "QO", label: "QO" },
+                            // { value: "x", label: "x" },
+                          ]
+                        }
+                        selectedValue={activeItemData?.version}
+                        onChange={(value) => updateItemData("version", value)}
+                        error={activeErrors?.version}
+                        activeTabIndex={activeTabIndex}
+                        width={255}
+                        height={55}
+                      />
+                    )}
                   {/* {activeItemData.brand && <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                   <Dropdown
                     label="Select Pole*"
                     options={
-                      activeItemData.brand === "Siemens" ||
-                      activeItemData.brand === "General Electric"
+                      activeItemData.use === "Standard"
+                        ? activeItemData.brand === "Square D"
+                          ? activeItemData.version === "H"
+                            ? [
+                                { value: "Single Pole", label: "Single Pole" },
+                                { value: "2-Pole", label: "2-Pole" },
+                              ]
+                            : // activeItemData.version === "QO"
+                              // ? [
+                              //     { value: "Single Pole", label: "Single Pole" },
+                              //     { value: "2-Pole", label: "2-Pole" },
+                              //     { value: "3-Pole", label: "3-Pole" },
+                              //   ]
+                              // :
+                              [
+                                { value: "Single Pole", label: "Single Pole" },
+                                { value: "2-Pole", label: "2-Pole" },
+                                { value: "3-Pole", label: "3-Pole" },
+                                // { value: "1-Pole", label: "1-Pole" },
+                                // { value: "2-Pole", label: "2-Pole" },
+                                // { value: "Quad", label: "Quad" },
+                              ]
+                          : [
+                              { value: "Single Pole", label: "Single Pole" },
+                              { value: "2-Pole", label: "2-Pole" },
+                              { value: "3-Pole", label: "3-Pole" },
+                              // { value: "1-Pole", label: "1-Pole" },
+                              // { value: "2-Pole", label: "2-Pole" },
+                              // { value: "Quad", label: "Quad" },
+                            ]
+                        : activeItemData.use === "Main Breaker"
                         ? [
-                            { value: "1-Pole", label: "1-Pole" },
-                            { value: "2-Pole", label: "2-Pole" },
-                            { value: "Quad", label: "Quad" },
-                          ]
-                        : activeItemData.brand === "Eaton"
-                        ? [
-                            { value: "1-Pole", label: "1-Pole" },
+                            // { value: "1-Pole", label: "1-Pole" },
                             { value: "2-Pole", label: "2-Pole" },
                           ]
                         : [
-                            { value: "Single Pole", label: "Single Pole" },
+                            { value: "1-Pole", label: "1-Pole" },
                             { value: "2-Pole", label: "2-Pole" },
-                            { value: "3-Pole", label: "3-Pole" },
+                            // { value: "3-Pole", label: "3-Pole" },
                           ]
                     }
                     selectedValue={activeItemData.pole}
@@ -400,93 +427,452 @@ const ItemSelectionScreen = () => {
                     width={255}
                     height={55}
                   />
-                  <Dropdown
-                    label="Select Neutral*"
-                    options={
-                      activeItemData?.use === "Main Breaker"
-                        ? [
-                            { value: "Snap-On", label: "Snap-On" },
-                            { value: "x", label: "x" },
-                          ]
-                        : [
-                            {
-                              value: "Plug-On Neutral",
-                              label: "Plug-On Neutral",
-                            },
-                            { value: "Pigtail", label: "Pigtail" },
-                            { value: "x", label: "x" },
-                          ]
-                    }
-                    selectedValue={activeItemData?.neutral}
-                    onChange={(value) => updateItemData("neutral", value)}
-                    error={activeErrors?.neutral}
-                    activeTabIndex={activeTabIndex}
-                    width={255}
-                    height={55}
-                  />
-                  <Dropdown
-                    label="Select Type*"
-                    options={[
-                      { value: "Single", label: "Single" },
-                      { value: "Twin", label: "Twin" },
-                      { value: "Threeplex", label: "Threeplex" },
-                      { value: "Quad", label: "Quad" },
-                    ]}
-                    selectedValue={activeItemData?.type}
-                    onChange={(value) => updateItemData("type", value)}
-                    error={activeErrors?.type}
-                    activeTabIndex={activeTabIndex}
-                    width={255}
-                    height={55}
-                  />
+                  {(activeItemData?.brand === "Siemens" ||
+                    activeItemData?.brand === "Square D") &&
+                    (activeItemData?.use === "AFCI" ||
+                      activeItemData?.use === "GFCI" ||
+                      activeItemData?.use === "AFCI/GFCI") && (
+                      <Dropdown
+                        label="Select Neutral*"
+                        options={
+                          activeItemData?.brand === "Siemens"
+                            ? [
+                                { value: "Snap-On", label: "Snap-On" },
+                                // { value: "x", label: "x" },
+                              ]
+                            : [
+                                // {
+                                //   value: "Plug-On Neutral",
+                                //   label: "Plug-On Neutral",
+                                // },
+                                { value: "Pigtail", label: "Pigtail" },
+                                // { value: "x", label: "x" },
+                              ]
+                          // activeItemData?.use === "Main Breaker"
+                          //   ? [
+                          //       { value: "Snap-On", label: "Snap-On" },
+                          //       { value: "x", label: "x" },
+                          //     ]
+                          //   : [
+                          //       {
+                          //         value: "Plug-On Neutral",
+                          //         label: "Plug-On Neutral",
+                          //       },
+                          //       { value: "Pigtail", label: "Pigtail" },
+                          //       { value: "x", label: "x" },
+                          //     ]
+                        }
+                        selectedValue={activeItemData?.neutral}
+                        onChange={(value) => updateItemData("neutral", value)}
+                        error={activeErrors?.neutral}
+                        activeTabIndex={activeTabIndex}
+                        width={255}
+                        height={55}
+                      />
+                    )}
+                  {activeItemData.version !== "H" &&
+                    activeItemData.pole !== "3-Pole" && (
+                      <Dropdown
+                        label="Select Type*"
+                        options={
+                          activeItemData.use === "Standard"
+                            ? activeItemData.pole === "Single-Pole"
+                              ? [
+                                  { value: "Single", label: "Single" },
+                                  { value: "Twin", label: "Twin" },
+                                ]
+                              : activeItemData.pole === "2-Pole"
+                              ? activeItemData.brand === "Square D" &&
+                                activeItemData.version === "QO"
+                                ? [
+                                    { value: "Single", label: "Single" },
+
+                                    { value: "Quad", label: "Quad" },
+                                  ]
+                                : [
+                                    { value: "Single", label: "Single" },
+                                    { value: "Threeplex", label: "Threeplex" },
+                                    { value: "Quad", label: "Quad" },
+                                  ]
+                              : [{ value: "Single", label: "Single" }]
+                            : activeItemData.use === "Main Breaker" &&
+                              activeItemData.pole === "2-Pole"
+                            ? [{ value: "Single", label: "Single" }]
+                            : activeItemData.use === "AFCI" ||
+                              activeItemData.use === "GFCI" ||
+                              activeItemData.use === "AFCI/GCFI"
+                            ? (activeItemData?.brand === "Siemens" ||
+                                activeItemData?.brand === "Square D") &&
+                              activeItemData.neutral === "Snap-On"
+                              ? [
+                                  { value: "Single", label: "Single" },
+                                  { value: "Twin", label: "Twin" },
+                                ]
+                              : [{ value: "Single", label: "Single" }]
+                            : [
+                                { value: "Single", label: "Single" },
+                                { value: "Twin", label: "Twin" },
+                                { value: "Threeplex", label: "Threeplex" },
+                                { value: "Quad", label: "Quad" },
+                              ]
+                        }
+                        selectedValue={activeItemData?.type}
+                        onChange={(value) => updateItemData("type", value)}
+                        error={activeErrors?.type}
+                        activeTabIndex={activeTabIndex}
+                        width={255}
+                        height={55}
+                      />
+                    )}
 
                   <Dropdown
                     label="Select Amps*"
-                    options={[
-                      { value: "x", label: "x" },
-                      { value: "10", label: "10" },
-                      { value: "15", label: "15" },
-                      { value: "20", label: "20" },
-                      { value: "25", label: "25" },
-                      { value: "30", label: "30" },
-                      { value: "35", label: "35" },
-                      { value: "40", label: "40" },
-                      { value: "45", label: "45" },
-                      { value: "50", label: "50" },
-                      { value: "60", label: "60" },
-                      { value: "70", label: "70" },
-                      { value: "80", label: "80" },
-                      { value: "90", label: "90" },
-                      { value: "100", label: "100" },
-                      { value: "125", label: "125" },
-                      { value: "15/15", label: "15/15" },
-                      { value: "15/20", label: "15/20" },
-                      {
-                        value: "(15/20 - Homeline Only)",
-                        label: "(15/20 - Homeline Only)",
-                      },
-                      { value: "20/20", label: "20/20" },
-                      { value: "20/30", label: "20/30" },
-                      { value: "30/30", label: "30/30" },
-                      { value: "15/(20/20)/15", label: "15/(20/20)/15" },
-                      { value: "15/(25/25)/15", label: "15/(25/25)/15" },
-                      { value: "15/(30/30)/15", label: "15/(30/30)/15" },
-                      { value: "15/(40/40)/15", label: "15/(40/40)/15" },
-                      { value: "15/(50/50)/15", label: "15/(50/50)/15" },
-                      { value: "20/(20/20)/20", label: "20/(20/20)/20" },
-                      { value: "20/(25/25)/20", label: "20/(25/25)/20" },
-                      { value: "20/(30/30)/20", label: "20/(30/30)/20" },
-                      { value: "20/(40/40)/20", label: "20/(40/40)/20" },
-                      { value: "20/(50/50)/20", label: "20/(50/50)/20" },
-                      { value: "30/(30/30)/30", label: "30/(30/30)/30" },
-                      { value: "20/20/20/20", label: "20/20/20/20" },
-                      { value: "20/30/30/20", label: "20/30/30/20" },
-                      { value: "30/20/20/30", label: "30/20/20/30" },
-                      { value: "30/30/30/30", label: "30/30/30/30" },
-                      { value: "40/20/20/40", label: "40/20/20/40" },
-                      { value: "40/30/30/40", label: "40/30/30/40" },
-                      { value: "40/40/40/40", label: "40/40/40/40" },
-                    ]}
+                    options={
+                      activeItemData.brand === "Siemens"
+                        ? activeItemData.use === "Standard"
+                          ? activeItemData.pole === "Single Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-30", label: "15-30" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "30", label: "30" },
+                                ]
+                              : [
+                                  { value: "10/30", label: "10/30" },
+                                  { value: "15/15", label: "15/15" },
+                                  { value: "15/20", label: "15/20" },
+                                  { value: "20/20", label: "20/20" },
+                                  { value: "20/30", label: "20/30" },
+                                  { value: "30/20", label: "30/20" },
+                                  { value: "30/30", label: "30/30" },
+                                ]
+                            : activeItemData.pole === "2-Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "100-200", label: "100-200" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "40", label: "40" },
+                                  { value: "50", label: "50" },
+                                  { value: "60", label: "60" },
+                                  { value: "70", label: "70" },
+                                  { value: "100", label: "100" },
+                                  { value: "125", label: "125" },
+                                ]
+                              : activeItemData.type === "Threeplex"
+                              ? [
+                                  { value: "100-200", label: "100-200" },
+                                  {
+                                    value: "15/(25/25)/15",
+                                    label: "15/(25/25)/15",
+                                  },
+                                  {
+                                    value: "15/(30/30)/15",
+                                    label: "15/(30/30)/15",
+                                  },
+                                  {
+                                    value: "15/(40/40)/15",
+                                    label: "15/(40/40)/15",
+                                  },
+                                  {
+                                    value: "20/(20/20)/20",
+                                    label: "20/(20/20)/20",
+                                  },
+                                  {
+                                    value: "30/(30/30)/30",
+                                    label: "30/(30/30)/30",
+                                  },
+                                ]
+                              : [
+                                  { value: "100-200", label: "100-200" },
+                                  {
+                                    value: "20/20/20/20",
+                                    label: "20/20/20/20",
+                                  },
+                                  {
+                                    value: "30/20/20/30",
+                                    label: "30/20/20/30",
+                                  },
+                                  {
+                                    value: "40/20/20/40",
+                                    label: "40/20/20/40",
+                                  },
+                                  {
+                                    value: "40/30/30/40",
+                                    label: "40/30/30/40",
+                                  },
+                                  {
+                                    value: "40/40/40/40",
+                                    label: "40/40/40/40",
+                                  },
+                                ]
+                            : [
+                                { value: "100-200", label: "100-200" },
+                                { value: "20", label: "20" },
+                                { value: "25", label: "25" },
+                                { value: "30", label: "30" },
+                                { value: "40", label: "40" },
+                                { value: "45", label: "45" },
+                                { value: "50", label: "50" },
+                                { value: "60", label: "60" },
+                                { value: "70", label: "70" },
+                                { value: "100", label: "100" },
+                              ]
+                          : activeItemData.use === "Main Breaker"
+                          ? [{ value: "150-225", label: "150-225" }]
+                          : // activeItemData.use === "AFCI" ||
+                            //   activeItemData.use === "GFCI" ||
+                            //   activeItemData.use === "AFCI/GFCI"
+                            // ?
+                            [
+                              { value: "15", label: "15" },
+                              { value: "20", label: "20" },
+                              { value: "15/15", label: "15/15" },
+                              { value: "15/20", label: "15/20" },
+                            ]
+                        : // : []
+
+                        activeItemData.brand === "Eaton"
+                        ? activeItemData.use === "Standard"
+                          ? activeItemData.pole === "Single Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-30", label: "15-30" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "30", label: "30" },
+                                ]
+                              : [
+                                  { value: "15-20", label: "15-20" },
+                                  { value: "15/15", label: "15/15" },
+                                  { value: "20/20", label: "20/20" },
+                                ]
+                            : activeItemData.pole === "2-Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "35", label: "35" },
+                                  { value: "40", label: "40" },
+                                  { value: "50", label: "50" },
+                                  { value: "60", label: "60" },
+                                  { value: "70", label: "70" },
+                                  { value: "100", label: "100" },
+                                  { value: "125", label: "125" },
+                                ]
+                              : activeItemData.type === "Quad"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  {
+                                    value: "20/20/20/20",
+                                    label: "20/20/20/20",
+                                  },
+                                  {
+                                    value: "20/30/30/20",
+                                    label: "20/30/30/20",
+                                  },
+                                  {
+                                    value: "30/30/30/30",
+                                    label: "30/30/30/30",
+                                  },
+                                  {
+                                    value: "40/40/40/40",
+                                    label: "40/40/40/40",
+                                  },
+                                ]
+                              : [{ value: "x", label: "x" }]
+                            : [{ value: "15-200", label: "15-200" }]
+                          : activeItemData.use === "Main Breaker"
+                          ? [{ value: "200", label: "200" }]
+                          : // activeItemData.use === "AFCI" ||
+                            //   activeItemData.use === "GFCI" ||
+                            //   activeItemData.use === "AFCI/GFCI"
+                            // ?
+                            [
+                              { value: "15", label: "15" },
+                              { value: "20", label: "20" },
+                              { value: "15/15", label: "15/15" },
+                              { value: "15/20", label: "15/20" },
+                            ]
+                        : // : []
+
+                        activeItemData.brand === "Square D"
+                        ? activeItemData.use === "Standard"
+                          ? activeItemData.pole === "Single Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-50", label: "15-50" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "50", label: "50" },
+                                ]
+                              : [
+                                  { value: "15-200", label: "15-200" },
+                                  { value: "15/15", label: "15/15" },
+                                  { value: "20/20", label: "20/20" },
+                                  {
+                                    value: "(15/20 - Homeline Only)",
+                                    label: "(15/20 - Homeline Only)",
+                                  },
+                                ]
+                            : activeItemData.pole === "2-Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "35", label: "35" },
+                                  { value: "40", label: "40" },
+                                  { value: "45", label: "45" },
+                                  { value: "50", label: "50" },
+                                  { value: "60", label: "60" },
+                                  { value: "70", label: "70" },
+                                  { value: "80", label: "80" },
+                                  { value: "90", label: "90" },
+                                  { value: "100", label: "100" },
+                                  { value: "125", label: "125" },
+                                ]
+                              : activeItemData.type === "Quard"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  
+                                ]
+                              : [
+                                  { value: "x", label: "x" },
+                                ]
+                            : [
+                                { value: "15-200", label: "15-200" },
+                                { value: "20", label: "20" },
+                                { value: "40", label: "40" },
+                                { value: "50", label: "50" },
+                                { value: "60", label: "60" },
+                                { value: "100", label: "100" },
+                              ]
+                          : activeItemData.use === "Main Breaker"
+                          ? [{ value: "200", label: "200" }]
+                          : // activeItemData.use === "AFCI" ||
+                            //   activeItemData.use === "GFCI" ||
+                            //   activeItemData.use === "AFCI/GFCI"
+                            // ?
+                            [
+                              { value: "15", label: "15" },
+                              { value: "20", label: "20" },
+                              { value: "15/15", label: "15/15" },
+                              { value: "15/20", label: "15/20" },
+                            ]
+                        : // : []
+
+                         activeItemData.use === "Standard"
+                          ? activeItemData.pole === "Single Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-30", label: "15-30" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "30", label: "30" },
+                                ]
+                              : [
+                                  { value: "x", label: "x" },
+                                ]
+                            : activeItemData.pole === "2-Pole"
+                            ? activeItemData.type === "Single"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  { value: "15", label: "15" },
+                                  { value: "20", label: "20" },
+                                  { value: "25", label: "25" },
+                                  { value: "30", label: "30" },
+                                  { value: "35", label: "35" },
+                                  { value: "40", label: "40" },
+                                  { value: "50", label: "50" },
+                                  { value: "60", label: "60" },
+                                  { value: "70", label: "70" },
+                                  { value: "90", label: "90" },
+                                  { value: "100", label: "100" },
+                                  { value: "125", label: "125" },
+                                ]
+                              : activeItemData.type === "Quad"
+                              ? [
+                                  { value: "15-200", label: "15-200" },
+                                  
+                                ]
+                              : [
+                                  { value: "x", label: "x" },
+                                ]
+                            : [
+                                { value: "15-200", label: "15-200" },
+                              ]
+                          : activeItemData.use === "Main Breaker"
+                          ? [{ value: "x", label: "x" }]
+                          : 
+                          // activeItemData.use === "AFCI" ||
+                          //   activeItemData.use === "GFCI" ||
+                          //   activeItemData.use === "AFCI/GFCI"
+                          // ? 
+                          [
+                              { value: "15", label: "15" },
+                              { value: "20", label: "20" },
+                              { value: "15/15", label: "15/15" },
+                              { value: "15/20", label: "15/20" },
+                            ]
+                          // : []
+
+                          // [
+                          //   { value: "x", label: "x" },
+                          //   { value: "10", label: "10" },
+                          //   { value: "15", label: "15" },
+                          //   { value: "20", label: "20" },
+                          //   { value: "25", label: "25" },
+                          //   { value: "30", label: "30" },
+                          //   { value: "35", label: "35" },
+                          //   { value: "40", label: "40" },
+                          //   { value: "45", label: "45" },
+                          //   { value: "50", label: "50" },
+                          //   { value: "60", label: "60" },
+                          //   { value: "70", label: "70" },
+                          //   { value: "80", label: "80" },
+                          //   { value: "90", label: "90" },
+                          //   { value: "100", label: "100" },
+                          //   { value: "125", label: "125" },
+                          //   { value: "15/15", label: "15/15" },
+                          //   { value: "15/20", label: "15/20" },
+                          //   {
+                          //     value: "(15/20 - Homeline Only)",
+                          //     label: "(15/20 - Homeline Only)",
+                          //   },
+                          //   { value: "20/20", label: "20/20" },
+                          //   { value: "20/30", label: "20/30" },
+                          //   { value: "30/30", label: "30/30" },
+                          //   { value: "15/(20/20)/15", label: "15/(20/20)/15" },
+                          //   { value: "15/(25/25)/15", label: "15/(25/25)/15" },
+                          //   { value: "15/(30/30)/15", label: "15/(30/30)/15" },
+                          //   { value: "15/(40/40)/15", label: "15/(40/40)/15" },
+                          //   { value: "15/(50/50)/15", label: "15/(50/50)/15" },
+                          //   { value: "20/(20/20)/20", label: "20/(20/20)/20" },
+                          //   { value: "20/(25/25)/20", label: "20/(25/25)/20" },
+                          //   { value: "20/(30/30)/20", label: "20/(30/30)/20" },
+                          //   { value: "20/(40/40)/20", label: "20/(40/40)/20" },
+                          //   { value: "20/(50/50)/20", label: "20/(50/50)/20" },
+                          //   { value: "30/(30/30)/30", label: "30/(30/30)/30" },
+                          //   { value: "20/20/20/20", label: "20/20/20/20" },
+                          //   { value: "20/30/30/20", label: "20/30/30/20" },
+                          //   { value: "30/20/20/30", label: "30/20/20/30" },
+                          //   { value: "30/30/30/30", label: "30/30/30/30" },
+                          //   { value: "40/20/20/40", label: "40/20/20/40" },
+                          //   { value: "40/30/30/40", label: "40/30/30/40" },
+                          //   { value: "40/40/40/40", label: "40/40/40/40" },
+                          // ]
+                    }
                     selectedValue={activeItemData.amp}
                     onChange={(value) => updateItemData("amp", value)}
                     error={activeErrors.style}

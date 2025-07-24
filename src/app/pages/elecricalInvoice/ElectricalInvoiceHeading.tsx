@@ -28,17 +28,18 @@ const ElectricalInvoiceHeading = () => {
       {activeSteps.electricalSteps == 3 && (
         <>
           <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">
-            Invoice Content
+            Labour
           </h1>
         </>
       )}
       {activeSteps.electricalSteps == 4 && (
         <>
           <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">
-            Labour
+            Invoice Content
           </h1>
         </>
       )}
+      
       {activeSteps.electricalSteps == 5 && (
         <>
           <h1 className="text-4xl text-primary dark:text-white font-[700] font-[Helvetica Neue] bg-transparent">

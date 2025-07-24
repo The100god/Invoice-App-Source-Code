@@ -195,16 +195,6 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
       {
         step: 3,
         validateFn: () =>
-          itemValidate({
-            itemSelectionData,
-            activeTabIndex,
-            itemErrors,
-            setItemErrors,
-          }),
-      },
-      {
-        step: 4,
-        validateFn: () =>
           labourValidation({
             labourStateVariable,
             activeTabIndex,
@@ -212,6 +202,17 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
             setLabourErrors,
           }),
       },
+      {
+        step: 4,
+        validateFn: () =>
+          itemValidate({
+            itemSelectionData,
+            activeTabIndex,
+            itemErrors,
+            setItemErrors,
+          }),
+      },
+      
       {
         step: 5,
         validateFn: () =>
@@ -242,7 +243,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
 
   
     if (currentStepConfig?.validateFn()) {
-      if (activeSteps?.electricalSteps === 4){
+      if (activeSteps?.electricalSteps === 5){
         setIsExistingProjectVariable((prev) => {
           const updated = [...prev];
           // Update the value for the active tab
@@ -410,7 +411,7 @@ const [clientContractorData,] = useAtom(clientContractorAtom)
         )}
       </div>
       <div className="relative flex w-fit h-[90%] justify-end items-end m-2 right-0 bg-transparent">
-        {activeSteps?.electricalSteps == 4 ? (
+        {activeSteps?.electricalSteps == 3 ? (
           <CostCalculator />
         ) : (
           <div className="w-[23.06px] h-[142px] m-auto mr-0 right-0 border-[4px] border-solid border-[#D9D9D9] bg-[#000000] rounded-[5px] backdrop-blur-[100px]">

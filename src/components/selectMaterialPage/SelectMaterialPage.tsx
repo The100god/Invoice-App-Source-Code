@@ -390,33 +390,45 @@ const SelectMaterialPage = () => {
                         <Dropdown
                           label="Select Use*"
                           options={
-                            activeNewMaterialData.brand === "Siemens" ||
-                            activeNewMaterialData.brand === "Eaton"
-                              ? [
-                                  { value: "Standard", label: "Standard" },
-                                  { value: "Tandem", label: "Tandem" },
-                                  { value: "AFCI", label: "AFCI" },
-                                  { value: "GFCI", label: "GFCI" },
-                                ]
-                              : activeNewMaterialData.brand ===
-                                "General Electric"
-                              ? [
-                                  { value: "Standard", label: "Standard" },
-                                  { value: "Tandem", label: "Tandem" },
-                                  { value: "Quadplex", label: "Quadplex" },
-                                  { value: "GFCI", label: "GFCI" },
-                                ]
-                              : [
-                                  { value: "Standard", label: "Standard" },
-                                  {
-                                    value: "Dual Function",
-                                    label: "Dual Function",
-                                  },
-                                  {
-                                    value: "CAFCI/GFCI",
-                                    label: "CAFCI/GFCI",
-                                  },
-                                ]
+                            // activeNewMaterialData.brand === "Siemens" ||
+                            // activeNewMaterialData.brand === "Eaton"
+                            //   ?
+                            [
+                              { value: "Standard", label: "Standard" },
+                              {
+                                value: "Main Breaker",
+                                label: "Main Breaker",
+                              },
+                              // { value: "Tandem", label: "Tandem" },
+                              { value: "AFCI", label: "AFCI" },
+                              { value: "GFCI", label: "GFCI" },
+                              { value: "AFCI/GFCI", label: "AFCI/GFCI" },
+                            ]
+                            // [
+                            //     { value: "Standard", label: "Standard" },
+                            //     { value: "Tandem", label: "Tandem" },
+                            //     { value: "AFCI", label: "AFCI" },
+                            //     { value: "GFCI", label: "GFCI" },
+                            //   ]
+                            // : activeNewMaterialData.brand ===
+                            //   "General Electric"
+                            // ? [
+                            //     { value: "Standard", label: "Standard" },
+                            //     { value: "Tandem", label: "Tandem" },
+                            //     { value: "Quadplex", label: "Quadplex" },
+                            //     { value: "GFCI", label: "GFCI" },
+                            //   ]
+                            // : [
+                            //     { value: "Standard", label: "Standard" },
+                            //     {
+                            //       value: "Dual Function",
+                            //       label: "Dual Function",
+                            //     },
+                            //     {
+                            //       value: "CAFCI/GFCI",
+                            //       label: "CAFCI/GFCI",
+                            //     },
+                            //   ]
                           }
                           selectedValue={activeNewMaterialData?.use}
                           onChange={(value) => updateItemData("use", value)}
@@ -425,71 +437,101 @@ const SelectMaterialPage = () => {
                           width={255}
                           height={55}
                         />
-                        {(activeNewMaterialData?.brand !== "Siemens" ||
-                          activeNewMaterialData?.use !== "Main Breaker") && (
-                          <Dropdown
-                            label="Select Version*"
-                            options={
-                              activeNewMaterialData.brand === "Siemens"
-                                ? [
-                                    { value: "Tandem", label: "Tandem" },
-                                    { value: "QP", label: "QP" },
-                                    { value: "QT", label: "QT" },
-                                    { value: "x", label: "x" },
-                                  ]
-                                : activeNewMaterialData.brand === "Eaton"
-                                ? [
-                                    { value: "BR", label: "BR" },
-                                    { value: "CH", label: "CH" },
-                                    { value: "x", label: "x" },
-                                  ]
-                                : activeNewMaterialData.brand ===
-                                  "General Electric"
-                                ? [
-                                    { value: "Q-Line", label: "Q-Line" },
-                                    { value: "THQL", label: "THQL" },
-                                    { value: "THQP", label: "THQP" },
-                                    { value: "x", label: "x" },
-                                  ]
-                                : [
-                                    { value: "Homeline", label: "Homeline" },
-                                    { value: "QO", label: "QO" },
-                                    { value: "x", label: "x" },
-                                  ]
-                            }
-                            selectedValue={activeNewMaterialData?.version}
-                            onChange={(value) =>
-                              updateItemData("version", value)
-                            }
-                            error={activeNewMaterialError?.version}
-                            activeTabIndex={index1}
-                            width={255}
-                            height={55}
-                          />
-                        )}
+                        {activeNewMaterialData?.brand === "Square D" &&
+                          activeNewMaterialData?.use !== "Main Breaker" && (
+                            <Dropdown
+                              label="Select Version*"
+                              options={
+                                // activeNewMaterialData.brand === "Siemens"
+                                //   ? [
+                                //       { value: "Tandem", label: "Tandem" },
+                                //       { value: "QP", label: "QP" },
+                                //       { value: "QT", label: "QT" },
+                                //       { value: "x", label: "x" },
+                                //     ]
+                                //   : activeNewMaterialData.brand === "Eaton"
+                                //   ? [
+                                //       { value: "BR", label: "BR" },
+                                //       { value: "CH", label: "CH" },
+                                //       { value: "x", label: "x" },
+                                //     ]
+                                //   : activeNewMaterialData.brand ===
+                                //     "General Electric"
+                                //   ? [
+                                //       { value: "Q-Line", label: "Q-Line" },
+                                //       { value: "THQL", label: "THQL" },
+                                //       { value: "THQP", label: "THQP" },
+                                //       { value: "x", label: "x" },
+                                //     ]
+                                // :
+                                [
+                                  { value: "Homeline", label: "Homeline" },
+                                  { value: "QO", label: "QO" },
+                                  // { value: "x", label: "x" },
+                                ]
+                              }
+                              selectedValue={activeNewMaterialData?.version}
+                              onChange={(value) =>
+                                updateItemData("version", value)
+                              }
+                              error={activeNewMaterialError?.version}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+                          )}
                         {/* <div className=" flex flex-row justify-between items-center w-full bg-transparent"> */}
                         <Dropdown
                           label="Select Pole*"
                           options={
-                            activeNewMaterialData.brand === "Siemens" ||
-                            activeNewMaterialData.brand === "General Electric"
+                            activeNewMaterialData.use === "Standard"
+                              ? activeNewMaterialData.brand === "Square D"
+                                ? activeNewMaterialData.version === "H"
+                                  ? [
+                                      {
+                                        value: "Single Pole",
+                                        label: "Single Pole",
+                                      },
+                                      { value: "2-Pole", label: "2-Pole" },
+                                    ]
+                                  : // activeNewMaterialData.version === "QO"
+                                    // ? [
+                                    //     { value: "Single Pole", label: "Single Pole" },
+                                    //     { value: "2-Pole", label: "2-Pole" },
+                                    //     { value: "3-Pole", label: "3-Pole" },
+                                    //   ]
+                                    // :
+                                    [
+                                      {
+                                        value: "Single Pole",
+                                        label: "Single Pole",
+                                      },
+                                      { value: "2-Pole", label: "2-Pole" },
+                                      { value: "3-Pole", label: "3-Pole" },
+                                      // { value: "1-Pole", label: "1-Pole" },
+                                      // { value: "2-Pole", label: "2-Pole" },
+                                      // { value: "Quad", label: "Quad" },
+                                    ]
+                                : [
+                                    {
+                                      value: "Single Pole",
+                                      label: "Single Pole",
+                                    },
+                                    { value: "2-Pole", label: "2-Pole" },
+                                    { value: "3-Pole", label: "3-Pole" },
+                                    // { value: "1-Pole", label: "1-Pole" },
+                                    // { value: "2-Pole", label: "2-Pole" },
+                                    // { value: "Quad", label: "Quad" },
+                                  ]
+                              : activeNewMaterialData.use === "Main Breaker"
                               ? [
-                                  { value: "1-Pole", label: "1-Pole" },
-                                  { value: "2-Pole", label: "2-Pole" },
-                                  { value: "Quad", label: "Quad" },
-                                ]
-                              : activeNewMaterialData.brand === "Eaton"
-                              ? [
-                                  { value: "1-Pole", label: "1-Pole" },
+                                  // { value: "1-Pole", label: "1-Pole" },
                                   { value: "2-Pole", label: "2-Pole" },
                                 ]
                               : [
-                                  {
-                                    value: "Single Pole",
-                                    label: "Single Pole",
-                                  },
+                                  { value: "1-Pole", label: "1-Pole" },
                                   { value: "2-Pole", label: "2-Pole" },
-                                  { value: "3-Pole", label: "3-Pole" },
+                                  // { value: "3-Pole", label: "3-Pole" },
                                 ]
                           }
                           selectedValue={activeNewMaterialData?.pole}
@@ -499,126 +541,469 @@ const SelectMaterialPage = () => {
                           width={255}
                           height={55}
                         />
-                        <Dropdown
-                          label="Select Neutral*"
-                          options={
-                            activeNewMaterialData?.use === "Main Breaker"
-                              ? [
-                                  { value: "Snap-On", label: "Snap-On" },
-                                  { value: "x", label: "x" },
-                                ]
-                              : [
-                                  {
-                                    value: "Plug-On Neutral",
-                                    label: "Plug-On Neutral",
-                                  },
-                                  { value: "Pigtail", label: "Pigtail" },
-                                  { value: "x", label: "x" },
-                                ]
-                          }
-                          selectedValue={activeNewMaterialData?.neutral}
-                          onChange={(value) => updateItemData("neutral", value)}
-                          error={activeNewMaterialError?.neutral}
-                          activeTabIndex={index1}
-                          width={255}
-                          height={55}
-                        />
-                        <Dropdown
-                          label="Select Type*"
-                          options={[
-                            { value: "Single", label: "Single" },
-                            { value: "Twin", label: "Twin" },
-                            { value: "Threeplex", label: "Threeplex" },
-                            { value: "Quad", label: "Quad" },
-                          ]}
-                          selectedValue={activeNewMaterialData?.type}
-                          onChange={(value) => updateItemData("type", value)}
-                          error={activeNewMaterialError?.type}
-                          activeTabIndex={index1}
-                          width={255}
-                          height={55}
-                        />
+
+                        {(activeNewMaterialData?.brand === "Siemens" ||
+                          activeNewMaterialData?.brand === "Square D") &&
+                          (activeNewMaterialData?.use === "AFCI" ||
+                            activeNewMaterialData?.use === "GFCI" ||
+                            activeNewMaterialData?.use === "AFCI/GFCI") && (
+                            <Dropdown
+                              label="Select Neutral*"
+                              options={
+                                activeNewMaterialData?.brand === "Siemens"
+                                  ? [
+                                      { value: "Snap-On", label: "Snap-On" },
+                                      // { value: "x", label: "x" },
+                                    ]
+                                  : [
+                                      // {
+                                      //   value: "Plug-On Neutral",
+                                      //   label: "Plug-On Neutral",
+                                      // },
+                                      { value: "Pigtail", label: "Pigtail" },
+                                      // { value: "x", label: "x" },
+                                    ]
+                                // activeNewMaterialData?.use === "Main Breaker"
+                                //   ? [
+                                //       { value: "Snap-On", label: "Snap-On" },
+                                //       { value: "x", label: "x" },
+                                //     ]
+                                //   : [
+                                //       {
+                                //         value: "Plug-On Neutral",
+                                //         label: "Plug-On Neutral",
+                                //       },
+                                //       { value: "Pigtail", label: "Pigtail" },
+                                //       { value: "x", label: "x" },
+                                //     ]
+                              }
+                              selectedValue={activeNewMaterialData?.neutral}
+                              onChange={(value) =>
+                                updateItemData("neutral", value)
+                              }
+                              error={activeNewMaterialError?.neutral}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+                          )}
+
+                        {activeNewMaterialData.version !== "H" &&
+                          activeNewMaterialData.pole !== "3-Pole" && (
+                            <Dropdown
+                              label="Select Type*"
+                              options={
+                                activeNewMaterialData.use === "Standard"
+                                  ? activeNewMaterialData.pole === "Single-Pole"
+                                    ? [
+                                        { value: "Single", label: "Single" },
+                                        { value: "Twin", label: "Twin" },
+                                      ]
+                                    : activeNewMaterialData.pole === "2-Pole"
+                                    ? activeNewMaterialData.brand ===
+                                        "Square D" &&
+                                      activeNewMaterialData.version === "QO"
+                                      ? [
+                                          {
+                                            value: "Single",
+                                            label: "Single",
+                                          },
+
+                                          { value: "Quad", label: "Quad" },
+                                        ]
+                                      : [
+                                          {
+                                            value: "Single",
+                                            label: "Single",
+                                          },
+                                          {
+                                            value: "Threeplex",
+                                            label: "Threeplex",
+                                          },
+                                          { value: "Quad", label: "Quad" },
+                                        ]
+                                    : [{ value: "Single", label: "Single" }]
+                                  : activeNewMaterialData.use ===
+                                      "Main Breaker" &&
+                                    activeNewMaterialData.pole === "2-Pole"
+                                  ? [{ value: "Single", label: "Single" }]
+                                  : activeNewMaterialData.use === "AFCI" ||
+                                    activeNewMaterialData.use === "GFCI" ||
+                                    activeNewMaterialData.use === "AFCI/GCFI"
+                                  ? (activeNewMaterialData?.brand ===
+                                      "Siemens" ||
+                                      activeNewMaterialData?.brand ===
+                                        "Square D") &&
+                                    activeNewMaterialData.neutral === "Snap-On"
+                                    ? [
+                                        { value: "Single", label: "Single" },
+                                        { value: "Twin", label: "Twin" },
+                                      ]
+                                    : [{ value: "Single", label: "Single" }]
+                                  : [
+                                      { value: "Single", label: "Single" },
+                                      { value: "Twin", label: "Twin" },
+                                      {
+                                        value: "Threeplex",
+                                        label: "Threeplex",
+                                      },
+                                      { value: "Quad", label: "Quad" },
+                                    ]
+                              }
+                              selectedValue={activeNewMaterialData?.type}
+                              onChange={(value) =>
+                                updateItemData("type", value)
+                              }
+                              error={activeNewMaterialError?.type}
+                              activeTabIndex={index1}
+                              width={255}
+                              height={55}
+                            />
+                          )}
                         {activeNewMaterialData?.pole && (
                           <Dropdown
                             label="Select Amps*"
-                            options={[
-                              { value: "x", label: "x" },
-                              { value: "10", label: "10" },
-                              { value: "15", label: "15" },
-                              { value: "20", label: "20" },
-                              { value: "25", label: "25" },
-                              { value: "30", label: "30" },
-                              { value: "35", label: "35" },
-                              { value: "40", label: "40" },
-                              { value: "45", label: "45" },
-                              { value: "50", label: "50" },
-                              { value: "60", label: "60" },
-                              { value: "70", label: "70" },
-                              { value: "80", label: "80" },
-                              { value: "90", label: "90" },
-                              { value: "100", label: "100" },
-                              { value: "125", label: "125" },
-                              { value: "15/15", label: "15/15" },
-                              { value: "15/20", label: "15/20" },
-                              {
-                                value: "(15/20 - Homeline Only)",
-                                label: "(15/20 - Homeline Only)",
-                              },
-                              { value: "20/20", label: "20/20" },
-                              { value: "20/30", label: "20/30" },
-                              { value: "30/30", label: "30/30" },
-                              {
-                                value: "15/(20/20)/15",
-                                label: "15/(20/20)/15",
-                              },
-                              {
-                                value: "15/(25/25)/15",
-                                label: "15/(25/25)/15",
-                              },
-                              {
-                                value: "15/(30/30)/15",
-                                label: "15/(30/30)/15",
-                              },
-                              {
-                                value: "15/(40/40)/15",
-                                label: "15/(40/40)/15",
-                              },
-                              {
-                                value: "15/(50/50)/15",
-                                label: "15/(50/50)/15",
-                              },
-                              {
-                                value: "20/(20/20)/20",
-                                label: "20/(20/20)/20",
-                              },
-                              {
-                                value: "20/(25/25)/20",
-                                label: "20/(25/25)/20",
-                              },
-                              {
-                                value: "20/(30/30)/20",
-                                label: "20/(30/30)/20",
-                              },
-                              {
-                                value: "20/(40/40)/20",
-                                label: "20/(40/40)/20",
-                              },
-                              {
-                                value: "20/(50/50)/20",
-                                label: "20/(50/50)/20",
-                              },
-                              {
-                                value: "30/(30/30)/30",
-                                label: "30/(30/30)/30",
-                              },
-                              { value: "20/20/20/20", label: "20/20/20/20" },
-                              { value: "20/30/30/20", label: "20/30/30/20" },
-                              { value: "30/20/20/30", label: "30/20/20/30" },
-                              { value: "30/30/30/30", label: "30/30/30/30" },
-                              { value: "40/20/20/40", label: "40/20/20/40" },
-                              { value: "40/30/30/40", label: "40/30/30/40" },
-                              { value: "40/40/40/40", label: "40/40/40/40" },
-                            ]}
+                            options={
+                              activeNewMaterialData.brand === "Siemens"
+                                ? activeNewMaterialData.use === "Standard"
+                                  ? activeNewMaterialData.pole === "Single Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          { value: "15-30", label: "15-30" },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "30", label: "30" },
+                                        ]
+                                      : [
+                                          { value: "10/30", label: "10/30" },
+                                          { value: "15/15", label: "15/15" },
+                                          { value: "15/20", label: "15/20" },
+                                          { value: "20/20", label: "20/20" },
+                                          { value: "20/30", label: "20/30" },
+                                          { value: "30/20", label: "30/20" },
+                                          { value: "30/30", label: "30/30" },
+                                        ]
+                                    : activeNewMaterialData.pole === "2-Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          {
+                                            value: "100-200",
+                                            label: "100-200",
+                                          },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "25", label: "25" },
+                                          { value: "30", label: "30" },
+                                          { value: "40", label: "40" },
+                                          { value: "50", label: "50" },
+                                          { value: "60", label: "60" },
+                                          { value: "70", label: "70" },
+                                          { value: "100", label: "100" },
+                                          { value: "125", label: "125" },
+                                        ]
+                                      : activeNewMaterialData.type ===
+                                        "Threeplex"
+                                      ? [
+                                          {
+                                            value: "100-200",
+                                            label: "100-200",
+                                          },
+                                          {
+                                            value: "15/(25/25)/15",
+                                            label: "15/(25/25)/15",
+                                          },
+                                          {
+                                            value: "15/(30/30)/15",
+                                            label: "15/(30/30)/15",
+                                          },
+                                          {
+                                            value: "15/(40/40)/15",
+                                            label: "15/(40/40)/15",
+                                          },
+                                          {
+                                            value: "20/(20/20)/20",
+                                            label: "20/(20/20)/20",
+                                          },
+                                          {
+                                            value: "30/(30/30)/30",
+                                            label: "30/(30/30)/30",
+                                          },
+                                        ]
+                                      : [
+                                          {
+                                            value: "100-200",
+                                            label: "100-200",
+                                          },
+                                          {
+                                            value: "20/20/20/20",
+                                            label: "20/20/20/20",
+                                          },
+                                          {
+                                            value: "30/20/20/30",
+                                            label: "30/20/20/30",
+                                          },
+                                          {
+                                            value: "40/20/20/40",
+                                            label: "40/20/20/40",
+                                          },
+                                          {
+                                            value: "40/30/30/40",
+                                            label: "40/30/30/40",
+                                          },
+                                          {
+                                            value: "40/40/40/40",
+                                            label: "40/40/40/40",
+                                          },
+                                        ]
+                                    : [
+                                        { value: "100-200", label: "100-200" },
+                                        { value: "20", label: "20" },
+                                        { value: "25", label: "25" },
+                                        { value: "30", label: "30" },
+                                        { value: "40", label: "40" },
+                                        { value: "45", label: "45" },
+                                        { value: "50", label: "50" },
+                                        { value: "60", label: "60" },
+                                        { value: "70", label: "70" },
+                                        { value: "100", label: "100" },
+                                      ]
+                                  : activeNewMaterialData.use === "Main Breaker"
+                                  ? [{ value: "150-225", label: "150-225" }]
+                                  : // activeNewMaterialData.use === "AFCI" ||
+                                    //   activeNewMaterialData.use === "GFCI" ||
+                                    //   activeNewMaterialData.use === "AFCI/GFCI"
+                                    // ?
+                                    [
+                                      { value: "15", label: "15" },
+                                      { value: "20", label: "20" },
+                                      { value: "15/15", label: "15/15" },
+                                      { value: "15/20", label: "15/20" },
+                                    ]
+                                : // : []
+
+                                activeNewMaterialData.brand === "Eaton"
+                                ? activeNewMaterialData.use === "Standard"
+                                  ? activeNewMaterialData.pole === "Single Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          { value: "15-30", label: "15-30" },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "30", label: "30" },
+                                        ]
+                                      : [
+                                          { value: "15-20", label: "15-20" },
+                                          { value: "15/15", label: "15/15" },
+                                          { value: "20/20", label: "20/20" },
+                                        ]
+                                    : activeNewMaterialData.pole === "2-Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          { value: "15-200", label: "15-200" },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "25", label: "25" },
+                                          { value: "30", label: "30" },
+                                          { value: "35", label: "35" },
+                                          { value: "40", label: "40" },
+                                          { value: "50", label: "50" },
+                                          { value: "60", label: "60" },
+                                          { value: "70", label: "70" },
+                                          { value: "100", label: "100" },
+                                          { value: "125", label: "125" },
+                                        ]
+                                      : activeNewMaterialData.type === "Quad"
+                                      ? [
+                                          { value: "15-200", label: "15-200" },
+                                          {
+                                            value: "20/20/20/20",
+                                            label: "20/20/20/20",
+                                          },
+                                          {
+                                            value: "20/30/30/20",
+                                            label: "20/30/30/20",
+                                          },
+                                          {
+                                            value: "30/30/30/30",
+                                            label: "30/30/30/30",
+                                          },
+                                          {
+                                            value: "40/40/40/40",
+                                            label: "40/40/40/40",
+                                          },
+                                        ]
+                                      : [{ value: "x", label: "x" }]
+                                    : [{ value: "15-200", label: "15-200" }]
+                                  : activeNewMaterialData.use === "Main Breaker"
+                                  ? [{ value: "200", label: "200" }]
+                                  : // activeNewMaterialData.use === "AFCI" ||
+                                    //   activeNewMaterialData.use === "GFCI" ||
+                                    //   activeNewMaterialData.use === "AFCI/GFCI"
+                                    // ?
+                                    [
+                                      { value: "15", label: "15" },
+                                      { value: "20", label: "20" },
+                                      { value: "15/15", label: "15/15" },
+                                      { value: "15/20", label: "15/20" },
+                                    ]
+                                : // : []
+
+                                activeNewMaterialData.brand === "Square D"
+                                ? activeNewMaterialData.use === "Standard"
+                                  ? activeNewMaterialData.pole === "Single Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          { value: "15-50", label: "15-50" },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "25", label: "25" },
+                                          { value: "30", label: "30" },
+                                          { value: "50", label: "50" },
+                                        ]
+                                      : [
+                                          { value: "15-200", label: "15-200" },
+                                          { value: "15/15", label: "15/15" },
+                                          { value: "20/20", label: "20/20" },
+                                          {
+                                            value: "(15/20 - Homeline Only)",
+                                            label: "(15/20 - Homeline Only)",
+                                          },
+                                        ]
+                                    : activeNewMaterialData.pole === "2-Pole"
+                                    ? activeNewMaterialData.type === "Single"
+                                      ? [
+                                          { value: "15-200", label: "15-200" },
+                                          { value: "15", label: "15" },
+                                          { value: "20", label: "20" },
+                                          { value: "25", label: "25" },
+                                          { value: "30", label: "30" },
+                                          { value: "35", label: "35" },
+                                          { value: "40", label: "40" },
+                                          { value: "45", label: "45" },
+                                          { value: "50", label: "50" },
+                                          { value: "60", label: "60" },
+                                          { value: "70", label: "70" },
+                                          { value: "80", label: "80" },
+                                          { value: "90", label: "90" },
+                                          { value: "100", label: "100" },
+                                          { value: "125", label: "125" },
+                                        ]
+                                      : activeNewMaterialData.type === "Quard"
+                                      ? [{ value: "15-200", label: "15-200" }]
+                                      : [{ value: "x", label: "x" }]
+                                    : [
+                                        { value: "15-200", label: "15-200" },
+                                        { value: "20", label: "20" },
+                                        { value: "40", label: "40" },
+                                        { value: "50", label: "50" },
+                                        { value: "60", label: "60" },
+                                        { value: "100", label: "100" },
+                                      ]
+                                  : activeNewMaterialData.use === "Main Breaker"
+                                  ? [{ value: "200", label: "200" }]
+                                  : // activeNewMaterialData.use === "AFCI" ||
+                                    //   activeNewMaterialData.use === "GFCI" ||
+                                    //   activeNewMaterialData.use === "AFCI/GFCI"
+                                    // ?
+                                    [
+                                      { value: "15", label: "15" },
+                                      { value: "20", label: "20" },
+                                      { value: "15/15", label: "15/15" },
+                                      { value: "15/20", label: "15/20" },
+                                    ]
+                                : // : []
+
+                                activeNewMaterialData.use === "Standard"
+                                ? activeNewMaterialData.pole === "Single Pole"
+                                  ? activeNewMaterialData.type === "Single"
+                                    ? [
+                                        { value: "15-30", label: "15-30" },
+                                        { value: "15", label: "15" },
+                                        { value: "20", label: "20" },
+                                        { value: "30", label: "30" },
+                                      ]
+                                    : [{ value: "x", label: "x" }]
+                                  : activeNewMaterialData.pole === "2-Pole"
+                                  ? activeNewMaterialData.type === "Single"
+                                    ? [
+                                        { value: "15-200", label: "15-200" },
+                                        { value: "15", label: "15" },
+                                        { value: "20", label: "20" },
+                                        { value: "25", label: "25" },
+                                        { value: "30", label: "30" },
+                                        { value: "35", label: "35" },
+                                        { value: "40", label: "40" },
+                                        { value: "50", label: "50" },
+                                        { value: "60", label: "60" },
+                                        { value: "70", label: "70" },
+                                        { value: "90", label: "90" },
+                                        { value: "100", label: "100" },
+                                        { value: "125", label: "125" },
+                                      ]
+                                    : activeNewMaterialData.type === "Quad"
+                                    ? [{ value: "15-200", label: "15-200" }]
+                                    : [{ value: "x", label: "x" }]
+                                  : [{ value: "15-200", label: "15-200" }]
+                                : activeNewMaterialData.use === "Main Breaker"
+                                ? [{ value: "x", label: "x" }]
+                                : // activeNewMaterialData.use === "AFCI" ||
+                                  //   activeNewMaterialData.use === "GFCI" ||
+                                  //   activeNewMaterialData.use === "AFCI/GFCI"
+                                  // ?
+                                  [
+                                    { value: "15", label: "15" },
+                                    { value: "20", label: "20" },
+                                    { value: "15/15", label: "15/15" },
+                                    { value: "15/20", label: "15/20" },
+                                  ]
+                              // : []
+
+                              // [
+                              //   { value: "x", label: "x" },
+                              //   { value: "10", label: "10" },
+                              //   { value: "15", label: "15" },
+                              //   { value: "20", label: "20" },
+                              //   { value: "25", label: "25" },
+                              //   { value: "30", label: "30" },
+                              //   { value: "35", label: "35" },
+                              //   { value: "40", label: "40" },
+                              //   { value: "45", label: "45" },
+                              //   { value: "50", label: "50" },
+                              //   { value: "60", label: "60" },
+                              //   { value: "70", label: "70" },
+                              //   { value: "80", label: "80" },
+                              //   { value: "90", label: "90" },
+                              //   { value: "100", label: "100" },
+                              //   { value: "125", label: "125" },
+                              //   { value: "15/15", label: "15/15" },
+                              //   { value: "15/20", label: "15/20" },
+                              //   {
+                              //     value: "(15/20 - Homeline Only)",
+                              //     label: "(15/20 - Homeline Only)",
+                              //   },
+                              //   { value: "20/20", label: "20/20" },
+                              //   { value: "20/30", label: "20/30" },
+                              //   { value: "30/30", label: "30/30" },
+                              //   { value: "15/(20/20)/15", label: "15/(20/20)/15" },
+                              //   { value: "15/(25/25)/15", label: "15/(25/25)/15" },
+                              //   { value: "15/(30/30)/15", label: "15/(30/30)/15" },
+                              //   { value: "15/(40/40)/15", label: "15/(40/40)/15" },
+                              //   { value: "15/(50/50)/15", label: "15/(50/50)/15" },
+                              //   { value: "20/(20/20)/20", label: "20/(20/20)/20" },
+                              //   { value: "20/(25/25)/20", label: "20/(25/25)/20" },
+                              //   { value: "20/(30/30)/20", label: "20/(30/30)/20" },
+                              //   { value: "20/(40/40)/20", label: "20/(40/40)/20" },
+                              //   { value: "20/(50/50)/20", label: "20/(50/50)/20" },
+                              //   { value: "30/(30/30)/30", label: "30/(30/30)/30" },
+                              //   { value: "20/20/20/20", label: "20/20/20/20" },
+                              //   { value: "20/30/30/20", label: "20/30/30/20" },
+                              //   { value: "30/20/20/30", label: "30/20/20/30" },
+                              //   { value: "30/30/30/30", label: "30/30/30/30" },
+                              //   { value: "40/20/20/40", label: "40/20/20/40" },
+                              //   { value: "40/30/30/40", label: "40/30/30/40" },
+                              //   { value: "40/40/40/40", label: "40/40/40/40" },
+                              // ]
+                            }
                             selectedValue={activeNewMaterialData?.amp}
                             onChange={(value) => updateItemData("amp", value)}
                             error={activeNewMaterialError?.amp}

@@ -23,8 +23,8 @@ const ElecricalInvoiceHero = () => {
     <div>
       {activeSteps.electricalSteps == 1 && <InvoiceInfo />}
       {activeSteps.electricalSteps == 2 && <ClientDetails />}
-      {activeSteps.electricalSteps == 3 && <ItemSelectionScreen />}
-      {activeSteps.electricalSteps == 4 && <LabourSection />}
+      {activeSteps.electricalSteps == 3 && <LabourSection />}
+      {activeSteps.electricalSteps == 4 && <ItemSelectionScreen />}
       {activeSteps.electricalSteps == 5 && <TripCharge />}
       {activeSteps.electricalSteps == 6 && <TaxRate />}
       {activeSteps.electricalSteps == 7 && <TermsConditions />}
